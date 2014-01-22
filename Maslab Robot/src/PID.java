@@ -1,22 +1,36 @@
 import org.opencv.core.Scalar;
 
 public class PID{
-	public double kp,ki,kd;
-	double P,I,D;
+	private final double kp,ki,kd;
+	private double P,I,D;	
+	private double error,errorOld;
 	
-	double error,errorOld;
-	double timeInterval=0.02;
+	private static final double timeInterval=0.02;
 	
 	int reset=1;
 	
-	public void setConstants(Scalar constants){
-		kp= constants.val[0];
-		ki= constants.val[1];
-		kd= constants.val[2];
+	/**
+	 * Creates a new PID controller with the given constants.
+	 * @param kp proportional constant
+	 * @param ki integral constant
+	 * @param kd derivative constant
+	 */
+	public PID(double kp, double ki, double kd){
+	    this.kp = kp;
+	    this.ki = ki;
+	    this.kd = kd;
 	}
-	public double valuePID(double angle, double angleDesired){
-		
-		P= error = angle-angleDesired;
+	
+	
+	/**
+	 * Calculates the output of the PID controller given the desiredValue
+	 * and actualValue
+	 * @param actualValue current reading
+	 * @param desiredValue desired reading
+	 * @return output of PID controller
+	 */
+	public double valuePID(double actualValue, double desiredValue){
+		P = error = desiredValue - actualValue;
 		if (reset==1){reset=0; errorOld=error; I=0;}
 		D=(error-errorOld)/timeInterval;
 		I+=error*timeInterval;
@@ -25,4 +39,13 @@ public class PID{
 		
 		return kp*P+ ki*I+ kd*D;	
 	}
+	
+	
+	/**
+	 * Resets the integral term to zero
+	 */
+	public void resetIntegral(){
+	    I = 0;
+	}
+	
 }
