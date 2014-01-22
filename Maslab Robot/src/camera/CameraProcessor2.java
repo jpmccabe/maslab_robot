@@ -22,7 +22,7 @@ class CameraProcessor2 {
     private final BallStruct greenBall;
     private Mat processedImage;
     
-	static {
+	static{
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
 	

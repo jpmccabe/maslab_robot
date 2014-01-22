@@ -54,9 +54,7 @@ class Camera {
                 e.printStackTrace();
             }
         }
-        
-        if (Global.processedImage==null) Global.processedImage=Global.rawImage;
-        
+                
         //removes garbage memory taken
         System.gc();		
     }
