@@ -20,10 +20,12 @@ class CameraProcessor2 {
     private double angleToGreen;
     private final BallTargeting green;
     private final BallStruct greenBall;
+    private Mat processedImage = null;
     
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
+	
 	
 	public CameraProcessor2(){
 	    distanceToGreen = Double.MAX_VALUE;
@@ -96,6 +98,7 @@ class CameraProcessor2 {
    	    synchronized(this){
    	        distanceToGreen = returned[0];
    	        angleToGreen = returned[1];
+   	        this.processedImage = processedImage;
    	    }
    	    //System.out.println("distance2green:" +returned[0] + ",angle2green:" +returned[0]);
    	    //Global.processedImage=processedImage.clone();
@@ -117,5 +120,14 @@ class CameraProcessor2 {
      */
     synchronized public double getAngleToGreenBall(){
         return angleToGreen;
+    }
+    
+    
+    /**
+     * 
+     * @return the processed image
+     */
+    synchronized public Mat getProcessedImage(){
+        return processedImage;
     }
 }

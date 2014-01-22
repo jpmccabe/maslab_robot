@@ -20,6 +20,7 @@ class CameraProcessor1{
     private double angleToRed;
     private final BallTargeting red;
     private final BallStruct redBall;
+    private Mat processedImage = null;
     
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -51,7 +52,7 @@ class CameraProcessor1{
 
 	    //create a clone for the processedImage to be used in finding contours
 	    Mat clone= new Mat();
-	    clone= processedImage.clone();
+	    clone = processedImage.clone();
 	    Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
 
 	    //finds list of contours and draw the biggest on the processedImage
@@ -101,6 +102,7 @@ class CameraProcessor1{
 	    synchronized(this){
 	        distanceToRed = returned[0];
 	        angleToRed = returned[1];
+	        this.processedImage = processedImage;
 	    }
 	    //System.out.println("distance2red:" +returned[0] + ",angle2red:" +returned[0]);
 	}
@@ -121,6 +123,14 @@ class CameraProcessor1{
    	 */
    	synchronized public double getAngleRedBall(){
    	    return angleToRed;
+   	}
+   	
+   	
+   	/**
+   	 * @return the processed image
+   	 */
+   	synchronized public Mat getProcessedImage(){
+   	    return processedImage.clone();
    	}
    		
 }
