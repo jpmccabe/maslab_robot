@@ -13,7 +13,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 
-class CameraProcessor3{
+public class CameraProcessor3{
 
     private double wallCloseness;
     private Mat processedImage;

@@ -27,7 +27,7 @@ import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
 
-class Camera {
+public class Camera {
   
     private Mat lastFrame = null;
     private final VideoCapture camera;

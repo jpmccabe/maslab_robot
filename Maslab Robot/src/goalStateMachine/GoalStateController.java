@@ -1,12 +1,14 @@
 package goalStateMachine;
 
 import ballCollectionStateMachine.*;
+import camera.*;
+import robotModel.*;
 
 public class GoalStateController {
     
     private GoalState goalState;
 
-    public GoalStateController(){
+    public GoalStateController(RobotModel robotModel, Camera camera){
         goalState = GoalState.Roam;
     }
     

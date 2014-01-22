@@ -15,7 +15,7 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Processes green balls.
  */
-class CameraProcessor2 {   
+public class CameraProcessor2 {   
     private double distanceToGreen;
     private double angleToGreen;
     private final BallTargeting green;

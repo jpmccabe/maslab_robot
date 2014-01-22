@@ -6,8 +6,7 @@ public class PID{
 	private double error,errorOld;
 	
 	private static final double timeInterval=0.02;
-	
-	int reset=1;
+
 	
 	/**
 	 * Creates a new PID controller with the given constants.
@@ -31,7 +30,6 @@ public class PID{
 	 */
 	public double valuePID(double actualValue, double desiredValue){
 		P = error = desiredValue - actualValue;
-		if (reset==1){reset=0; errorOld=error; I=0;}
 		D=(error-errorOld)/timeInterval;
 		I+=error*timeInterval;
 		if(D<-5.0){I=0;}
@@ -41,11 +39,13 @@ public class PID{
 	}
 	
 	
-	/**
-	 * Resets the integral term to zero
-	 */
-	public void resetIntegral(){
-	    I = 0;
-	}
 	
+	/**
+	 * Resets the integral term to zero and errorOld-error to zero.
+	 */
+	public void reset(){
+	    I = 0;
+	    errorOld = error;
+	}
+
 }

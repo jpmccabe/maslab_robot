@@ -17,16 +17,8 @@ public class Driver{
 	private final static double STRAIGHT_KD = 0.0;
 	
 	public Driver(){
-	    angularPID = new PID();
-	    straightPID = new PID();
-	    
-	    angularPID.kp=0.25;
-        angularPID.ki=0;
-        angularPID.kd=0.0008;
-        
-        straightPID.kp=0.002;
-        straightPID.ki=0.0;
-        straightPID.kd=0.0;
+	    angularPID = new PID(ANGULAR_KP, ANGULAR_KI, ANGULAR_KD);
+	    straightPID = new PID(STRAIGHT_KP, STRAIGHT_KI, STRAIGHT_KD);
 	}
 
 	
@@ -34,25 +26,26 @@ public class Driver{
 		
 	}
 	
+	
 	public void driveToBall(double distance, double distanceTarget, double angle, double angleTarget){
-		
-		double angularSpeed= angularPID.valuePID(angle,angleTarget)/3.0;
-		double straightSpeed= straightPID.valuePID(distance,distanceTarget);
-		straightSpeed+=0.075;
-		//straightSpeed=Math.min(straightSpeed,0.3);
-		//straightSpeed=Math.max(straightSpeed,0.09);
+		double angularSpeed = angularPID.valuePID(angle,angleTarget);
+		double straightSpeed = straightPID.valuePID(distance,distanceTarget);
 		System.out.println("distance:" + distance);
 		System.out.println("angle:" + angle);
 		System.out.println("angular:" + angularSpeed);
 		System.out.println("speed:"+ straightSpeed);
 		Main.devices.setMotors(straightSpeed-angularSpeed,straightSpeed+angularSpeed);
 	}
-	public void driveByWall(double angle,double angleTarget)
-	{
-		double angularSpeed= angularPID.valuePID(angle,angleTarget)/3.0;
+	
+	
+	/*
+	public void driveByWall(double angle,double angleTarget){
+		double angularSpeed= angularPID.valuePID(angle,angleTarget);
 		Main.devices.setMotors(0.9+angularSpeed,0.9-angularSpeed);
 		
 	}
+	
+	
 	public void rotateInPlace(double velocity, int direction){
 		StopWatch.resetTime();
 		while(StopWatch.getTime()<1){
@@ -60,5 +53,5 @@ public class Driver{
 		}
 		Main.devices.setMotors(0,0);
 	}
-	
+	*/
 }

@@ -15,7 +15,7 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Processes red balls.
  */
-class CameraProcessor1{
+public class CameraProcessor1{
     private double distanceToRed;
     private double angleToRed;
     private final BallTargeting red;
