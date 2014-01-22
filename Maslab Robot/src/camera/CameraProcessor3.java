@@ -29,11 +29,11 @@ class CameraProcessor3 implements Runnable{
     }
 
 
-    public  void run() {
+    public void processImage(Mat imageToProcess) {
         StopWatch.resetTime();
         //StopWatch.timeOut(200);
         Mat processedImage = new Mat();
-        Imgproc.cvtColor(Global.rawImage,processedImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        Imgproc.cvtColor(imageToProcess,processedImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
 
         //Blue Walls
         Core.inRange(processedImage, new Scalar(90, 75,10), new Scalar(120, 255, 255), processedImage);
@@ -55,23 +55,33 @@ class CameraProcessor3 implements Runnable{
             Core.line(processedImage, new Point(x,firstPixel), new Point(x,secondPixel), new Scalar(255,0,0));
         }
 
-        /*for(int i=0;i<64;i++){
-				System.out.println(i+":"+600/blueStripe[i]);
-			}*/
+
         Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
-        wallCloseness = 600/blueStripe[2];
+        
+        synchronized(this){
+            wallCloseness = 600/blueStripe[2];
+            this.processedImage = processedImage;
+        }
+        
         //Global.processedImage= processedImage.clone();
     }
     
     
     /**
      * Returns how close a blue wall was in the last processed image
-     * @return
+     * @return how close a blue wall was in the last image
      */
     synchronized public double getWallCloseness(){
         return wallCloseness;
     }
     
     
+    /**
+     * Returns the last processed image
+     * @return the last processed image
+     */
+    synchronized public Mat getProcessedImage(){
+        return processedImage.clone();
+    }
     
 }
