@@ -26,6 +26,7 @@ import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
+
 class Camera {
   
     private Mat lastFrame = null;
@@ -40,6 +41,7 @@ class Camera {
         camera.open(0);
     }
 
+    
     public void readNewFrame() {
         // Wait until the camera has a new frame
         while (!camera.read(lastFrame)) {
@@ -51,13 +53,29 @@ class Camera {
         }
         
         if (Global.processedImage==null) Global.processedImage=Global.rawImage;
-
+        
         //removes garbage memory taken
         System.gc();		
     }
     
+    
     public Mat getLastFrame(){
-        return lastFrame;
+        return lastFrame.clone();
+    }
+    
+    /**
+     * @return the width, in pixels, of the camera image.
+     */
+    public int getWidth(){
+        return (int) (camera.get(Highgui.CV_CAP_PROP_FRAME_WIDTH));
+    }
+    
+    
+    /**
+     * @return the height, in pixels of the camera image.
+     */
+    public int getHeight(){
+        return (int) (camera.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT));
     }
   }
    
