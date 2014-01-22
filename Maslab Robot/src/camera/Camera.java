@@ -42,6 +42,9 @@ class Camera {
     }
 
     
+    /**
+     * Reads in a new frame from the camera. Blocks thread until there is a new frame.
+     */
     public void readNewFrame() {
         // Wait until the camera has a new frame
         while (!camera.read(lastFrame)) {
@@ -59,9 +62,13 @@ class Camera {
     }
     
     
+    /**
+     * @return the last frame read in from the camera.
+     */
     public Mat getLastFrame(){
         return lastFrame.clone();
     }
+    
     
     /**
      * @return the width, in pixels, of the camera image.

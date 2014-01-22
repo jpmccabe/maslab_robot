@@ -20,7 +20,7 @@ class CameraProcessor1{
     private double angleToRed;
     private final BallTargeting red;
     private final BallStruct redBall;
-    private Mat processedImage = null;
+    private Mat processedImage;
     
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -30,6 +30,7 @@ class CameraProcessor1{
 	public CameraProcessor1(){
 	    distanceToRed = Double.MAX_VALUE;
 	    angleToRed = Double.MAX_VALUE;
+	    processedImage = null;
 	    red = new BallTargeting();
 	    redBall = new BallStruct();
 	}

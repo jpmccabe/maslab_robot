@@ -15,13 +15,16 @@ public class CameraGUI {
         private final int width;
         private final int height;
         private final Camera camera;
+        private final JLabel cameraPane;
+        private final JLabel opencvPane;
     
+        
         public CameraGUI(Camera camera){
             this.camera = camera;
             width = camera.getWidth();
             height = camera.getHeight();
-            JLabel cameraPane = createWindow("Camera output", width, height);
-            JLabel opencvPane = createWindow("OpenCV output", width, height);
+            cameraPane = createWindow("Camera output", width, height);
+            opencvPane = createWindow("OpenCV output", width, height);
         }
         
         
@@ -38,7 +41,7 @@ public class CameraGUI {
                 @Override
                 public void windowClosing(WindowEvent e){
                     System.out.println("EXIT MOTHAFUCKAAAS");
-                    Main.devices.setMotors(0,0);
+                    //Main.devices.setMotors(0,0);
                     System.exit(0);
                 }
             });
@@ -47,13 +50,19 @@ public class CameraGUI {
             return imagePane;
         }
         
-        private static void updateWindow(JLabel imagePane, Mat mat) {
-            int w = (int) (mat.size().width);
-            int h = (int) (mat.size().height);
-            if (imagePane.getWidth() != w || imagePane.getHeight() != h) {
-                imagePane.setSize(w, h);
+        
+        /**
+         * Updates the camera pane with the last frame read from the camera.
+         */
+        public void updateCameraPane() {
+            Mat image = camera.getLastFrame();
+            
+            int w = (int) (image.size().width);
+            int h = (int) (image.size().height);
+            if (cameraPane.getWidth() != w || cameraPane.getHeight() != h) {
+                cameraPane.setSize(w, h);
             }
-            BufferedImage bufferedImage = Mat2Image.getImage(mat);
-            imagePane.setIcon(new ImageIcon(bufferedImage));
+            BufferedImage bufferedImage = Mat2Image.getImage(image);
+            cameraPane.setIcon(new ImageIcon(bufferedImage));
         }
 }
