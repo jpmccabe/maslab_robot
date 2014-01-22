@@ -96,8 +96,6 @@ class CameraProcessor1{
 	    redBall.circle.center=center;
 	    redBall.circle.radius=(double) radius[0];
 
-	    Global.processedImage = processedImage.clone();
-
 	    double returned[]= red.calculate(redBall);
 
 	    synchronized(this){
@@ -105,7 +103,6 @@ class CameraProcessor1{
 	        angleToRed = returned[1];
 	        this.processedImage = processedImage;
 	    }
-	    //System.out.println("distance2red:" +returned[0] + ",angle2red:" +returned[0]);
 	}
    	
    	

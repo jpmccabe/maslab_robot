@@ -13,7 +13,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 
-class CameraProcessor3 implements Runnable{
+class CameraProcessor3{
 
     private double wallCloseness;
     private Mat processedImage;
@@ -30,14 +30,11 @@ class CameraProcessor3 implements Runnable{
 
 
     public void processImage(Mat imageToProcess) {
-        StopWatch.resetTime();
-        //StopWatch.timeOut(200);
         Mat processedImage = new Mat();
         Imgproc.cvtColor(imageToProcess,processedImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
 
         //Blue Walls
         Core.inRange(processedImage, new Scalar(90, 75,10), new Scalar(120, 255, 255), processedImage);
-
 
         Imgproc.Canny(processedImage, processedImage, 15, 200);		
         double[] blueStripe= new double[64];
@@ -62,8 +59,6 @@ class CameraProcessor3 implements Runnable{
             wallCloseness = 600/blueStripe[2];
             this.processedImage = processedImage;
         }
-        
-        //Global.processedImage= processedImage.clone();
     }
     
     

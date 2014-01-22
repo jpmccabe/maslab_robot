@@ -101,8 +101,6 @@ class CameraProcessor2 {
    	        angleToGreen = returned[1];
    	        this.processedImage = processedImage;
    	    }
-   	    //System.out.println("distance2green:" +returned[0] + ",angle2green:" +returned[0]);
-   	    //Global.processedImage=processedImage.clone();
    	}
    	
    	
