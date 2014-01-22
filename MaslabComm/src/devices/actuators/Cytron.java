@@ -5,22 +5,26 @@ import devices.Actuator;
 
 public class Cytron extends Actuator {
 
-	private byte pwm = 0, dir = 0;
+	private byte dir = 0;
+	private byte pwm = 0;
 	private int speed = 0;
 
-	public Cytron(int pwm_pin, int dir_pin) {
-		this.pwm = (byte) pwm_pin;
+	/*
+	 * Takes one digital and one PWM pin (labeled on the Maple as "PWM")
+	 */
+	public Cytron(int dir_pin, int pwm_pin) {
 		this.dir = (byte) dir_pin;
+		this.pwm = (byte) pwm_pin;
 	}
 	
 	@Override
-	protected byte getDeviceCode() {
+	public byte getDeviceCode() {
 		return 'C';
 	}
 
 	@Override
-	protected byte[] getInitializationBytes() {
-		return new byte[]{pwm, dir};
+	public byte[] getInitializationBytes() {
+		return new byte[]{dir, pwm};
 	}
 
 	@Override

@@ -5,31 +5,34 @@ import java.nio.ByteBuffer;
 import devices.Sensor;
 
 public class Ultrasonic extends Sensor {
-	private byte echo;
+	private static final double CONVERSION_FACTOR = 340.29 / 2000000.0;
 	private byte trig;
-	private int distance;
+	private byte echo;
+	private double distance;
 	
-	public Ultrasonic(int i, int j) {
-		this.echo = (byte) i;
-		this.trig = (byte) j;
+	/*
+	 * Takes two digital pins
+	 */
+	public Ultrasonic(int trig, int echo) {
+		this.trig = (byte) trig;
+		this.echo = (byte) echo;
 	}
 
 	@Override
-	protected byte getDeviceCode() {
+	public byte getDeviceCode() {
 		return 'U';
 	}
 
 	@Override
-	protected byte[] getInitializationBytes() {
-		return new byte[] {echo, trig};
+	public byte[] getInitializationBytes() {
+		return new byte[] {trig, echo};
 	}
 
 	@Override
 	public void consumeMessageFromMaple(ByteBuffer buff) {
 		byte msb = buff.get();
 		byte lsb = buff.get();
-		// this is incorrect; ignores the conversion
-		distance = (msb * 256) + lsb;
+		distance = ((((int) msb & 0xff) * 256) + ((int) lsb & 0xff)) * CONVERSION_FACTOR;
 	}
 
 	@Override
@@ -37,7 +40,8 @@ public class Ultrasonic extends Sensor {
 		return 2;
 	}
 	
-	public float getDistance() {
+	// in meters
+	public double getDistance() {
 		return distance;
 	}
 

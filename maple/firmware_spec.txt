@@ -1,0 +1,102 @@
+===HEADERS AND CODES===
+
+Header packets:
+INIT      'I'
+GET       'G'
+SET       'S'
+RESPONSE  'R'
+END       0xFF
+
+Device Codes:
+AnalogInput   'A'
+PWMOutput     'P'
+DigitalInput  'D'
+DigitalOutput 'd'
+Cytron        'C'
+Gyroscope     'G'
+Ultrasonic    'U'
+
+
+===COMPUTER TO MAPLE COMMS===
+
+INIT packet structure:
+'I'
+[DEVICE_COUNT]
+[DEVICE_CODE] [DEVICE_BYTES]
+[DEVICE_CODE] [DEVICE_BYTES]
+...
+[DEVICE_CODE] [DEVICE_BYTES]
+'0xFF'
+
+GET packet structure
+'G'
+//currently does not expect 'END', but safely accepts one
+
+SET
+'S'
+[GLOBAL_DEVICE_INDEX] [BYTES_FOR_DEVICE]
+[GLOBAL_DEVICE_INDEX] [BYTES_FOR_DEVICE]
+...
+[GLOBAL_DEVICE_INDEX] [BYTES_FOR_DEVICE]
+'0xFF'
+
+
+===MAPLE TO COMPUTER COMMS===
+
+RESPONSE packet structure (note no device indices)
+'R'
+[DEVICE OUTPUT DATA BYTES]
+[DEVICE OUTPUT DATA BYTES]
+...
+[DEVICE OUTPUT DATA BYTES]
+'0xFF'
+
+
+===DEVICE SPECIFICATIONS===
+*all uint16's are big-endian
+
+=ANALOG_INPUT=
+initialization bytes:
+byte    [pin]
+response bytes:
+uint16  [analog_input]
+
+=PWM_OUTPUT=
+initialization bytes:
+byte    [pin]
+set bytes:
+uint16  [pwm_output]
+
+=DIGITAL_INPUT=
+initialization bytes:
+byte    [pin]
+response bytes:
+bool    [digital_input]
+
+=DIGITAL_OUTPUT=
+initialization bytes:
+byte    [pin]
+set bytes:
+bool    [digital_output]
+
+=CYTRON=
+initialization bytes:
+byte    [dir_pin]
+byte    [pwm_pin]
+set bytes:
+int16   [speed]
+
+=GYROSCOPE=
+initialization bytes:
+uint8   [SPI_port_index]
+uint8   [ss_pin]
+response bytes:
+int16   [angular_velocity]
+
+=ULTRASONIC=
+initialization bytes:
+byte    [trigger_pin]
+byte    [echo_pin]
+response bytes
+uint16  [delay_micros]
+

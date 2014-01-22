@@ -1,7 +1,7 @@
 #include <Servo.h>
 
 // TODO:
-// [ ] Serial Comm
+// [X] Serial Comm
 // [ ] Dagu Motor Controller
 // [X] Cytron Motor Controller
 // [X] Encoders
@@ -15,8 +15,9 @@
 
 #define LED_PIN BOARD_LED_PIN
 
+/*
+// Serial test
 void setup() {
-  /* Set up the LED to blink  */
   pinMode(LED_PIN, OUTPUT);
 }
 
@@ -28,6 +29,7 @@ void loop() {
     toggleLED();
   }
 }
+*/
 
 /*
 // Cytron Motor Controller
@@ -102,28 +104,46 @@ void loop() {
 }
 */
 
-/*
-// Sonic Range Finder
-volatile unsigned int start = 0;
-volatile unsigned int endx = 0;
 
-void irh() {
-  if ( digitalRead(28)==HIGH ) {
-    start = micros();
-  } else {
-    endx = micros();
+// Sonic Range Finder
+
+class Ultra {
+public:
+  uint8 trig;
+  uint8 echo;
+  volatile unsigned int start;
+  volatile unsigned int endx;
+
+  Ultra(uint8 _trig, uint8 _echo) : trig(_trig), echo(_echo) {
+    pinMode(trig, OUTPUT);
+    pinMode(echo, INPUT);
+    start = 0;
+    endx = 0;
+    attachInterrupt(echo, Ultra::irh, CHANGE);
+  }
+  
+  void irh() {
+    if ( digitalRead(echo)==HIGH ) {
+      start = micros();
+    } else {
+      endx = micros();
+    }
+  }
+  
+  unsigned int diff() {
+    return endx - start;
   }
 }
+
+Ultra ultra;
 
 void setup() {
   noInterrupts();
   
   // Set up the built-in LED pin as an output:
   pinMode(24, PWM);
-  pinMode(28, INPUT);
-  pinMode(30, OUTPUT);
+  ultra = Ultra(30, 28);
   
-  attachInterrupt(28,irh,CHANGE);
   interrupts();
 }
 
@@ -133,10 +153,11 @@ void loop() {
   digitalWrite(30,LOW);
   delay(60);
   
-  pwmWrite(24,(endx-start)*3/2);
-  SerialUSB.println(endx-start);
+  unsigned int diff = ultra.diff();
+  pwmWrite(24, diff*3/2);
+  SerialUSB.println(diff);
 }
-*/
+
 
 /*
 // Servo
@@ -174,22 +195,18 @@ void loop() {
 }
 */
 
-
 /*
 // Analog Read
 // Requires port labeled with AIN (from what I can tell)
 void setup() {
-  // Set up the built-in LED pin as an output:
-  pinMode(24, PWM);
-  pinMode(20, INPUT_ANALOG);
+  pinMode(2, INPUT_ANALOG);
 }
 
 int i = 0;
 void loop() {
-  int val = analogRead(20);
-  pwmWrite(24,i);
-  delay(50);
-  i += val;
+  uint16 val = analogRead(2);
+  SerialUSB.print((char) (val >> 8));
+  delay(100);
 }
 */
 
