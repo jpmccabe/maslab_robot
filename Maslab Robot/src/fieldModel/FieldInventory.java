@@ -84,11 +84,20 @@ public class FieldInventory {
     /**
      * Updates the field inventory with the scoring of a given
      * number of green balls, in the given reactor, in the given port.
-     * @param reactorNumber
-     * @param port
+     * @param numBalls the number of balls being scored
+     * @param reactorNumber the reactor being scored in
+     * @param port the port of the reactor being scored in
      */
-    public void scoreBallsInReactor(ReactorNumber reactorNumber, Port port){
-        
+    public void scoreBallsInReactor(int numBalls, ReactorNumber reactorNumber, Port port){
+        for(Reactor reactor : reactors){
+            if(reactor.getReactorNumber() == reactorNumber){
+                if(port == Port.TOP){
+                    reactor.addBallsToTopPort(numBalls);
+                } else{
+                    reactor.addBallsToBottomPort(numBalls);
+                }
+            }
+        }
     }
     
 }
