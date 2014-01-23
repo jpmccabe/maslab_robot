@@ -37,9 +37,9 @@ public class CameraProcessor1{
 	}
 	
 	
-	public void processImage(Mat rawImage){
+	public void processImage(Mat imageToProcess){
 	    Mat processedImage = new Mat();
-	    Imgproc.cvtColor(rawImage,processedImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+	    Imgproc.cvtColor(imageToProcess,processedImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
 
 	    //red
 	    Mat redUpper= new Mat();
@@ -120,7 +120,7 @@ public class CameraProcessor1{
    	 * Angle to the nearest red ball.
    	 * @return angle in radians
    	 */
-   	synchronized public double getAngleRedBall(){
+   	synchronized public double getAngleToRedBall(){
    	    return angleToRed;
    	}
    	

@@ -66,7 +66,7 @@ public class CameraProcessor3{
      * Returns how close a blue wall was in the last processed image
      * @return how close a blue wall was in the last image
      */
-    synchronized public double getWallCloseness(){
+    synchronized public double getDistanceToBlueWall(){
         return wallCloseness;
     }
     
