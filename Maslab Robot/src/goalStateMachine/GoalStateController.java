@@ -7,9 +7,13 @@ import robotModel.*;
 public class GoalStateController {
     
     private GoalState goalState;
+    private final Devices robotModel;
+    private final Camera camera;
 
-    public GoalStateController(RobotModel robotModel, Camera camera){
-        goalState = GoalState.Roam;
+    public GoalStateController(Devices robotModel, Camera camera){
+        goalState = GoalState.ROAM;
+        this.robotModel = robotModel;
+        this.camera = camera;
     }
     
     
@@ -26,12 +30,16 @@ public class GoalStateController {
     }
     
     private void collectGroundBalls(){
-        BallCollectionStateController ballCollectionController  = new BallCollectionStateController();
+        BallCollectionStateController ballCollectionController = new BallCollectionStateController();
         
     }
     
     private void depositRedBalls(){
         
+    }
+    
+    public GoalState getState(){
+        return goalState;
     }
 
     public static synchronized void main (String args[]) {
