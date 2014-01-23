@@ -33,6 +33,7 @@ public class CameraProcessor1{
 	    processedImage = null;
 	    red = new BallTargeting();
 	    redBall = new BallStruct();
+	    
 	}
 	
 	
