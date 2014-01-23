@@ -22,11 +22,6 @@ public class Driver{
 	}
 
 	
-	public void Stop(){
-		
-	}
-	
-	
 	public void driveToBall(double distance, double distanceTarget, double angle, double angleTarget){
 		double angularSpeed = angularPID.valuePID(angle,angleTarget);
 		double straightSpeed = straightPID.valuePID(distance,distanceTarget);

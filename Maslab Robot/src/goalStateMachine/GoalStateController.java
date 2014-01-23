@@ -30,8 +30,8 @@ public class GoalStateController {
     }
     
     private void collectGroundBalls(){
-        BallCollectionStateController ballCollectionController = new BallCollectionStateController();
-        
+        BallCollectionStateController ballCollectionController = 
+                new BallCollectionStateController(robotModel, camera);
     }
     
     private void depositRedBalls(){
