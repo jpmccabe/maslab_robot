@@ -1,5 +1,7 @@
 package goalStateMachine;
 
+import org.opencv.core.Mat;
+
 import ballCollectionStateMachine.*;
 import camera.*;
 import robotModel.*;
@@ -43,7 +45,9 @@ public class GoalStateController {
     }
     
     
-    public void control(){
+    public void controlState(){
+        Mat image = camera.getLastFrame();
+        ComputerVisionSummary summaryOfImage = ComputerVisionSummary.produceSummary(image);
         
     }
 
@@ -64,15 +68,13 @@ public class GoalStateController {
         Thread goalControllerThread  = new Thread(new Runnable(){
             public void run(){
                 while(true){
-                    goalController.control();
+                    goalController.controlState();
                 }
             }
         });
         
         cameraUpdateThread.start();
         goalControllerThread.start();
-        
-        
     }
     
 //    public static synchronized void main (String args[]) {
