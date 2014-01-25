@@ -35,6 +35,8 @@ public class GoalStateController{
                 avoidWallController.stop();
             }
         });
+        
+        avoidWallThread.start();
     }
     
     
@@ -79,6 +81,7 @@ public class GoalStateController{
             !currentStateController.isDone())){
             avoidWalls();
         }
+        
         // if see ball then collect it
         // if see reactor and have green balls then score
         // if see interface wall and have red balls then score over wall
