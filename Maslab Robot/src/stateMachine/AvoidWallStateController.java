@@ -1,9 +1,13 @@
 package stateMachine;
 
+import robotModel.*;
+
 public class AvoidWallStateController extends StateMachine {
 
-    public AvoidWallStateController(){
-        
+    private final Devices robotModel;
+    
+    public AvoidWallStateController(Devices robotModel){
+        this.robotModel = robotModel;
     }
     
     @Override
@@ -14,8 +18,15 @@ public class AvoidWallStateController extends StateMachine {
 
     @Override
     public void start() {
-        // TODO Auto-generated method stub
+        double turnSpeed = 0.1;
+        robotModel.setMotors(turnSpeed, -1*turnSpeed);
         
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
