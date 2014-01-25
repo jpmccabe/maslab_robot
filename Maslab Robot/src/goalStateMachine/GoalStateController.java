@@ -1,49 +1,54 @@
 package goalStateMachine;
 
 import org.opencv.core.Mat;
+import stateMachine.*;
 
-import ballCollectionStateMachine.*;
 import camera.*;
 import robotModel.*;
 
-public class GoalStateController {
+public class GoalStateController{
     
-    private GoalState goalState;
     private final Devices robotModel;
     private final Camera camera;
+    private StateMachine currentStateController;
 
     public GoalStateController(Devices robotModel, Camera camera){
-        goalState = GoalState.ROAM;
         this.robotModel = robotModel;
         this.camera = camera;
     }
     
     
     private void roam(){
-        goalState = GoalState.ROAM;
+        
     }
     
+    
     private void score(){
-        goalState = GoalState.SCORE;
+        
     }
+    
     
     private void collectFromEnergySilo(){
         
     }
     
+    
     private void collectGroundBalls(){
-        goalState = GoalState.COLLECT_GROUND_BALLS;
-        
-        BallCollectionStateController ballCollectionController = 
+        final BallCollectionStateController ballCollectionController = 
                 new BallCollectionStateController(robotModel, camera);
+        
+        currentStateController = ballCollectionController;
+        
+        Thread ballCollectionThread = new Thread(new Runnable(){
+            public void run(){
+                ballCollectionController.start();
+            }
+        });
     }
+    
     
     private void depositRedBalls(){
-        
-    }
-    
-    public GoalState getState(){
-        return goalState;
+
     }
     
     

@@ -1,4 +1,4 @@
-package ballCollectionStateMachine;
+package stateMachine;
 
 import robotModel.*;
 import stateMachine.*;
@@ -26,10 +26,7 @@ public class BallCollectionStateController extends StateMachine {
     }
     
     public void collect(){
-        robotModel.setRoller(true);
-        robotModel.setMotors(0.05, 0.05);
-        Thread.sleep(2000);
-        robotModel.setMotors(0,0);
+        
     }
     
     public void lift(){
@@ -54,5 +51,11 @@ public class BallCollectionStateController extends StateMachine {
     public void start() {
         // TODO Auto-generated method stub
         
+    }
+
+
+    @Override
+    public StateMachineType getStateMachineType() {
+        return StateMachineType.COLLECT_GROUND_BALLS;
     }
 }

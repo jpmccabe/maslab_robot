@@ -7,4 +7,7 @@ public abstract class StateMachine {
     
     //Start execution of the state machine
     abstract public void start();
+    
+    //Gets the state machine type
+    abstract public StateMachineType getStateMachineType();
 }

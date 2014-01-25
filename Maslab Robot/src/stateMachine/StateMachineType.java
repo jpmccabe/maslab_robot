@@ -1,0 +1,5 @@
+package stateMachine;
+
+public enum StateMachineType {
+    ROAM, SCORE, COLLECT_FROM_ENERGY_SILO, COLLECT_GROUND_BALLS, DEPOSIT_RED_BALLS, AVOID_WALLS;
+}
