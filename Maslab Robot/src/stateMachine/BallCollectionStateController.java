@@ -9,11 +9,13 @@ public class BallCollectionStateController extends StateMachine {
     private BallCollectionState collectionState;
     private final Devices robotModel;
     private final Camera camera;
+    private boolean done;
     
     public BallCollectionStateController(Devices robotModel, Camera camera){
         collectionState = BallCollectionState.APPROACH;
         this.robotModel = robotModel;
         this.camera = camera;
+        done = false;
     }
     
     
@@ -42,8 +44,8 @@ public class BallCollectionStateController extends StateMachine {
     public void stop() {
         // clean up the state
         // TODO make sure balls make it all the way through the spiral and are sorted
-        
         robotModel.allMotorsOff();
+        done = true;
     }
 
 
@@ -57,5 +59,11 @@ public class BallCollectionStateController extends StateMachine {
     @Override
     public StateMachineType getStateMachineType() {
         return StateMachineType.COLLECT_GROUND_BALLS;
+    }
+
+
+    @Override
+    public boolean isDone() {
+        return done;
     }
 }

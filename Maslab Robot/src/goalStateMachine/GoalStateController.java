@@ -23,6 +23,21 @@ public class GoalStateController{
     }
     
     
+    private void avoidWalls(){
+        final AvoidWallStateController avoidWallController = 
+                new AvoidWallStateController(robotModel);
+        
+        currentStateController = avoidWallController;
+        
+        Thread avoidWallThread = new Thread(new Runnable(){
+            public void run(){
+                avoidWallController.start();
+                avoidWallController.stop();
+            }
+        });
+    }
+    
+    
     private void score(){
         
     }
@@ -56,7 +71,14 @@ public class GoalStateController{
         Mat image = camera.getLastFrame();
         ComputerVisionSummary summaryOfImage = ComputerVisionSummary.produceSummary(image);
         
-        // if wall is close then avoid
+        final double wallThresholdDistance = 10;
+        
+        // if wall is close, and we are not currently avoiding walls, then avoid walls
+        if((summaryOfImage.getDistanceToBlueWall() <= wallThresholdDistance) && 
+            !(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
+            !currentStateController.isDone())){
+            avoidWalls();
+        }
         // if see ball then collect it
         // if see reactor and have green balls then score
         // if see interface wall and have red balls then score over wall

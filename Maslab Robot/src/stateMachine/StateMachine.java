@@ -10,4 +10,7 @@ public abstract class StateMachine {
     
     //Gets the state machine type
     abstract public StateMachineType getStateMachineType();
+    
+    //Returns true if state machine is done running
+    abstract public boolean isDone();
 }

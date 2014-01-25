@@ -5,15 +5,17 @@ import robotModel.*;
 public class AvoidWallStateController extends StateMachine {
 
     private final Devices robotModel;
+    private boolean done;
     
     public AvoidWallStateController(Devices robotModel){
         this.robotModel = robotModel;
+        done = false;
     }
     
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        
+        robotModel.allMotorsOff();
+        done = true;
     }
 
     @Override
@@ -24,14 +26,20 @@ public class AvoidWallStateController extends StateMachine {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        done = true;
     }
 
     @Override
     public StateMachineType getStateMachineType() {
         return StateMachineType.AVOID_WALLS;
+    }
+
+    @Override
+    public boolean isDone() {
+        return done;
     }
     
 }
