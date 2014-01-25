@@ -1,9 +1,10 @@
 package ballCollectionStateMachine;
 
 import robotModel.*;
+import stateMachine.*;
 import camera.*;
 
-public class BallCollectionStateController {
+public class BallCollectionStateController extends StateMachine {
     
     private BallCollectionState collectionState;
     private final Devices robotModel;
@@ -37,5 +38,21 @@ public class BallCollectionStateController {
     
     public void setState(BallCollectionState state){
         collectionState = state;
+    }
+
+
+    @Override
+    public void stop() {
+        // clean up the state
+        // TODO make sure balls make it all the way through the spiral and are sorted
+        
+        robotModel.allMotorsOff();
+    }
+
+
+    @Override
+    public void start() {
+        // TODO Auto-generated method stub
+        
     }
 }

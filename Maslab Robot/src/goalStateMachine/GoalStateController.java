@@ -20,11 +20,11 @@ public class GoalStateController {
     
     
     private void roam(){
-        
+        goalState = GoalState.ROAM;
     }
     
     private void score(){
-        
+        goalState = GoalState.SCORE;
     }
     
     private void collectFromEnergySilo(){
@@ -32,6 +32,8 @@ public class GoalStateController {
     }
     
     private void collectGroundBalls(){
+        goalState = GoalState.COLLECT_GROUND_BALLS;
+        
         BallCollectionStateController ballCollectionController = 
                 new BallCollectionStateController(robotModel, camera);
     }
