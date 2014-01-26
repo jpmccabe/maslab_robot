@@ -10,9 +10,9 @@ public class ComputerVisionSummary {
     private final CameraProcessor3 blueWallProcessor;
     private final CameraProcessor4 reactorProcessor;
     
-    private final static double MAX_BALL_DISTANCE  = 100;
-    private final static double MAX_WALL_DISTANCE = 100;
-    private final static double MAX_REACTOR_DISTANCE = 90;
+    private final static double MAX_BALL_DISTANCE  = 36;
+    private final static double MAX_WALL_DISTANCE = 36;
+    private final static double MAX_REACTOR_DISTANCE = 36;
     
     public ComputerVisionSummary(CameraProcessor1 redBallProcessor, 
             CameraProcessor2 greenBallProcessor, CameraProcessor3 blueWallProcessor,
@@ -90,10 +90,26 @@ public class ComputerVisionSummary {
     
     
     /**
-     * @return distance to blue wall, if there is one, in inches
+     * @return distance to the center of a blue wall, if there is one, in inches
      */
-    public double getDistanceToBlueWall(){
-        return (blueWallProcessor.getDistanceToBlueWall());
+    public double getCenterDistanceToBlueWall(){
+        return (blueWallProcessor.getCenterDistanceToBlueWall());
+    }
+    
+    
+    /**
+     * @return distance to the left side of a blue wall, if there is one, in inches
+     */
+    public double getLeftDistanceToBlueWall(){
+        return (blueWallProcessor.getLeftDistanceToBlueWall());
+    }
+    
+    
+    /**
+     * @return distance to the right side of a blue wall, if there is one, in inches
+     */
+    public double getRightDistanceToBlueWall(){
+        return (blueWallProcessor.getRightDistanceToBlueWall());
     }
     
     

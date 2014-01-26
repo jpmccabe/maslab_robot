@@ -15,7 +15,9 @@ import org.opencv.imgproc.Imgproc;
 
 public class CameraProcessor3{
 
-    private double wallCloseness;
+    private double centerDistance;
+    private double leftDistance;
+    private double rightDistance;
     private Mat processedImage;
 
     static {
@@ -24,7 +26,9 @@ public class CameraProcessor3{
 
 
     public CameraProcessor3(){
-        wallCloseness = Double.MAX_VALUE;
+        centerDistance = Double.MAX_VALUE;
+        leftDistance =  Double.MAX_VALUE;
+        rightDistance = Double.MAX_VALUE;
         processedImage  = null;
     }
 
@@ -32,41 +36,80 @@ public class CameraProcessor3{
     public void processImage(Mat imageToProcess) {
         final Mat processedImage = imageToProcess.clone();
 
+        Imgproc.cvtColor(imageToProcess,processedImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        
         //Blue Walls
-        Core.inRange(processedImage, new Scalar(90, 75,10), new Scalar(120, 255, 255), processedImage);
-
-        Imgproc.Canny(processedImage, processedImage, 15, 200);		
-        final double[] blueStripe = new double[64];
-        for(int x=5;x<640;x+=10){
-            int firstPixel=0;
-            int secondPixel=0;
-            for(int y=240;y>0;y--){
+        Core.inRange(processedImage, new Scalar(100, 75,10), new Scalar(125, 255, 255), processedImage);    
+        Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),1);
+        Imgproc.erode(processedImage, processedImage,  new Mat(), new Point (-1, -1), 2); 
+        Imgproc.Canny(processedImage, processedImage, 15, 200);     
+        Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
+        
+        synchronized(this){
+            this.processedImage = processedImage;
+        }
+        
+        double leftDistance = getDistance(5);
+        double centerDistance = getDistance(285);
+        double rightDistance = getDistance(570);   
+        
+        synchronized(this){
+            this.leftDistance = leftDistance;
+            this.rightDistance = rightDistance;
+            this.centerDistance = centerDistance;
+        }
+    }
+    
+    
+    private double getDistance(int xStart){
+        Mat processedImage = this.processedImage;
+        int firstPixel=0;
+        int secondPixel=0;
+        int sampleSize=0;
+        int averageDistance = Integer.MAX_VALUE;
+        for(int x=xStart;x<xStart+65;x+=10){
+            //left area
+            firstPixel=0;
+            secondPixel=0;
+            for(int y=350;y>0;y--){
                 if( processedImage.get(y,x)[0]==255){
                     if (firstPixel==0) firstPixel=y;
                     else secondPixel=y;
                 }
                 if (secondPixel!= 0) break;
             }
-            blueStripe[x/10]=firstPixel-secondPixel;
-            Core.line(processedImage, new Point(x,firstPixel), new Point(x,secondPixel), new Scalar(255,0,0));
+            if(550.0/(firstPixel-secondPixel)<120){
+                sampleSize+=1;
+                averageDistance+=550.0/(firstPixel-secondPixel);
+                Core.line(processedImage, new Point(x,firstPixel), new Point(x,secondPixel), new Scalar(255,0,0));
+            }
         }
-
-
-        Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
-        
-        synchronized(this){
-            wallCloseness = 600/blueStripe[2];
-            this.processedImage = processedImage;
-        }
+        averageDistance = sampleSize > 0 ? averageDistance/sampleSize : averageDistance;
+        return averageDistance;
     }
     
     
     /**
-     * Returns how close a blue wall was in the last processed image
-     * @return how close a blue wall was in the last image
+     * @return the distance to the center of a blue wall
      */
-    synchronized public double getDistanceToBlueWall(){
-        return wallCloseness;
+    synchronized public double getCenterDistanceToBlueWall(){
+        return centerDistance;
+    }
+    
+    
+    /**
+     * @return the distance to the left side of a blue wall
+     */
+    synchronized public double getLeftDistanceToBlueWall(){
+        return leftDistance;
+    }
+    
+    
+    /**
+     * @return the distance of the right side of a blue wall
+     */
+    synchronized public double getRightDistanceToBlueWall(){
+        return rightDistance;
     }
     
     
