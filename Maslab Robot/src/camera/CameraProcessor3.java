@@ -30,13 +30,13 @@ public class CameraProcessor3{
 
 
     public void processImage(Mat imageToProcess) {
-        Mat processedImage = imageToProcess.clone();
+        final Mat processedImage = imageToProcess.clone();
 
         //Blue Walls
         Core.inRange(processedImage, new Scalar(90, 75,10), new Scalar(120, 255, 255), processedImage);
 
         Imgproc.Canny(processedImage, processedImage, 15, 200);		
-        double[] blueStripe= new double[64];
+        final double[] blueStripe = new double[64];
         for(int x=5;x<640;x+=10){
             int firstPixel=0;
             int secondPixel=0;
