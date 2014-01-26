@@ -18,8 +18,6 @@ import org.opencv.imgproc.Imgproc;
 public class CameraProcessor2 {   
     private double distanceToGreen;
     private double angleToGreen;
-    private final BallTargeting green;
-    private final BallStruct greenBall;
     private Mat processedImage;
     
 	static{
@@ -31,13 +29,11 @@ public class CameraProcessor2 {
 	    distanceToGreen = Double.MAX_VALUE;
 	    angleToGreen = Double.MAX_VALUE;
 	    processedImage = null;
-	    green = new BallTargeting();
-	    greenBall = new BallStruct();
 	}
 	
 	
    	public void processImage(Mat imageToProcess) {
-   	    Mat processedImage = imageToProcess.clone();
+   	    final Mat processedImage = imageToProcess.clone();
 
    	    //green			
    	    Core.inRange(processedImage, new Scalar(50, 75,10), new Scalar(85, 255, 255), processedImage);
@@ -47,18 +43,17 @@ public class CameraProcessor2 {
    	    Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),0);
 
    	    //create a clone for the processedImage to be used in finding contours
-   	    Mat clone = new Mat();
-   	    clone = processedImage.clone();
+   	    final Mat clone = processedImage.clone();
    	    Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
 
    	    //finds list of contours and draw the biggest on the processedImage
-   	    Scalar color1 = new Scalar(0,0,255);
-   	    Scalar color2 = new Scalar(255,255,0);
-   	    Scalar color3 = new Scalar(255,255,255);
-   	    List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+   	    final Scalar color1 = new Scalar(0,0,255);
+   	    final Scalar color2 = new Scalar(255,255,0);
+   	    final Scalar color3 = new Scalar(255,255,255);
+   	    final List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
    	    Imgproc.findContours(clone, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
 
-   	    List<MatOfPoint> contour= new ArrayList<MatOfPoint> (1);
+   	    final List<MatOfPoint> contour= new ArrayList<MatOfPoint> (1);
    	    double maxArea = 0.0;
    	    for(int index=0;index<contours.size();index++){
    	        double area = Imgproc.contourArea(contours.get(index));
@@ -81,23 +76,20 @@ public class CameraProcessor2 {
    	    }
 
    	    //finding bounding Circle and draws it
-   	    Point center=new Point();
-   	    float[] radius=new float[1];
+   	    final Point center = new Point();
+   	    final float[] radius = new float[1];
    	    if (contour.size()>0){
-   	        MatOfPoint2f  contour2f = new MatOfPoint2f( contour.get(0).toArray() );
+   	        MatOfPoint2f  contour2f = new MatOfPoint2f(contour.get(0).toArray());
    	        Imgproc.minEnclosingCircle(contour2f, center, radius);
    	        Core.circle(processedImage, center,(int)radius[0], color2);
    	    }
 
-   	    greenBall.rect = boundingRect;
-   	    greenBall.circle.center = center;
-   	    greenBall.circle.radius = (double) radius[0];
-
-   	    double returned[] = green.calculate(greenBall);
+   	    final BallStruct greenBallStruct = new BallStruct(boundingRect, center, (double)radius[0]);
+   	    final BallTargeting ballTargeting = new BallTargeting(greenBallStruct);
 
    	    synchronized(this){
-   	        distanceToGreen = returned[0];
-   	        angleToGreen = returned[1];
+   	        distanceToGreen = ballTargeting.getDistance();
+   	        angleToGreen = ballTargeting.getAngle();
    	        this.processedImage = processedImage;
    	    }
    	}
