@@ -6,12 +6,28 @@ import org.opencv.core.Scalar;
 
 public class BallStruct{
 
-	Rect rect;
-	Circle circle= new Circle();
-
-	public class Circle{
-		Point center;
-		double radius;
+    private final Rect boundingRectangle;
+    private final Point center;
+    private final double radius;
+	
+	public BallStruct(Rect boundingRectangle, Point center, double radius){
+	    this.boundingRectangle = boundingRectangle;
+	    this.center = center;
+	    this.radius = radius;
 	}
 	
+	
+	public Rect getRect(){
+	    return boundingRectangle;
+	}
+	
+	
+	public Point getCenter(){
+	    return center;
+	}
+	
+	
+	public double getRadius(){
+	    return radius;
+	}
 }
