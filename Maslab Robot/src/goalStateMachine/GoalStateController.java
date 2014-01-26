@@ -65,7 +65,9 @@ public class GoalStateController{
         
         Thread ballCollectionThread = new Thread(new Runnable(){
             public void run(){
-                ballCollectionController.start();
+                while(!ballCollectionController.isDone()){
+                    ballCollectionController.controlState();
+                }
             }
         });
         
@@ -131,6 +133,8 @@ public class GoalStateController{
         
         cameraUpdateThread.start();
         goalControllerThread.start();
+        robotModel.setRoller(true);
+        robotModel.setSpiral(true);
     }
     
 //    public static synchronized void main (String args[]) {

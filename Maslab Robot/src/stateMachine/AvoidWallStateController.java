@@ -12,14 +12,7 @@ public class AvoidWallStateController extends StateMachine {
         done = false;
     }
     
-    @Override
-    synchronized public void stop() {
-        robotModel.setMotors(0,0);
-        done = true;
-    }
-
-    @Override
-    synchronized public void controlState() {
+    private void avoidWall(){
         double turnSpeed = 0.1;
         robotModel.setMotors(turnSpeed, -1*turnSpeed);
         
@@ -29,7 +22,18 @@ public class AvoidWallStateController extends StateMachine {
             e.printStackTrace();
         }
         
+        stop();
+    }
+    
+    @Override
+    synchronized public void stop() {
+        robotModel.setMotors(0,0);
         done = true;
+    }
+
+    @Override
+    synchronized public void controlState() {
+        avoidWall();
     }
 
     @Override
