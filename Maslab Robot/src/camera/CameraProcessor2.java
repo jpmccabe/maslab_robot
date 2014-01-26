@@ -17,7 +17,7 @@ import org.opencv.imgproc.Imgproc;
  */
 public class CameraProcessor2 {   
     private double distanceToGreen;
-    private double angleToGreen;
+    private double angleToGreenInDegrees;
     private Mat processedImage;
     
 	static{
@@ -27,7 +27,7 @@ public class CameraProcessor2 {
 	
 	public CameraProcessor2(){
 	    distanceToGreen = Double.MAX_VALUE;
-	    angleToGreen = Double.MAX_VALUE;
+	    angleToGreenInDegrees = Double.MAX_VALUE;
 	    processedImage = null;
 	}
 	
@@ -89,7 +89,7 @@ public class CameraProcessor2 {
 
    	    synchronized(this){
    	        distanceToGreen = ballTargeting.getDistance();
-   	        angleToGreen = ballTargeting.getAngle();
+   	        angleToGreenInDegrees = (ballTargeting.getAngle() * (180/Math.PI));
    	        this.processedImage = processedImage;
    	    }
    	}
@@ -109,7 +109,7 @@ public class CameraProcessor2 {
      * @return angle in radians
      */
     synchronized public double getAngleToGreenBall(){
-        return angleToGreen;
+        return angleToGreenInDegrees;
     }
     
     
