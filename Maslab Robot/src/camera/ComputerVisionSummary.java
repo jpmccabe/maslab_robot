@@ -45,7 +45,7 @@ public class ComputerVisionSummary {
     }
     
     public double getAngleToRedBall(){
-        return (redBallProcessor.getAngleToRedBall());
+        return (redBallProcessor.getAngleToRedBallInDegrees());
     }
     
     public double getDistanceToGreenBall(){
@@ -53,7 +53,7 @@ public class ComputerVisionSummary {
     }
     
     public double getAngleToGreenBall(){
-        return (greenBallProcessor.getAngleToGreenBall());
+        return (greenBallProcessor.getAngleToGreenBallInDegrees());
     }
     
     public double getDistanceToBlueWall(){

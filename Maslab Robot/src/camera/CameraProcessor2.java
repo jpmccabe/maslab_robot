@@ -106,9 +106,9 @@ public class CameraProcessor2 {
     
     /**
      * Angle to the nearest green ball.
-     * @return angle in radians
+     * @return angle in degrees
      */
-    synchronized public double getAngleToGreenBall(){
+    synchronized public double getAngleToGreenBallInDegrees(){
         return angleToGreenInDegrees;
     }
     

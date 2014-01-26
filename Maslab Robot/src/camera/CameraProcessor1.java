@@ -17,7 +17,7 @@ import org.opencv.imgproc.Imgproc;
  */
 public class CameraProcessor1{
     private double distanceToRed;
-    private double angleToRed;
+    private double angleToRedInDegrees;
     private Mat processedImage;
     
 	static {
@@ -29,8 +29,6 @@ public class CameraProcessor1{
 	    distanceToRed = Double.MAX_VALUE;
 	    angleToRed = Double.MAX_VALUE;
 	    processedImage = null;
-	    //red = new BallTargeting();
-	    //redBall = new BallStruct();
 	}
 	
 	
@@ -94,7 +92,7 @@ public class CameraProcessor1{
 
 	    synchronized(this){
 	        distanceToRed = ballTargeting.getDistance();
-	        angleToRed = ballTargeting.getAngle();
+	        angleToRedInDegrees = ballTargeting.getAngle() * (180/Math.PI);
 	        this.processedImage = processedImage;
 	    }
 	}
@@ -111,10 +109,10 @@ public class CameraProcessor1{
    	
    	/**
    	 * Angle to the nearest red ball.
-   	 * @return angle in radians
+   	 * @return angle in degrees
    	 */
-   	synchronized public double getAngleToRedBall(){
-   	    return angleToRed;
+   	synchronized public double getAngleToRedBallInDegrees(){
+   	    return angleToRedInDegrees;
    	}
    	
    	
