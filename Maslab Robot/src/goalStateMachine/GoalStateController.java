@@ -132,6 +132,7 @@ public class GoalStateController{
         
         cameraUpdateThread.start();
         goalControllerThread.start();
+        robotModel.allMotorsOff();
         robotModel.setRoller(true);
         robotModel.setSpiral(true);
     }
