@@ -17,7 +17,7 @@ public class BallStruct{
 	}
 	
 	
-	public Rect getRect(){
+	public Rect getBoundingRectangle(){
 	    return boundingRectangle;
 	}
 	
