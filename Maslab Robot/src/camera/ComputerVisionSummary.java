@@ -8,16 +8,20 @@ public class ComputerVisionSummary {
     private final CameraProcessor1 redBallProcessor;
     private final CameraProcessor2 greenBallProcessor;
     private final CameraProcessor3 blueWallProcessor;
+    private final CameraProcessor4 reactorProcessor;
     
     private final static double MAX_BALL_DISTANCE  = 100;
     private final static double MAX_WALL_DISTANCE = 100;
+    private final static double MAX_REACTOR_DISTANCE = 90;
     
     public ComputerVisionSummary(CameraProcessor1 redBallProcessor, 
-            CameraProcessor2 greenBallProcessor, CameraProcessor3 blueWallProcessor){
+            CameraProcessor2 greenBallProcessor, CameraProcessor3 blueWallProcessor,
+            CameraProcessor4 reactorProcessor){
         
         this.redBallProcessor = redBallProcessor;
         this.greenBallProcessor = greenBallProcessor;
         this.blueWallProcessor = blueWallProcessor;
+        this.reactorProcessor = reactorProcessor;
     }
     
     public boolean isRedBall(){
@@ -30,6 +34,10 @@ public class ComputerVisionSummary {
     
     public boolean isBlueWall(){
         return (blueWallProcessor.getDistanceToBlueWall() <= MAX_WALL_DISTANCE);
+    }
+    
+    public boolean isReactor(){
+        return (reactorProcessor.getCenterDistance() <= MAX_REACTOR_DISTANCE);
     }
     
     public double getDistanceToRedBall(){
@@ -52,6 +60,22 @@ public class ComputerVisionSummary {
         return (blueWallProcessor.getDistanceToBlueWall());
     }
     
+    public double getReactorLeftDistance(){
+        return reactorProcessor.getLeftDistance();
+    }
+    
+    public double getReactorRightDistance(){
+        return reactorProcessor.getRightDistance();
+    }
+    
+    public double getReactorCenterDistance(){
+        return reactorProcessor.getCenterDistance();
+    }
+    
+    public double getReactorAngleInDegrees(){
+        return reactorProcessor.getAngleInDegrees();
+    }
+    
     
     /**
      * Produces a full summary of an image by running all camera processors on that image
@@ -65,12 +89,14 @@ public class ComputerVisionSummary {
         CameraProcessor1 redBallProcessor = new CameraProcessor1();
         CameraProcessor2 greenBallProcessor = new CameraProcessor2();
         CameraProcessor3 blueWallProcessor = new CameraProcessor3();
+        CameraProcessor4 reactorProcessor = new CameraProcessor4();
         
         redBallProcessor.processImage(image);
         greenBallProcessor.processImage(image);
         blueWallProcessor.processImage(image);
+        reactorProcessor.processImage(image);
         
-        return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor));
+        return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor, reactorProcessor));
     }
     
     
@@ -89,11 +115,12 @@ public class ComputerVisionSummary {
         CameraProcessor1 redBallProcessor = new CameraProcessor1();
         CameraProcessor2 greenBallProcessor = new CameraProcessor2();
         CameraProcessor3 blueWallProcessor = new CameraProcessor3();
+        CameraProcessor4 reactorProcessor = new CameraProcessor4();
         
         redBallProcessor.processImage(image);
         greenBallProcessor.processImage(image);
         
-        return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor));
+        return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor, reactorProcessor));
     }
     
     
