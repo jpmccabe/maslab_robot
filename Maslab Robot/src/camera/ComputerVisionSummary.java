@@ -24,54 +24,106 @@ public class ComputerVisionSummary {
         this.reactorProcessor = reactorProcessor;
     }
     
+    
+    /**
+     * @return true if a red ball is in the image and is close, false otherwise.
+     */
     public boolean isRedBall(){
         return (redBallProcessor.getDistanceToRedBall() <= MAX_BALL_DISTANCE);
     }
     
+    
+    /**
+     * @return true if a green ball is in the image and is close, false otherwise.
+     */
     public boolean isGreenBall(){
         return (greenBallProcessor.getDistanceToGreenBall() <= MAX_BALL_DISTANCE);
     }
     
+    
+    /**
+     * @return true if a blue wall is in the image and is close, false otherwise.
+     */
     public boolean isBlueWall(){
         return (blueWallProcessor.getDistanceToBlueWall() <= MAX_WALL_DISTANCE);
     }
     
+    
+    /**
+     * @return true if a reactor is in the image and is close, false otherwise.
+     */
     public boolean isReactor(){
         return (reactorProcessor.getCenterDistance() <= MAX_REACTOR_DISTANCE);
     }
     
+    
+    /**
+     * @return distance to red ball, if there is one, in inches.
+     */
     public double getDistanceToRedBall(){
         return (redBallProcessor.getDistanceToRedBall());
     }
     
+    
+    /**
+     * @return angle to red ball, if there is one, in degrees
+     */
     public double getAngleToRedBall(){
         return (redBallProcessor.getAngleToRedBallInDegrees());
     }
     
+    
+    /**
+     * @return distance to green ball, if there is one, in inches
+     */
     public double getDistanceToGreenBall(){
         return (greenBallProcessor.getDistanceToGreenBall());
     }
     
+    
+    /**
+     * @return angle to green ball, if there is one, in degrees
+     */
     public double getAngleToGreenBall(){
         return (greenBallProcessor.getAngleToGreenBallInDegrees());
     }
     
+    
+    /**
+     * @return distance to blue wall, if there is one, in inches
+     */
     public double getDistanceToBlueWall(){
         return (blueWallProcessor.getDistanceToBlueWall());
     }
     
+    
+    /**
+     * @return distance to left side of reactor, if there is one, in inches.
+     */
     public double getReactorLeftDistance(){
         return reactorProcessor.getLeftDistance();
     }
     
+    
+    /**
+     * @return distance to right side of reactor, if there is one, in inches.
+     */
     public double getReactorRightDistance(){
         return reactorProcessor.getRightDistance();
     }
     
+    
+    /**
+     * @return distance to center of reactor, if there is one, in inches.
+     */
     public double getReactorCenterDistance(){
         return reactorProcessor.getCenterDistance();
     }
     
+    
+    /**
+     * @return angle to reactor, if there is one, in degrees.
+     */
     public double getReactorAngleInDegrees(){
         return reactorProcessor.getAngleInDegrees();
     }
