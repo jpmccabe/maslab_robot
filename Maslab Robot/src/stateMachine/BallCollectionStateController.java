@@ -53,7 +53,7 @@ public class BallCollectionStateController extends StateMachine {
 
     @Override
     synchronized public void controlState() {
-        final double collectAngleMax = 0.3;
+        final double collectAngleMax = 18;
         final double collectDistanceMax = 6;
         
         final ComputerVisionSummary ballSummary = ComputerVisionSummary.produceBallSummary(
