@@ -1,69 +1,101 @@
 package stateMachine;
 
+import java.util.List;
+
 import robotModel.*;
-import stateMachine.*;
+import driving.*;
 import camera.*;
 
 public class BallCollectionStateController extends StateMachine {
     
-    private BallCollectionState collectionState;
     private final Devices robotModel;
     private final Camera camera;
     private boolean done;
     
+    
     public BallCollectionStateController(Devices robotModel, Camera camera){
-        collectionState = BallCollectionState.APPROACH;
         this.robotModel = robotModel;
         this.camera = camera;
         done = false;
     }
     
     
-    public void control(){
-        
+    
+    private void approach(double distance, double angle){
+        Driver driver = new Driver();
+        List<Double> motorSpeeds = driver.driveToBall(distance,0,angle,0);
+        robotModel.setMotors(motorSpeeds.get(0), motorSpeeds.get(1));
     }
     
-    public void approach(){
+    
+    
+    private void collect(){
+        robotModel.setMotors(0.1,0.1);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         
+        stop();
     }
     
-    public void collect(){
-        
-    }
     
-    public void lift(){
-        
-    }
-    
-    public void setState(BallCollectionState state){
-        collectionState = state;
-    }
-
 
     @Override
-    public void stop() {
-        // clean up the state
-        // TODO make sure balls make it all the way through the spiral and are sorted
-        robotModel.allMotorsOff();
+    synchronized public void stop() {
+        robotModel.setMotors(0,0);
         done = true;
     }
 
+    
 
     @Override
-    public void start() {
-        // TODO Auto-generated method stub
+    synchronized public void controlState() {
+        double collectAngleMax = 0.3;
+        double collectDistanceMax = 6;
+        
+        ComputerVisionSummary ballSummary = ComputerVisionSummary.produceBallSummary(camera.getLastFrame());
+        
+        // green balls are given priority over red
+        // TODO more can be added to change this simple strategy
+        if(ballSummary.isGreenBall()){
+            double greenBallAngle = ballSummary.getAngleToGreenBall();
+            double greenBallDistance = ballSummary.getDistanceToGreenBall();
+            
+            if(Math.abs(greenBallAngle) <= collectAngleMax && greenBallDistance <= collectDistanceMax){
+                collect();
+            } else{
+                approach(greenBallDistance, greenBallAngle);
+            }
+            
+        } else if(ballSummary.isRedBall()){
+            double redBallAngle = ballSummary.getAngleToRedBall();
+            double redBallDistance = ballSummary.getDistanceToRedBall();
+            
+            if(Math.abs(redBallAngle) <= collectAngleMax && redBallDistance <= collectDistanceMax){
+                collect();
+            } else{
+                approach(redBallDistance, redBallAngle);
+            }
+            
+        } else{
+            stop();
+        }
         
     }
 
+    
 
     @Override
     public StateMachineType getStateMachineType() {
         return StateMachineType.COLLECT_GROUND_BALLS;
     }
 
+    
 
     @Override
-    public boolean isDone() {
+    synchronized public boolean isDone() {
         return done;
     }
 }

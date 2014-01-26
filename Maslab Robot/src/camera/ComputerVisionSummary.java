@@ -54,11 +54,11 @@ public class ComputerVisionSummary {
     
     
     /**
-     * Produces a summary of an image
+     * Produces a full summary of an image by running all camera processors on that image
      * @param image
-     * @return
+     * @return full summary of the recognizable features in the image
      */
-    public static ComputerVisionSummary produceSummary(Mat image){
+    public static ComputerVisionSummary produceFullSummary(Mat image){
         Mat convertedImageToHSV = new Mat();
         Imgproc.cvtColor(image,convertedImageToHSV,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
         
@@ -72,6 +72,30 @@ public class ComputerVisionSummary {
         
         return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor));
     }
+    
+    
+    
+    /**
+     * Produces a summary of an image by just running the camera processors for balls on
+     * that image. The methods not pertaining to balls in the returned ComputerVisionSummary
+     * are not applicable. 
+     * @param image
+     * @return summary of the ball features in the image
+     */
+    public static ComputerVisionSummary produceBallSummary(Mat image){
+        Mat convertedImageToHSV = new Mat();
+        Imgproc.cvtColor(image,convertedImageToHSV,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        
+        CameraProcessor1 redBallProcessor = new CameraProcessor1();
+        CameraProcessor2 greenBallProcessor = new CameraProcessor2();
+        CameraProcessor3 blueWallProcessor = new CameraProcessor3();
+        
+        redBallProcessor.processImage(image);
+        greenBallProcessor.processImage(image);
+        
+        return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor));
+    }
+    
     
     
 }

@@ -5,8 +5,8 @@ public abstract class StateMachine {
     //Stops execution of the state machine. Do all clean up here.
     abstract public void stop();
     
-    //Start execution of the state machine
-    abstract public void start();
+    //Controls the state of the state machine
+    abstract public void controlState();
     
     //Gets the state machine type
     abstract public StateMachineType getStateMachineType();

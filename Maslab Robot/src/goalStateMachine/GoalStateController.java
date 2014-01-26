@@ -82,7 +82,7 @@ public class GoalStateController{
     
     public void controlState(){
         Mat image = camera.getLastFrame();
-        ComputerVisionSummary summaryOfImage = ComputerVisionSummary.produceSummary(image);
+        ComputerVisionSummary summaryOfImage = ComputerVisionSummary.produceFullSummary(image);
         
         final double wallThresholdDistance = 10;
         
