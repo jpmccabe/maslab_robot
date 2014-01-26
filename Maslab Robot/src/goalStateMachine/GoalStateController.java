@@ -18,12 +18,15 @@ public class GoalStateController{
     }
     
     
+    
     private void roam(){
         
     }
     
     
+    
     private void avoidWalls(){
+        currentStateController.stop();
         final AvoidWallStateController avoidWallController = 
                 new AvoidWallStateController(robotModel);
         
@@ -40,9 +43,11 @@ public class GoalStateController{
     }
     
     
+    
     private void score(){
         
     }
+    
     
     
     private void collectFromEnergySilo(){
@@ -50,7 +55,9 @@ public class GoalStateController{
     }
     
     
+    
     private void collectGroundBalls(){
+        currentStateController.stop();
         final BallCollectionStateController ballCollectionController = 
                 new BallCollectionStateController(robotModel, camera);
         
@@ -61,12 +68,16 @@ public class GoalStateController{
                 ballCollectionController.start();
             }
         });
+        
+        ballCollectionThread.start();
     }
+    
     
     
     private void depositRedBalls(){
 
     }
+    
     
     
     public void controlState(){
@@ -82,13 +93,20 @@ public class GoalStateController{
             avoidWalls();
         }
         
-        // if see ball then collect it
+        //else if see ball, and not currently collecting one, then collect ball
+        else if((summaryOfImage.isGreenBall() || summaryOfImage.isRedBall()) && 
+                !(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
+                && !currentStateController.isDone())){
+            collectGroundBalls();
+        }
+        
         // if see reactor and have green balls then score
         // if see interface wall and have red balls then score over wall
         // if see energy silo then collect ball
         
     }
 
+    
     
     public static void main(String args[]){
         Devices robotModel = new Devices();
