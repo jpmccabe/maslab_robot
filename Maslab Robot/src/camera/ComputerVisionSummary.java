@@ -1,6 +1,7 @@
 package camera;
 
 import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
 
 public class ComputerVisionSummary {
     
@@ -51,7 +52,16 @@ public class ComputerVisionSummary {
         return (blueWallProcessor.getDistanceToBlueWall());
     }
     
+    
+    /**
+     * Produces a summary of an image
+     * @param image
+     * @return
+     */
     public static ComputerVisionSummary produceSummary(Mat image){
+        Mat convertedImageToHSV = new Mat();
+        Imgproc.cvtColor(image,convertedImageToHSV,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        
         CameraProcessor1 redBallProcessor = new CameraProcessor1();
         CameraProcessor2 greenBallProcessor = new CameraProcessor2();
         CameraProcessor3 blueWallProcessor = new CameraProcessor3();

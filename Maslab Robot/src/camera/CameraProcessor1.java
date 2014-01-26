@@ -38,8 +38,7 @@ public class CameraProcessor1{
 	
 	
 	public void processImage(Mat imageToProcess){
-	    Mat processedImage = new Mat();
-	    Imgproc.cvtColor(imageToProcess,processedImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+	    Mat processedImage = imageToProcess.clone();
 
 	    //red
 	    Mat redUpper= new Mat();

@@ -69,6 +69,16 @@ public class Camera {
     
     
     /**
+     * @return the last frame read in from the camera in HSV format.
+     */
+    public Mat getLastFrameInHSV(){
+        Mat convertedFrame = new Mat();
+        Imgproc.cvtColor(lastFrame,convertedFrame,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        return convertedFrame;
+    }
+    
+    
+    /**
      * @return the width, in pixels, of the camera image.
      */
     public int getWidth(){
