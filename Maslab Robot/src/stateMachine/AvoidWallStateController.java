@@ -13,7 +13,7 @@ public class AvoidWallStateController extends StateMachine {
     }
     
     private void avoidWall(){
-        double turnSpeed = 0.1;
+        final double turnSpeed = 0.1;
         robotModel.setMotors(turnSpeed, -1*turnSpeed);
         
         try {

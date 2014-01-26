@@ -34,8 +34,7 @@ public class GoalStateController{
         
         Thread avoidWallThread = new Thread(new Runnable(){
             public void run(){
-                avoidWallController.start();
-                avoidWallController.stop();
+                avoidWallController.controlState();
             }
         });
         
@@ -83,8 +82,8 @@ public class GoalStateController{
     
     
     public void controlState(){
-        Mat image = camera.getLastFrame();
-        ComputerVisionSummary summaryOfImage = ComputerVisionSummary.produceFullSummary(image);
+        final Mat image = camera.getLastFrame();
+        final ComputerVisionSummary summaryOfImage = ComputerVisionSummary.produceFullSummary(image);
         
         final double wallThresholdDistance = 10;
         
@@ -111,7 +110,7 @@ public class GoalStateController{
     
     
     public static void main(String args[]){
-        Devices robotModel = new Devices();
+        final Devices robotModel = new Devices();
         final Camera camera = new Camera();
         final GoalStateController goalController = new GoalStateController(robotModel, camera);
         

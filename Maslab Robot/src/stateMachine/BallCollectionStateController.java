@@ -22,15 +22,16 @@ public class BallCollectionStateController extends StateMachine {
     
     
     private void approach(double distance, double angle){
-        Driver driver = new Driver();
-        List<Double> motorSpeeds = driver.driveToBall(distance,0,angle,0);
+        final Driver driver = new Driver();
+        final List<Double> motorSpeeds = driver.driveToBall(distance,0,angle,0);
         robotModel.setMotors(motorSpeeds.get(0), motorSpeeds.get(1));
     }
     
     
     
     private void collect(){
-        robotModel.setMotors(0.1,0.1);
+        final double forwardSpeed = 0.1;
+        robotModel.setMotors(forwardSpeed, forwardSpeed);
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -52,10 +53,11 @@ public class BallCollectionStateController extends StateMachine {
 
     @Override
     synchronized public void controlState() {
-        double collectAngleMax = 0.3;
-        double collectDistanceMax = 6;
+        final double collectAngleMax = 0.3;
+        final double collectDistanceMax = 6;
         
-        ComputerVisionSummary ballSummary = ComputerVisionSummary.produceBallSummary(camera.getLastFrame());
+        final ComputerVisionSummary ballSummary = ComputerVisionSummary.produceBallSummary(
+                                                  camera.getLastFrame());
         
         // green balls are given priority over red
         // TODO more can be added to change this simple strategy
