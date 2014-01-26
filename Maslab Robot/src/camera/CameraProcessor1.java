@@ -27,7 +27,7 @@ public class CameraProcessor1{
 	
 	public CameraProcessor1(){
 	    distanceToRed = Double.MAX_VALUE;
-	    angleToRed = Double.MAX_VALUE;
+	    angleToRedInDegrees = Double.MAX_VALUE;
 	    processedImage = null;
 	}
 	

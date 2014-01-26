@@ -87,8 +87,12 @@ public class GoalStateController{
         
         final double wallThresholdDistance = 10;
         
-        // if wall is close, and we are not currently avoiding walls, then avoid walls
-        if((summaryOfImage.getDistanceToBlueWall() <= wallThresholdDistance) && 
+        final boolean wallTooClose = ((summaryOfImage.getCenterDistanceToBlueWall() <= wallThresholdDistance) ||
+                                   (summaryOfImage.getLeftDistanceToBlueWall() <= wallThresholdDistance) ||
+                                   (summaryOfImage.getRightDistanceToBlueWall() <= wallThresholdDistance));
+        
+        // if a wall is close, and we are not currently avoiding walls, then avoid walls
+        if(wallTooClose && 
             !(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
             !currentStateController.isDone())){
             avoidWalls();

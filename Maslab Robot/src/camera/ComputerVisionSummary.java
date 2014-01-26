@@ -45,7 +45,9 @@ public class ComputerVisionSummary {
      * @return true if a blue wall is in the image and is close, false otherwise.
      */
     public boolean isBlueWall(){
-        return (blueWallProcessor.getDistanceToBlueWall() <= MAX_WALL_DISTANCE);
+        return ((blueWallProcessor.getCenterDistanceToBlueWall() <= MAX_WALL_DISTANCE) ||
+                (blueWallProcessor.getLeftDistanceToBlueWall() <= MAX_WALL_DISTANCE) ||
+                (blueWallProcessor.getRightDistanceToBlueWall() <= MAX_WALL_DISTANCE));
     }
     
     
