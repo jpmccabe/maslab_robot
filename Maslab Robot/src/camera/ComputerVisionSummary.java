@@ -29,18 +29,18 @@ public class ComputerVisionSummary {
         Thread redBallProcessorThread = new Thread(new ProcessorRunner(redBallProcessor,HSVImage));
         Thread greenBallProcessorThread = new Thread(new ProcessorRunner(greenBallProcessor, HSVImage));
         Thread blueWallProcessorThread = new Thread(new ProcessorRunner(blueWallProcessor, HSVImage));
-        Thread reactorProcessorThread = new Thread(new ProcessorRunner(reactorProcessor, HSVImage));
+       // Thread reactorProcessorThread = new Thread(new ProcessorRunner(reactorProcessor, HSVImage));
         
         redBallProcessorThread.start();
         greenBallProcessorThread.start();
         blueWallProcessorThread.start();
-        reactorProcessorThread.start();
+        //reactorProcessorThread.start();
         
         try {
             redBallProcessorThread.join();
             greenBallProcessorThread.join();
             blueWallProcessorThread.join();
-            reactorProcessorThread.join();
+           // reactorProcessorThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
