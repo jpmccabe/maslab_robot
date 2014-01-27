@@ -44,7 +44,6 @@ public class GoalStateController{
                      }
                  }       
                  //removes garbage memory taken
-                 System.out.println("new camera frame");
                  System.gc();
              }
             }
@@ -150,7 +149,6 @@ public class GoalStateController{
         // if see reactor and have green balls then score
         // if see interface wall and have red balls then score over wall
         // if see energy silo then collect ball
-        System.out.println("john test");
         
     }
 
@@ -171,7 +169,7 @@ public class GoalStateController{
         robotModel.allMotorsOff();
         
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

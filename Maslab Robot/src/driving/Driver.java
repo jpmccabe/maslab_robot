@@ -11,10 +11,10 @@ public class Driver{
 	private final PID angularPID;
 	private final PID straightPID;
 	
-	private final static double ANGULAR_KP = 0.015;
+	private final static double ANGULAR_KP = 0.0025;
 	private final static double ANGULAR_KI = 0.0;
 	private final static double ANGULAR_KD = 0.0;
-	private final static double STRAIGHT_KP = 0.0065;
+	private final static double STRAIGHT_KP = -0.0085;
 	private final static double STRAIGHT_KI = 0.0;
 	private final static double STRAIGHT_KD = 0.0;
 	
@@ -42,10 +42,15 @@ public class Driver{
 		System.out.println("speed: " + straightSpeed);
 		
 		final List<Double> motorSpeeds  = new ArrayList<Double>();
-		final double minSpeed = 0.1;
-		final double maxSpeed = 0.6;
+		final double minSpeed = -0.2;
+		final double maxSpeed = 0.25;
 		final double leftMotorSpeed = clampSpeed(straightSpeed-angularSpeed,minSpeed, maxSpeed);
 		final double rightMotorSpeed = clampSpeed(straightSpeed+angularSpeed, minSpeed, maxSpeed);
+		
+		System.out.println("left: " + leftMotorSpeed);
+		System.out.println("right: " + rightMotorSpeed);
+		System.out.println("---------------------");
+		
 	    motorSpeeds.add(leftMotorSpeed);
 	    motorSpeeds.add(rightMotorSpeed);
 		
