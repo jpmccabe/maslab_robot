@@ -10,12 +10,14 @@ public class GoalStateController{
     
     private final Devices robotModel;
     private final Camera camera;
+    private final CameraGUI redBallProcessedImageGUI;
     private StateMachine currentStateController;
 
     public GoalStateController(Devices robotModel, Camera camera){
         this.currentStateController = new StopStateController();
         this.robotModel = robotModel;
         this.camera = camera;
+        this.redBallProcessedImageGUI = new CameraGUI(camera);
     }
     
     
@@ -85,6 +87,7 @@ public class GoalStateController{
     public void controlState(){
         final Mat image = camera.getLastFrame();
         final ComputerVisionSummary summaryOfImage = ComputerVisionSummary.produceFullSummary(image);
+        redBallProcessedImageGUI.updateImagePane(summaryOfImage.getRedBallProcessedImage());
         
         final double wallThresholdDistance = 10;
         
@@ -121,10 +124,13 @@ public class GoalStateController{
         final Camera camera = new Camera();
         final GoalStateController goalController = new GoalStateController(robotModel, camera);
         
+        //final CameraGUI cameraGUI = new CameraGUI(camera);
+        
         Thread cameraUpdateThread = new Thread(new Runnable(){
             public void run(){
                 while(true){
                     camera.readNewFrame();
+                    //cameraGUI.updateImagePane(camera.getLastFrame());
                 }
             }
         });

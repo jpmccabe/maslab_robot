@@ -35,8 +35,6 @@ public class CameraProcessor3{
 
     public void processImage(Mat imageToProcess) {
         final Mat processedImage = imageToProcess.clone();
-
-        Imgproc.cvtColor(imageToProcess,processedImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
         
         //Blue Walls
         Core.inRange(processedImage, new Scalar(100, 75,10), new Scalar(125, 255, 255), processedImage);    

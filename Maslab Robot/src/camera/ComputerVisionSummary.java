@@ -59,6 +59,17 @@ public class ComputerVisionSummary {
     }
     
     
+    public Mat getRedBallProcessedImage(){
+        return redBallProcessor.getProcessedImage();
+    }
+    
+    public Mat getGreenBallProcessedImage(){
+        return greenBallProcessor.getProcessedImage();
+    }
+    
+    public Mat getBlueWallProcessedImage(){
+        return blueWallProcessor.getProcessedImage();
+    }
     /**
      * @return distance to red ball, if there is one, in inches.
      */
@@ -162,8 +173,8 @@ public class ComputerVisionSummary {
         CameraProcessor4 reactorProcessor = new CameraProcessor4();
         
         redBallProcessor.processImage(image);
-        greenBallProcessor.processImage(image);
-        blueWallProcessor.processImage(image);
+        //greenBallProcessor.processImage(image);
+        //blueWallProcessor.processImage(image);
         //reactorProcessor.processImage(image);
         
         return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor, reactorProcessor));

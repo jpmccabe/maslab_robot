@@ -16,15 +16,14 @@ public class CameraGUI {
         private final int height;
         private final Camera camera;
         private final JLabel cameraPane;
-        private final JLabel opencvPane;
     
         
         public CameraGUI(Camera camera){
             this.camera = camera;
             width = camera.getWidth();
             height = camera.getHeight();
-            cameraPane = createWindow("Camera output", width, height);
-            opencvPane = createWindow("OpenCV output", width, height);
+            cameraPane = createWindow("", width, height);
+            //opencvPane = createWindow("OpenCV output", width, height);
         }
         
         
@@ -52,7 +51,7 @@ public class CameraGUI {
         /**
          * Updates the camera pane with the last frame read from the camera.
          */
-        public void updateImagePane(Mat image) {            
+        public void updateImagePane(Mat image) {         
             int w = (int) (image.size().width);
             int h = (int) (image.size().height);
             if (cameraPane.getWidth() != w || cameraPane.getHeight() != h) {
