@@ -59,6 +59,23 @@ public class GoalStateController{
     }
     
     
+    private void lookForBalls(){
+        currentStateController.stop();
+        final LookForBallsStateController lookForBallsController = 
+                new LookForBallsStateController(robotModel);
+        
+        currentStateController = lookForBallsController;
+        
+        Thread lookForBallThread = new Thread(new Runnable(){
+            public void run(){
+                lookForBallsController.controlState(lastFrame);
+            }
+        });
+        
+        lookForBallThread.start();
+    }
+    
+    
     
     private void avoidWalls(){
         currentStateController.stop();
@@ -142,6 +159,11 @@ public class GoalStateController{
                 && !currentStateController.isDone())){
             System.out.println("Collecting balls");
             collectGroundBalls();
+        }
+        
+        else{
+            System.out.println("Looking for balls");
+            lookForBalls();
         }
         
         long estimatedTime = (System.nanoTime() - startTime);

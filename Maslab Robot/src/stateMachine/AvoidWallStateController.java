@@ -18,11 +18,11 @@ public class AvoidWallStateController extends StateMachine {
     }
     
     private void avoidWall(){
-        final double turnSpeed = 0.1;
+        final double turnSpeed = 0.15;
         robotModel.setMotors(turnSpeed, -1*turnSpeed);
         
         try {
-            Thread.sleep(100);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
