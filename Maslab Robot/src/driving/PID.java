@@ -6,7 +6,7 @@ public class PID{
 	private double P,I,D;	
 	private double error,errorOld;
 	
-	private static final double timeInterval=0.02;
+	private static final double timeInterval=0.04;
 
 	
 	/**

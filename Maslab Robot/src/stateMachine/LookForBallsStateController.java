@@ -22,8 +22,8 @@ public class LookForBallsStateController extends StateMachine {
     
     private void turn(){
         double turnSpeed = 0.175;
-        
-        robotModel.setMotors(turnSpeed, turnSpeed);
+        System.out.println("hola");
+        //robotModel.setMotors(turnSpeed, turnSpeed);
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -44,7 +44,7 @@ public class LookForBallsStateController extends StateMachine {
 
     @Override
     synchronized public boolean isDone() {
-        return isDone();
+        return isDone;
     }
 
 }
