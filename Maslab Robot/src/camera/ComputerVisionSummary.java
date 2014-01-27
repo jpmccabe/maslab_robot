@@ -1,6 +1,7 @@
 package camera;
 
 import org.opencv.core.Mat;
+import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
 public class ComputerVisionSummary {
@@ -13,12 +14,13 @@ public class ComputerVisionSummary {
     private final static double MAX_BALL_DISTANCE  = 36;
     private final static double MAX_WALL_DISTANCE = 36;
     private final static double MAX_REACTOR_DISTANCE = 36;
-    
+        
     public ComputerVisionSummary(){
         this.redBallProcessor = new CameraProcessor1();
         this.greenBallProcessor = new CameraProcessor2();
         this.blueWallProcessor = new CameraProcessor3();
         this.reactorProcessor = new CameraProcessor4();
+        
     }
     
     
@@ -29,12 +31,12 @@ public class ComputerVisionSummary {
         Thread redBallProcessorThread = new Thread(new ProcessorRunner(redBallProcessor,HSVImage));
         Thread greenBallProcessorThread = new Thread(new ProcessorRunner(greenBallProcessor, HSVImage));
         Thread blueWallProcessorThread = new Thread(new ProcessorRunner(blueWallProcessor, HSVImage));
-       // Thread reactorProcessorThread = new Thread(new ProcessorRunner(reactorProcessor, HSVImage));
+        Thread reactorProcessorThread = new Thread(new ProcessorRunner(reactorProcessor, HSVImage));
         
         redBallProcessorThread.start();
         greenBallProcessorThread.start();
         blueWallProcessorThread.start();
-        //reactorProcessorThread.start();
+        reactorProcessorThread.start();
         
         try {
             redBallProcessorThread.join();
@@ -76,6 +78,11 @@ public class ComputerVisionSummary {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+    
+    
+    public void updateWallSummary(Mat image){
+        
     }
     
     
@@ -123,6 +130,10 @@ public class ComputerVisionSummary {
     
     public Mat getBlueWallProcessedImage(){
         return blueWallProcessor.getProcessedImage();
+    }
+    
+    public Mat getReactorProcessedImage(){
+        return reactorProcessor.getProcessedImage();
     }
     
     

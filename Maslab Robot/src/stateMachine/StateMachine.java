@@ -1,12 +1,14 @@
 package stateMachine;
 
+import org.opencv.core.Mat;
+
 public abstract class StateMachine {
     
     //Stops execution of the state machine. Do all clean up here.
     abstract public void stop();
     
     //Controls the state of the state machine
-    abstract public void controlState();
+    abstract public void controlState(Mat image);
     
     //Gets the state machine type
     abstract public StateMachineType getStateMachineType();

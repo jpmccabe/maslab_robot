@@ -14,16 +14,13 @@ import org.opencv.core.Mat;
 public class CameraGUI {
         private final int width;
         private final int height;
-        private final Camera camera;
         private final JLabel cameraPane;
     
         
-        public CameraGUI(Camera camera){
-            this.camera = camera;
-            width = camera.getWidth();
-            height = camera.getHeight();
+        public CameraGUI(int width, int height){
+            this.width = width;
+            this.height = height;
             cameraPane = createWindow("", width, height);
-            //opencvPane = createWindow("OpenCV output", width, height);
         }
         
         

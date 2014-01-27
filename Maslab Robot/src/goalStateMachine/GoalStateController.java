@@ -1,6 +1,8 @@
 package goalStateMachine;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.highgui.VideoCapture;
 
 import stateMachine.*;
 import camera.*;
@@ -9,17 +11,43 @@ import robotModel.*;
 public class GoalStateController{
     
     private final Devices robotModel;
-    private final Camera camera;
-    private final CameraGUI redBallProcessedImageGUI;
+    //private final CameraGUI redBallProcessedImageGUI;
     private final ComputerVisionSummary summaryOfImage;
     private StateMachine currentStateController;
+    private final VideoCapture camera;
+    private Mat lastFrame;
 
-    public GoalStateController(Devices robotModel, Camera camera){
+
+    public GoalStateController(Devices robotModel){
+        // Load the OpenCV library
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        
         this.currentStateController = new StopStateController();
         this.robotModel = robotModel;
-        this.camera = camera;
-        this.redBallProcessedImageGUI = new CameraGUI(camera);
+        //this.redBallProcessedImageGUI = new CameraGUI(camera);
         summaryOfImage = new ComputerVisionSummary();
+         
+        lastFrame = new Mat();
+        // Setup the camera
+        camera = new VideoCapture();
+        camera.open(0);
+        
+        Thread cameraReadThread = new Thread(new Runnable(){
+            public void run(){
+             // Wait until the camera has a new frame
+                while (!camera.read(lastFrame)) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }       
+                //removes garbage memory taken
+                System.gc();
+            }
+        });
+        
+        cameraReadThread.start();
     }
     
     
@@ -33,13 +61,13 @@ public class GoalStateController{
     private void avoidWalls(){
         currentStateController.stop();
         final AvoidWallStateController avoidWallController = 
-                new AvoidWallStateController(robotModel,camera);
+                new AvoidWallStateController(robotModel);
         
         currentStateController = avoidWallController;
         
         Thread avoidWallThread = new Thread(new Runnable(){
             public void run(){
-                avoidWallController.controlState();
+                avoidWallController.controlState(lastFrame);
             }
         });
         
@@ -63,14 +91,14 @@ public class GoalStateController{
     private void collectGroundBalls(){
         currentStateController.stop();
         final BallCollectionStateController ballCollectionController = 
-                new BallCollectionStateController(robotModel, camera);
+                new BallCollectionStateController(robotModel);
         
         currentStateController = ballCollectionController;
         
         Thread ballCollectionThread = new Thread(new Runnable(){
             public void run(){
                 while(!ballCollectionController.isDone()){
-                    ballCollectionController.controlState();
+                    ballCollectionController.controlState(lastFrame);
                 }
             }
         });
@@ -89,8 +117,7 @@ public class GoalStateController{
     public void controlState(){
         long startTime = System.nanoTime();
 
-        final Mat image = camera.getLastFrame();
-        summaryOfImage.updateFullSummary(image);
+        summaryOfImage.updateFullSummary(lastFrame);
         //redBallProcessedImageGUI.updateImagePane(summaryOfImage.getRedBallProcessedImage());
         
         final double wallThresholdDistance = 10;
@@ -115,32 +142,21 @@ public class GoalStateController{
             //collectGroundBalls();
         }
         
+        long estimatedTime = (System.nanoTime() - startTime);
+        System.out.println(estimatedTime);
         // if see reactor and have green balls then score
         // if see interface wall and have red balls then score over wall
         // if see energy silo then collect ball
         
-        long estimatedTime = (System.nanoTime() - startTime);
-        System.out.println(estimatedTime);
+        
     }
 
     
     
     public static void main(String args[]){
         final Devices robotModel = new Devices();
-        final Camera camera = new Camera();
-        final GoalStateController goalController = new GoalStateController(robotModel, camera);
-        
-        //final CameraGUI cameraGUI = new CameraGUI(camera);
-        
-        Thread cameraUpdateThread = new Thread(new Runnable(){
-            public void run(){
-                while(true){
-                    camera.readNewFrame();
-                    //cameraGUI.updateImagePane(camera.getLastFrame());
-                }
-            }
-        });
-        
+        final GoalStateController goalController = new GoalStateController(robotModel);
+  
         Thread goalControllerThread  = new Thread(new Runnable(){
             public void run(){
                 while(true){
@@ -149,14 +165,15 @@ public class GoalStateController{
             }
         });
         
-        cameraUpdateThread.start();
-        goalControllerThread.start();
         robotModel.allMotorsOff();
+        
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        
+        goalControllerThread.start();
         robotModel.setRoller(true);
         robotModel.setSpiral(true);
     }

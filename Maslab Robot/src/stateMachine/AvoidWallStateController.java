@@ -1,17 +1,19 @@
 package stateMachine;
 
+import org.opencv.core.Mat;
+
 import robotModel.*;
 import camera.*;
 
 public class AvoidWallStateController extends StateMachine {
 
     private final Devices robotModel;
-    private final Camera camera;
+    private final ComputerVisionSummary wallSummary;
     private boolean done;
     
-    public AvoidWallStateController(Devices robotModel, Camera camera){
+    public AvoidWallStateController(Devices robotModel){
         this.robotModel = robotModel;
-        this.camera = camera;
+        wallSummary = new ComputerVisionSummary();
         done = false;
     }
     
@@ -35,7 +37,8 @@ public class AvoidWallStateController extends StateMachine {
     }
 
     @Override
-    synchronized public void controlState() {
+    synchronized public void controlState(Mat image) {
+        wallSummary.updateWallSummary(image);
         avoidWall();
     }
 

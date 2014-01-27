@@ -2,6 +2,8 @@ package stateMachine;
 
 import java.util.List;
 
+import org.opencv.core.Mat;
+
 import robotModel.*;
 import driving.*;
 import camera.*;
@@ -9,13 +11,13 @@ import camera.*;
 public class BallCollectionStateController extends StateMachine {
     
     private final Devices robotModel;
-    private final Camera camera;
     private boolean done;
+    private final ComputerVisionSummary ballSummary;
     
     
-    public BallCollectionStateController(Devices robotModel, Camera camera){
+    public BallCollectionStateController(Devices robotModel){
         this.robotModel = robotModel;
-        this.camera = camera;
+        this.ballSummary = new ComputerVisionSummary();
         done = false;
     }
     
@@ -52,11 +54,11 @@ public class BallCollectionStateController extends StateMachine {
     
 
     @Override
-    synchronized public void controlState() {
+    synchronized public void controlState(Mat image) {
         final double collectAngleMax = 20;
         final double collectDistanceMax = 6;
         
-        final ComputerVisionSummary ballSummary = new ComputerVisionSummary();
+        ballSummary.updateBallSummary(image);
         
         // green balls are given priority over red
         // TODO more can be added to change this simple strategy

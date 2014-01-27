@@ -1,5 +1,7 @@
 package stateMachine;
 
+import org.opencv.core.Mat;
+
 public class StopStateController extends StateMachine {
     
     
@@ -13,7 +15,7 @@ public class StopStateController extends StateMachine {
     }
 
     @Override
-    public void controlState() {
+    public void controlState(Mat image) {
         
     }
 
