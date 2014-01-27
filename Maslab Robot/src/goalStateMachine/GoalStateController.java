@@ -97,7 +97,7 @@ public class GoalStateController{
             !(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
             !currentStateController.isDone())){
             System.out.println("Avoiding walls");
-            avoidWalls();
+            //avoidWalls();
         }
         
         //else if see ball, and not currently collecting one, then collect ball
@@ -105,7 +105,7 @@ public class GoalStateController{
                 !(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
                 && !currentStateController.isDone())){
             System.out.println("Collecting balls");
-            collectGroundBalls();
+            //collectGroundBalls();
         }
         
         // if see reactor and have green balls then score
