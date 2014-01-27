@@ -1,3 +1,6 @@
 /camera
 /goalStateMachine
 /stateMachine
+/driving
+/fieldModel
+/robotModel

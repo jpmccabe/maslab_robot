@@ -150,7 +150,7 @@ public class GoalStateController{
         // if see reactor and have green balls then score
         // if see interface wall and have red balls then score over wall
         // if see energy silo then collect ball
-        
+        System.out.println("john test");
         
     }
 
