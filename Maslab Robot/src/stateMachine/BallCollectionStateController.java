@@ -56,8 +56,7 @@ public class BallCollectionStateController extends StateMachine {
         final double collectAngleMax = 20;
         final double collectDistanceMax = 6;
         
-        final ComputerVisionSummary ballSummary = ComputerVisionSummary.produceBallSummary(
-                                                  camera.getLastFrame());
+        final ComputerVisionSummary ballSummary = new ComputerVisionSummary();
         
         // green balls are given priority over red
         // TODO more can be added to change this simple strategy

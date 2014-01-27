@@ -14,16 +14,18 @@ public class ComputerVisionSummary {
     private final static double MAX_WALL_DISTANCE = 36;
     private final static double MAX_REACTOR_DISTANCE = 36;
     
-    public ComputerVisionSummary(CameraProcessor1 redBallProcessor, 
-            CameraProcessor2 greenBallProcessor, CameraProcessor3 blueWallProcessor,
-            CameraProcessor4 reactorProcessor){
-        
-        this.redBallProcessor = redBallProcessor;
-        this.greenBallProcessor = greenBallProcessor;
-        this.blueWallProcessor = blueWallProcessor;
-        this.reactorProcessor = reactorProcessor;
+    public ComputerVisionSummary(){
+        this.redBallProcessor = new CameraProcessor1();
+        this.greenBallProcessor = new CameraProcessor2();
+        this.blueWallProcessor = new CameraProcessor3();
+        this.reactorProcessor = new CameraProcessor4();
     }
     
+    public void updateSummary(Mat image){
+        Mat convertedImageToHSV = new Mat();
+        Imgproc.cvtColor(image,convertedImageToHSV,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        redBallProcessor.processImage(convertedImageToHSV);
+    }
     
     /**
      * @return true if a red ball is in the image and is close, false otherwise.
@@ -163,6 +165,7 @@ public class ComputerVisionSummary {
      * @param image
      * @return full summary of the recognizable features in the image
      */
+    /*
     public static ComputerVisionSummary produceFullSummary(Mat image){
         Mat convertedImageToHSV = new Mat();
         Imgproc.cvtColor(image,convertedImageToHSV,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
@@ -172,14 +175,14 @@ public class ComputerVisionSummary {
         CameraProcessor3 blueWallProcessor = new CameraProcessor3();
         CameraProcessor4 reactorProcessor = new CameraProcessor4();
         
-        redBallProcessor.processImage(image);
+        redBallProcessor.processImage(convertedImageToHSV);
         //greenBallProcessor.processImage(image);
         //blueWallProcessor.processImage(image);
         //reactorProcessor.processImage(image);
         
         return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor, reactorProcessor));
     }
-    
+    */
     
     
     /**
@@ -189,6 +192,7 @@ public class ComputerVisionSummary {
      * @param image
      * @return summary of the ball features in the image
      */
+    /*
     public static ComputerVisionSummary produceBallSummary(Mat image){
         Mat convertedImageToHSV = new Mat();
         Imgproc.cvtColor(image,convertedImageToHSV,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
@@ -203,7 +207,7 @@ public class ComputerVisionSummary {
         
         return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor, reactorProcessor));
     }
-    
+    */
     
     
 }
