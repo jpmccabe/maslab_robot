@@ -164,7 +164,7 @@ public class ComputerVisionSummary {
         redBallProcessor.processImage(image);
         greenBallProcessor.processImage(image);
         blueWallProcessor.processImage(image);
-        reactorProcessor.processImage(image);
+        //reactorProcessor.processImage(image);
         
         return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor, reactorProcessor));
     }

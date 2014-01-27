@@ -1,14 +1,17 @@
 package stateMachine;
 
 import robotModel.*;
+import camera.*;
 
 public class AvoidWallStateController extends StateMachine {
 
     private final Devices robotModel;
+    private final Camera camera;
     private boolean done;
     
-    public AvoidWallStateController(Devices robotModel){
+    public AvoidWallStateController(Devices robotModel, Camera camera){
         this.robotModel = robotModel;
+        this.camera = camera;
         done = false;
     }
     

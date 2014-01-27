@@ -29,12 +29,14 @@ import org.opencv.imgproc.Imgproc;
 
 public class Camera {
   
-    private Mat lastFrame = null;
+    private Mat lastFrame;
     private final VideoCapture camera;
     
     public Camera(){
         // Load the OpenCV library
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        
+        lastFrame = new Mat();
 
         // Setup the camera
         camera = new VideoCapture();
@@ -45,7 +47,7 @@ public class Camera {
     /**
      * Reads in a new frame from the camera. Blocks thread until there is a new frame.
      */
-    public void readNewFrame() {
+    synchronized public void readNewFrame() {
         // Wait until the camera has a new frame
         while (!camera.read(lastFrame)) {
             try {
@@ -63,7 +65,7 @@ public class Camera {
     /**
      * @return the last frame read in from the camera.
      */
-    public Mat getLastFrame(){
+    synchronized public Mat getLastFrame(){
         return lastFrame.clone();
     }
     

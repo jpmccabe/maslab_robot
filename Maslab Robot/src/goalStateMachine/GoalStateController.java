@@ -1,8 +1,8 @@
 package goalStateMachine;
 
 import org.opencv.core.Mat;
-import stateMachine.*;
 
+import stateMachine.*;
 import camera.*;
 import robotModel.*;
 
@@ -13,6 +13,7 @@ public class GoalStateController{
     private StateMachine currentStateController;
 
     public GoalStateController(Devices robotModel, Camera camera){
+        this.currentStateController = new StopStateController();
         this.robotModel = robotModel;
         this.camera = camera;
     }
@@ -28,7 +29,7 @@ public class GoalStateController{
     private void avoidWalls(){
         currentStateController.stop();
         final AvoidWallStateController avoidWallController = 
-                new AvoidWallStateController(robotModel);
+                new AvoidWallStateController(robotModel,camera);
         
         currentStateController = avoidWallController;
         
@@ -95,6 +96,7 @@ public class GoalStateController{
         if(wallTooClose && 
             !(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
             !currentStateController.isDone())){
+            System.out.println("Avoiding walls");
             avoidWalls();
         }
         
@@ -102,6 +104,7 @@ public class GoalStateController{
         else if((summaryOfImage.isGreenBall() || summaryOfImage.isRedBall()) && 
                 !(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
                 && !currentStateController.isDone())){
+            System.out.println("Collecting balls");
             collectGroundBalls();
         }
         
@@ -137,6 +140,12 @@ public class GoalStateController{
         cameraUpdateThread.start();
         goalControllerThread.start();
         robotModel.allMotorsOff();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         robotModel.setRoller(true);
         robotModel.setSpiral(true);
     }

@@ -40,8 +40,6 @@ public class CameraGUI {
             imageFrame.addWindowListener(new WindowAdapter(){
                 @Override
                 public void windowClosing(WindowEvent e){
-                    System.out.println("EXIT MOTHAFUCKAAAS");
-                    //Main.devices.setMotors(0,0);
                     System.exit(0);
                 }
             });
@@ -54,9 +52,7 @@ public class CameraGUI {
         /**
          * Updates the camera pane with the last frame read from the camera.
          */
-        public void updateCameraPane() {
-            Mat image = camera.getLastFrame();
-            
+        public void updateImagePane(Mat image) {            
             int w = (int) (image.size().width);
             int h = (int) (image.size().height);
             if (cameraPane.getWidth() != w || cameraPane.getHeight() != h) {
