@@ -11,7 +11,7 @@ public class ComputerVisionSummary {
     private final CameraProcessor3 blueWallProcessor;
     private final CameraProcessor4 reactorProcessor;
     
-    private final static double MAX_BALL_DISTANCE  = 36;
+    private final static double MAX_BALL_DISTANCE  = 60;
     private final static double MAX_WALL_DISTANCE = 36;
     private final static double MAX_REACTOR_DISTANCE = 36;
         

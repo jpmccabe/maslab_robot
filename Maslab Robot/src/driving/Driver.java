@@ -14,7 +14,7 @@ public class Driver{
 	private final static double ANGULAR_KP = 0.0025;
 	private final static double ANGULAR_KI = 0.0;
 	private final static double ANGULAR_KD = 0.0;
-	private final static double STRAIGHT_KP = -0.0085;
+	private final static double STRAIGHT_KP = -0.0070;
 	private final static double STRAIGHT_KI = 0.0;
 	private final static double STRAIGHT_KD = 0.0;
 	
@@ -34,18 +34,23 @@ public class Driver{
 	 * the right motor speed
 	 */
 	public List<Double> driveToBall(double distance, double distanceTarget, double angle, double angleTarget){
-		final double angularSpeed = angularPID.valuePID(angle,angleTarget);
-		final double straightSpeed = straightPID.valuePID(distance,distanceTarget);
+		
+		final double minStraightSpeed = 0.15;
+		final double maxStraightSpeed = 0.250;
+		
+		final double minAngularSpeed = -0.15;
+		final double maxAngularSpeed = 0.15;
+		
+		final double angularSpeed = clampSpeed(angularPID.valuePID(angle,angleTarget),minAngularSpeed,maxAngularSpeed);
+		final double straightSpeed =clampSpeed(straightPID.valuePID(distance,distanceTarget),minStraightSpeed,maxStraightSpeed);
 		System.out.println("distance: " + distance);
 		System.out.println("angle: " + angle);
 		System.out.println("angular: " + angularSpeed);
 		System.out.println("speed: " + straightSpeed);
 		
 		final List<Double> motorSpeeds  = new ArrayList<Double>();
-		final double minSpeed = -0.2;
-		final double maxSpeed = 0.25;
-		final double leftMotorSpeed = clampSpeed(straightSpeed-angularSpeed,minSpeed, maxSpeed);
-		final double rightMotorSpeed = clampSpeed(straightSpeed+angularSpeed, minSpeed, maxSpeed);
+		final double leftMotorSpeed = straightSpeed+angularSpeed;
+		final double rightMotorSpeed = straightSpeed-angularSpeed;
 		
 		System.out.println("left: " + leftMotorSpeed);
 		System.out.println("right: " + rightMotorSpeed);

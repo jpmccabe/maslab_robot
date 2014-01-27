@@ -32,7 +32,8 @@ public class BallCollectionStateController extends StateMachine {
     
     
     private void collect(){
-        final double forwardSpeed = 0.1;
+    	System.out.println("Collect Ball");
+        final double forwardSpeed = 0.15;
         robotModel.setMotors(forwardSpeed, forwardSpeed);
         try {
             Thread.sleep(2000);
@@ -55,7 +56,7 @@ public class BallCollectionStateController extends StateMachine {
 
     @Override
     synchronized public void controlState(Mat image) {
-        final double collectAngleMax = 20;
+        final double collectAngleMax = 90;
         final double collectDistanceMax = 6;
         
         ballSummary.updateBallSummary(image);
