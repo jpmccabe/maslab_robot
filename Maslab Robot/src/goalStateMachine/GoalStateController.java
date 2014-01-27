@@ -24,26 +24,29 @@ public class GoalStateController{
         
         this.currentStateController = new StopStateController();
         this.robotModel = robotModel;
-        //this.redBallProcessedImageGUI = new CameraGUI(camera);
         summaryOfImage = new ComputerVisionSummary();
          
         lastFrame = new Mat();
         // Setup the camera
         camera = new VideoCapture();
         camera.open(0);
-        
+        //this.redBallProcessedImageGUI = new CameraGUI(1280,720);
+
         Thread cameraReadThread = new Thread(new Runnable(){
             public void run(){
-             // Wait until the camera has a new frame
-                while (!camera.read(lastFrame)) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }       
-                //removes garbage memory taken
-                System.gc();
+             while(true){
+                 // Wait until the camera has a new frame
+                 while (!camera.read(lastFrame)) {
+                     try {
+                         Thread.sleep(10);
+                     } catch (InterruptedException e) {
+                         e.printStackTrace();
+                     }
+                 }       
+                 //removes garbage memory taken
+                 System.out.println("new camera frame");
+                 System.gc();
+             }
             }
         });
         
@@ -139,7 +142,7 @@ public class GoalStateController{
                 !(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
                 && !currentStateController.isDone())){
             System.out.println("Collecting balls");
-            //collectGroundBalls();
+            collectGroundBalls();
         }
         
         long estimatedTime = (System.nanoTime() - startTime);
