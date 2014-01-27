@@ -139,7 +139,7 @@ public class GoalStateController{
         summaryOfImage.updateFullSummary(lastFrame);
         //redBallProcessedImageGUI.updateImagePane(summaryOfImage.getRedBallProcessedImage());
         
-        final double wallThresholdDistance = 10;
+        final double wallThresholdDistance = 7;
         
         final boolean wallTooClose = ((summaryOfImage.getCenterDistanceToBlueWall() <= wallThresholdDistance) ||
                                    (summaryOfImage.getLeftDistanceToBlueWall() <= wallThresholdDistance) ||
@@ -150,7 +150,7 @@ public class GoalStateController{
             !(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
             !currentStateController.isDone())){
             System.out.println("Avoiding walls");
-            //avoidWalls();
+            avoidWalls();
         }
         
         // else if see ball, and not currently collecting one, then collect ball

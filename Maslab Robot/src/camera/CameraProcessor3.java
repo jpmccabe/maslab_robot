@@ -64,7 +64,7 @@ public class CameraProcessor3 extends CameraProcessor{
         int firstPixel=0;
         int secondPixel=0;
         int sampleSize=0;
-        int averageDistance = Integer.MAX_VALUE;
+        double averageDistance = 0;
         for(int x=xStart;x<xStart+65;x+=10){
             //left area
             firstPixel=0;
@@ -82,7 +82,7 @@ public class CameraProcessor3 extends CameraProcessor{
                 Core.line(processedImage, new Point(x,firstPixel), new Point(x,secondPixel), new Scalar(255,0,0));
             }
         }
-        averageDistance = sampleSize > 0 ? averageDistance/sampleSize : averageDistance;
+        averageDistance = sampleSize > 0 ? averageDistance/sampleSize : 100;
         return averageDistance;
     }
     

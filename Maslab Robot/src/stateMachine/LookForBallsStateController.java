@@ -15,16 +15,17 @@ public class LookForBallsStateController extends StateMachine {
     
     @Override
     synchronized public void stop() {
-        robotModel.setMotors(0, 0);
+        //robotModel.setMotors(0, 0);
         isDone = false;
     }
     
     
     private void turn(){
-        double turnSpeed = 0.14;
-        robotModel.setMotors(turnSpeed, -1*turnSpeed);
+        double turnSpeed = 0.175;
+        
+        robotModel.setMotors(turnSpeed, turnSpeed);
         try {
-            Thread.sleep(200);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
