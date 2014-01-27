@@ -15,7 +15,7 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Processes green balls.
  */
-public class CameraProcessor2 {   
+public class CameraProcessor2 extends CameraProcessor{   
     private double distanceToGreen;
     private double angleToGreenInDegrees;
     private Mat processedImage;

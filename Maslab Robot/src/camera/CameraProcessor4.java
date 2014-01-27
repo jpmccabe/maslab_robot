@@ -17,7 +17,7 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Processor for reactors
  */
-class CameraProcessor4 {
+class CameraProcessor4 extends CameraProcessor{
 
     private Mat processedImage;
     private double leftDistance;

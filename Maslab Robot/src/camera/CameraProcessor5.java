@@ -17,7 +17,7 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Processor for energy silo
  */
-class CameraProcessor5 {
+public class CameraProcessor5 extends CameraProcessor{
 
     private Mat processedImage;
     private double leftDistance;

@@ -21,11 +21,63 @@ public class ComputerVisionSummary {
         this.reactorProcessor = new CameraProcessor4();
     }
     
-    public void updateSummary(Mat image){
-        Mat convertedImageToHSV = new Mat();
-        Imgproc.cvtColor(image,convertedImageToHSV,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
-        redBallProcessor.processImage(convertedImageToHSV);
+    
+    public void updateFullSummary(Mat image){
+        final Mat HSVImage = new Mat();
+        Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        
+        Thread redBallProcessorThread = new Thread(new ProcessorRunner(redBallProcessor,HSVImage));
+        Thread greenBallProcessorThread = new Thread(new ProcessorRunner(greenBallProcessor, HSVImage));
+        Thread blueWallProcessorThread = new Thread(new ProcessorRunner(blueWallProcessor, HSVImage));
+        Thread reactorProcessorThread = new Thread(new ProcessorRunner(reactorProcessor, HSVImage));
+        
+        redBallProcessorThread.start();
+        greenBallProcessorThread.start();
+        blueWallProcessorThread.start();
+        reactorProcessorThread.start();
+        
+        try {
+            redBallProcessorThread.join();
+            greenBallProcessorThread.join();
+            blueWallProcessorThread.join();
+            reactorProcessorThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
+    
+    
+    public void updateRedBallSummary(Mat image){
+        final Mat HSVImage = new Mat();
+        Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        redBallProcessor.processImage(HSVImage);
+    }
+    
+    
+    public void updateGreenBallSummar(Mat image){
+        final Mat HSVImage = new Mat();
+        Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        greenBallProcessor.processImage(HSVImage);
+    }
+    
+    
+    public void updateBallSummary(Mat image){
+        final Mat HSVImage = new Mat();
+        Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        
+        Thread redBallProcessorThread = new Thread(new ProcessorRunner(redBallProcessor,HSVImage));
+        Thread greenBallProcessorThread = new Thread(new ProcessorRunner(greenBallProcessor, HSVImage));
+        redBallProcessorThread.start();
+        greenBallProcessorThread.start();
+        
+        try {
+            redBallProcessorThread.join();
+            greenBallProcessorThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    
     
     /**
      * @return true if a red ball is in the image and is close, false otherwise.
@@ -72,6 +124,8 @@ public class ComputerVisionSummary {
     public Mat getBlueWallProcessedImage(){
         return blueWallProcessor.getProcessedImage();
     }
+    
+    
     /**
      * @return distance to red ball, if there is one, in inches.
      */
@@ -160,54 +214,19 @@ public class ComputerVisionSummary {
     }
     
     
-    /**
-     * Produces a full summary of an image by running all camera processors on that image
-     * @param image
-     * @return full summary of the recognizable features in the image
-     */
-    /*
-    public static ComputerVisionSummary produceFullSummary(Mat image){
-        Mat convertedImageToHSV = new Mat();
-        Imgproc.cvtColor(image,convertedImageToHSV,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+    private class ProcessorRunner implements Runnable{
+        private final CameraProcessor cameraProcessor;
+        private final Mat imageToProcess;
         
-        CameraProcessor1 redBallProcessor = new CameraProcessor1();
-        CameraProcessor2 greenBallProcessor = new CameraProcessor2();
-        CameraProcessor3 blueWallProcessor = new CameraProcessor3();
-        CameraProcessor4 reactorProcessor = new CameraProcessor4();
+        public ProcessorRunner(CameraProcessor cameraProcessor, Mat imageToProcess){
+            this.cameraProcessor = cameraProcessor;
+            this.imageToProcess = imageToProcess;
+        }
         
-        redBallProcessor.processImage(convertedImageToHSV);
-        //greenBallProcessor.processImage(image);
-        //blueWallProcessor.processImage(image);
-        //reactorProcessor.processImage(image);
-        
-        return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor, reactorProcessor));
+        public void run(){
+            this.cameraProcessor.processImage(imageToProcess);
+        }
     }
-    */
-    
-    
-    /**
-     * Produces a summary of an image by just running the camera processors for balls on
-     * that image. The methods not pertaining to balls in the returned ComputerVisionSummary
-     * are not applicable. 
-     * @param image
-     * @return summary of the ball features in the image
-     */
-    /*
-    public static ComputerVisionSummary produceBallSummary(Mat image){
-        Mat convertedImageToHSV = new Mat();
-        Imgproc.cvtColor(image,convertedImageToHSV,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
-        
-        CameraProcessor1 redBallProcessor = new CameraProcessor1();
-        CameraProcessor2 greenBallProcessor = new CameraProcessor2();
-        CameraProcessor3 blueWallProcessor = new CameraProcessor3();
-        CameraProcessor4 reactorProcessor = new CameraProcessor4();
-        
-        redBallProcessor.processImage(image);
-        greenBallProcessor.processImage(image);
-        
-        return (new ComputerVisionSummary(redBallProcessor, greenBallProcessor, blueWallProcessor, reactorProcessor));
-    }
-    */
     
     
 }

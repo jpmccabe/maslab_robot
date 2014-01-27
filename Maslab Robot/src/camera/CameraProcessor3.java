@@ -13,7 +13,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 
-public class CameraProcessor3{
+public class CameraProcessor3 extends CameraProcessor{
 
     private double centerDistance;
     private double leftDistance;

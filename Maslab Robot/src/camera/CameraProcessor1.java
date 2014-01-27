@@ -15,7 +15,7 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Processes red balls.
  */
-public class CameraProcessor1{
+public class CameraProcessor1 extends CameraProcessor{
     private double distanceToRed;
     private double angleToRedInDegrees;
     private Mat processedImage;
