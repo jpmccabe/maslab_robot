@@ -16,6 +16,8 @@ public class ComputerVisionSummary {
     private final static double MAX_WALL_DISTANCE_MIDDLE = 5;
     private final static double MAX_WALL_DISTANCE_LEFT = 8;
     private final static double MAX_WALL_DISTANCE_RIGHT = 10;
+    private final static double MAX_REACTOR_SCORING_DISTANCE = 60;
+    private final static double MAX_INTERFACE_WALL_SCORING_DISTANCE = 60;
         
     public ComputerVisionSummary(){
         this.redBallProcessor = new CameraProcessor1();
@@ -126,6 +128,9 @@ public class ComputerVisionSummary {
     }
     
     
+    /**
+     * @return true if there is an obstacle ahead, false otherwise.
+     */
     public boolean isObstacle(){
         return getObstacle() != ObstacleDirection.NONE;
     }
@@ -142,10 +147,10 @@ public class ComputerVisionSummary {
             direction = getLeftDistanceToBlueWall() <= getRightDistanceToBlueWall() ? ObstacleDirection.LEFT :
                         ObstacleDirection.RIGHT;
         }    
-        else if(isReactor()){
+        else if(isReactorObstacle()){
             direction = getReactorAngleInDegrees() <= 0 ? ObstacleDirection.RIGHT: ObstacleDirection.LEFT;
         }
-        else if(isInterfaceWall()){
+        else if(isInterfaceWallObstacle()){
             direction = getInterfaceWallAngleInDegrees() <= 0 ? ObstacleDirection.RIGHT: ObstacleDirection.LEFT;
         }
        
@@ -153,20 +158,44 @@ public class ComputerVisionSummary {
     }
     
     
+    
     /**
-     * @return true if a reactor is in the image and is close, false otherwise.
+     * @return true if a reactor is in the image and is close enough to be considered
+     * an obstacle, false otherwise.
      */
-    public boolean isReactor(){
+    public boolean isReactorObstacle(){
         return (getReactorCenterDistance() <= MAX_WALL_DISTANCE_MIDDLE ||
                 getReactorLeftDistance() <= MAX_WALL_DISTANCE_LEFT ||
                 getReactorRightDistance() <= MAX_WALL_DISTANCE_RIGHT);
     }
     
     
-    public boolean isInterfaceWall(){
+    /**
+     * @return true if a reactor is in the image and is close enough to be considered
+     * for scoring purposes, false otherwise.
+     */
+    public boolean isReactorScoreable(){
+        return  (getReactorCenterDistance() <= MAX_REACTOR_SCORING_DISTANCE);
+    }
+    
+    
+    /**
+     * @return true if the interface wall is in the image and is close enough to be
+     * considered an obstacle, false otherwise.
+     */
+    public boolean isInterfaceWallObstacle(){
         return (getInterfaceWallCenterDistance() <= MAX_WALL_DISTANCE_MIDDLE ||
                 getInterfaceWallLeftDistance() <= MAX_WALL_DISTANCE_LEFT ||
                 getInterfaceWallRightDistance() <= MAX_WALL_DISTANCE_RIGHT);
+    }
+    
+    
+    /**
+     * @return true if the interface wall is in the image and is close enough to be 
+     * considered for scoring purposes, false otherwise.
+     */
+    public boolean isInterfaceWallScoreable(){
+        return (getInterfaceWallCenterDistance() <= MAX_INTERFACE_WALL_SCORING_DISTANCE);
     }
     
     
