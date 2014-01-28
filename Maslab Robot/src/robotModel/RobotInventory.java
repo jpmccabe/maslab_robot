@@ -1,9 +1,14 @@
 package robotModel;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class RobotInventory {
     
     private int numRedBallsOnBoard;
     private int numGreenBallsOnBoard;
+    private Queue<String> unsortedBalls =new LinkedList<String>();
+    
     
     public RobotInventory(){
         numRedBallsOnBoard = 0;
@@ -17,6 +22,8 @@ public class RobotInventory {
      */
     synchronized public void addGreenBall(){
         numGreenBallsOnBoard++;
+        
+        
     }
     
     
@@ -26,6 +33,24 @@ public class RobotInventory {
      */
     synchronized public void addRedBall(){
         numRedBallsOnBoard++;
+    }
+    
+    /**
+     * add the ball color to the unsorted balls queue 
+     * unsorted balls on the first channel from spiral tube window
+     */
+    synchronized public void addBallToQueue(String ballColor){
+        unsortedBalls.add(ballColor);   
+    }
+    
+    /**
+     * add the ball color to the unsorted balls queue 
+     * unsorted balls on the first channel from spiral tube window
+     * @return 
+     */
+    synchronized public String ballToBeSorted(){
+        if(unsortedBalls.size()>0) return unsortedBalls.remove();
+        else return "empty";
     }
     
     
