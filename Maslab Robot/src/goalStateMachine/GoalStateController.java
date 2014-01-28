@@ -68,7 +68,9 @@ public class GoalStateController{
         
         Thread lookForBallThread = new Thread(new Runnable(){
             public void run(){
-                lookForBallsController.controlState(lastFrame);
+                while(!lookForBallsController.isDone()){
+                    lookForBallsController.controlState(lastFrame);
+                }
             }
         });
         
@@ -158,7 +160,8 @@ public class GoalStateController{
             collectGroundBalls();
         }
         
-        else{
+        else if(currentStateController.getStateMachineType() != StateMachineType.LOOK_FOR_BALLS &&
+                currentStateController.isDone()){
             System.out.println("Looking for balls");
             lookForBalls();
         }
