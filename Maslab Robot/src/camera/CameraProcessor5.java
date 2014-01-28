@@ -15,7 +15,7 @@ import org.opencv.imgproc.Imgproc;
 
 
 /**
- * Processor for energy silo
+ * Processor for interface wall
  */
 public class CameraProcessor5 extends CameraProcessor{
 
@@ -44,9 +44,9 @@ public class CameraProcessor5 extends CameraProcessor{
         boolean reactorSpotted=false;       
         final Mat processedImage = imageToProcess.clone();
 
-        Core.inRange(processedImage, new Scalar(123, 25,10), new Scalar(160, 255, 255), processedImage);
-        Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),1);
-        Imgproc.erode(processedImage, processedImage,  new Mat(), new Point (-1, -1), 2);
+        Core.inRange(processedImage, new Scalar(25, 55,150), new Scalar(40, 255, 255), processedImage);
+        Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),0);
+        Imgproc.erode(processedImage, processedImage,  new Mat(), new Point (-1, -1), 1);
 
         final Mat clone = processedImage.clone();
 
@@ -66,9 +66,12 @@ public class CameraProcessor5 extends CameraProcessor{
 
         Imgproc.Canny(processedImage, processedImage, 15, 200);     
         final double[] distanceToWall= new double[64];
-        double averageDistance = 100.0;
+        double averageDistance = 1000.0;
         int firstX=boundingRect.x+10;
         int lastX=0;
+        
+        double leftDistance = 1000.0;
+        double rightDistance = 1000.0;
         if (reactorSpotted==true){
             averageDistance=0;
             int sampleSize=0;
@@ -88,14 +91,14 @@ public class CameraProcessor5 extends CameraProcessor{
                 Core.line(processedImage, new Point(x,firstPixel), new Point(x,secondPixel), new Scalar(255,0,0));
             }
             averageDistance/=sampleSize;
+            leftDistance = distanceToWall[firstX/10];
+            rightDistance = distanceToWall[lastX/10];
         }
 
 
         Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
 
-        final double leftDistance = distanceToWall[firstX/10];
-        final double rightDistance = distanceToWall[lastX/10];
-        final double angleInRadians = (leftDistance-rightDistance)/averageDistance*1.80;
+        final double angleInRadians = (rightDistance-leftDistance)/averageDistance*1.80;
         final double angleInDegrees = angleInRadians * (180/Math.PI);
         final int centerXValue = (int) ((boundingRect.x) + (boundingRect.width/2.0));
         

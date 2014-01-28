@@ -10,6 +10,7 @@ public class ComputerVisionSummary {
     private final CameraProcessor2 greenBallProcessor;
     private final CameraProcessor3 blueWallProcessor;
     private final CameraProcessor4 reactorProcessor;
+    private final CameraProcessor5 interfaceWallProcessor;
     
     private final static double MAX_BALL_DISTANCE  = 60;
     private final static double MAX_WALL_DISTANCE_MIDDLE = 5;
@@ -21,7 +22,7 @@ public class ComputerVisionSummary {
         this.greenBallProcessor = new CameraProcessor2();
         this.blueWallProcessor = new CameraProcessor3();
         this.reactorProcessor = new CameraProcessor4();
-        
+        this.interfaceWallProcessor = new CameraProcessor5();
     }
     
     
@@ -33,17 +34,20 @@ public class ComputerVisionSummary {
         Thread greenBallProcessorThread = new Thread(new ProcessorRunner(greenBallProcessor, HSVImage));
         Thread blueWallProcessorThread = new Thread(new ProcessorRunner(blueWallProcessor, HSVImage));
         Thread reactorProcessorThread = new Thread(new ProcessorRunner(reactorProcessor, HSVImage));
+        Thread interfaceWallProcessorThread = new Thread(new ProcessorRunner(interfaceWallProcessor, HSVImage));
         
         redBallProcessorThread.start();
         greenBallProcessorThread.start();
         blueWallProcessorThread.start();
         reactorProcessorThread.start();
+        interfaceWallProcessorThread.start();
         
         try {
             redBallProcessorThread.join();
             greenBallProcessorThread.join();
             blueWallProcessorThread.join();
             reactorProcessorThread.join();
+            interfaceWallProcessorThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -72,6 +76,7 @@ public class ComputerVisionSummary {
         Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
         blueWallProcessor.processImage(HSVImage);
         reactorProcessor.processImage(HSVImage);
+        interfaceProcessor.processImage(HSVImage);
     }
     
     
@@ -120,6 +125,9 @@ public class ComputerVisionSummary {
         else if(isReactor()){
             direction = getReactorAngleInDegrees() <= 0 ? ObstacleDirection.RIGHT: ObstacleDirection.LEFT;
         }
+        else if(isInterfaceWall()){
+            direction = getInterfaceWallAngleInDegrees() <= 0 ? ObstacleDirection.RIGHT: ObstacleDirection.LEFT;
+        }
         
         return direction;
     }
@@ -132,6 +140,13 @@ public class ComputerVisionSummary {
         return (getReactorCenterDistance() <= MAX_WALL_DISTANCE_MIDDLE ||
                 getReactorLeftDistance() <= MAX_WALL_DISTANCE_LEFT ||
                 getReactorRightDistance() <= MAX_WALL_DISTANCE_RIGHT);
+    }
+    
+    
+    public boolean isInterfaceWall(){
+        return (getInterfaceWallCenterDistance() <= MAX_WALL_DISTANCE_MIDDLE ||
+                getInterfaceWallLeftDistance() <= MAX_WALL_DISTANCE_LEFT ||
+                getInterfaceWallRightDistance() <= MAX_WALL_DISTANCE_RIGHT);
     }
     
     
@@ -149,6 +164,10 @@ public class ComputerVisionSummary {
     
     public Mat getReactorProcessedImage(){
         return reactorProcessor.getProcessedImage();
+    }
+    
+    public Mat getInterfaceWallProcessedImage(){
+        return interfaceWallProcessor.getProcessedImage();
     }
     
     
@@ -238,6 +257,39 @@ public class ComputerVisionSummary {
     public double getReactorAngleInDegrees(){
         return reactorProcessor.getAngleInDegrees();
     }
+    
+    
+    /**
+     * @return distance to left side of interface wall, if there is one, in inches.
+     */
+    public double getInterfaceWallLeftDistance(){
+        return interfaceWallProcessor.getLeftDistance();
+    }
+    
+    
+    /**
+     * @return distance to right side of interface wall, if there is one, in inches.
+     */
+    public double getInterfaceWallRightDistance(){
+        return interfaceWallProcessor.getRightDistance();
+    }
+    
+    
+    /**
+     * @return distance to center of interface wall, if there is one, in inches.
+     */
+    public double getInterfaceWallCenterDistance(){
+        return interfaceWallProcessor.getCenterDistance();
+    }
+    
+    
+    /**
+     * @return angle to interface, if there is one, in degrees.
+     */
+    public double getInterfaceWallAngleInDegrees(){
+        return interfaceWallProcessor.getAngleInDegrees();
+    }
+    
     
     
     private class ProcessorRunner implements Runnable{
