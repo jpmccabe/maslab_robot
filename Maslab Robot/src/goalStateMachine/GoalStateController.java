@@ -140,7 +140,6 @@ public class GoalStateController{
     
     public void controlState(){
         long startTime = System.nanoTime();
-
         summaryOfImage.updateFullSummary(lastFrame);
         //redBallProcessedImageGUI.updateImagePane(summaryOfImage.getRedBallProcessedImage());
         

@@ -20,7 +20,7 @@ public class AvoidWallStateController extends StateMachine {
     }
     
     private void avoidWall(){
-        double turnSpeed = 0.175;
+        double turnSpeed = 0.16;
         turnSpeed = (spinDirection == ObstacleDirection.RIGHT) ? -1*turnSpeed : turnSpeed;
         robotModel.setMotors(turnSpeed, -1*turnSpeed);
         

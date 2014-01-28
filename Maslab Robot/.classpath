@@ -5,6 +5,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/MaslabComm"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-2.4.8"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-248"/>
-	<classpathentry kind="lib" path="/Users/patrickmccabe/Documents/workspace/maslab_robot/Maslab Robot/lib/java-simple-serial-connector/jssc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/John/Documents/GitHub/maslab-2014/kitbot-demo/lib/jSSC-2.6.0-Release/jssc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

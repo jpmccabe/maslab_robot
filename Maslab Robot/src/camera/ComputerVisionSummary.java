@@ -12,9 +12,9 @@ public class ComputerVisionSummary {
     private final CameraProcessor4 reactorProcessor;
     
     private final static double MAX_BALL_DISTANCE  = 60;
-    private final static double MAX_WALL_DISTANCE_MIDDLE = 7;
-    private final static double MAX_WALL_DISTANCE_SIDES = 10;
-    private final static double MAX_REACTOR_DISTANCE = 36;
+    private final static double MAX_WALL_DISTANCE_MIDDLE = 5;
+    private final static double MAX_WALL_DISTANCE_LEFT = 8;
+    private final static double MAX_WALL_DISTANCE_RIGHT = 10;
         
     public ComputerVisionSummary(){
         this.redBallProcessor = new CameraProcessor1();
@@ -96,8 +96,8 @@ public class ComputerVisionSummary {
      */
     public boolean isBlueWall(){
         return ((getCenterDistanceToBlueWall() <= MAX_WALL_DISTANCE_MIDDLE) ||
-                (getRightDistanceToBlueWall() <= MAX_WALL_DISTANCE_SIDES) ||
-                (getLeftDistanceToBlueWall() <= MAX_WALL_DISTANCE_SIDES));
+                (getRightDistanceToBlueWall() <= MAX_WALL_DISTANCE_RIGHT) ||
+                (getLeftDistanceToBlueWall() <= MAX_WALL_DISTANCE_LEFT));
     }
     
     
@@ -130,8 +130,8 @@ public class ComputerVisionSummary {
      */
     public boolean isReactor(){
         return (getReactorCenterDistance() <= MAX_WALL_DISTANCE_MIDDLE ||
-                getReactorLeftDistance() <= MAX_WALL_DISTANCE_SIDES ||
-                getReactorRightDistance() <= MAX_WALL_DISTANCE_SIDES);
+                getReactorLeftDistance() <= MAX_WALL_DISTANCE_LEFT ||
+                getReactorRightDistance() <= MAX_WALL_DISTANCE_RIGHT);
     }
     
     
