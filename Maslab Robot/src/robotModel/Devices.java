@@ -30,6 +30,11 @@ public class Devices {
 	private static final int spiral_PWM_Pin = 5;
 	private static final int roller_PWM_Pin = 3;
 	
+	private double leftMotorSetSpeed = 0;
+	private double rightMotorSetSpeed = 0;
+	private double leftMotorRawSpeed = 0;
+	private double rightMotorRawSpeed = 0;
+	
 	public Devices(){
 	    maple = new MapleComm();
 	    leftMotor = new Cytron(leftMotor_Dir_Pin, leftMotor_PWM_Pin);
@@ -46,6 +51,38 @@ public class Devices {
         maple.registerDevice(leftEncoder);
         maple.registerDevice(rightEncoder);
         maple.initialize();
+        
+        Thread PIDThread =  new Thread(new Runnable(){
+            public void run(){
+                final PIDMotor leftMotorPID = new PIDMotor(0);
+                while(true){
+                    List<Double> measuredSpeed = getMeasuredSpeed();
+                    List<Double> setSpeed = getSetSpeed();
+                    
+                    double leftSetSpeed = setSpeed.get(0);
+                    double leftMeasuredSpeed = measuredSpeed.get(0);
+                    
+                    System.out.println("set speed: " + leftSetSpeed);
+                    System.out.println("measured speed: " + leftMeasuredSpeed);
+                    
+                    if(leftMotorPID.getSetPoint() != leftSetSpeed){
+                        leftMotorPID.newSetPoint(leftSetSpeed);
+                    }
+                    
+                    double leftValueToSet = leftMotorPID.update(measuredSpeed.get(0));
+                    System.out.println("Raw value: " + leftValueToSet+getLeftMotorRawSpeed());
+                    setMotors(leftValueToSet+getLeftMotorRawSpeed(),0);
+                    
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        
+        //PIDThread.start();
 	}
 	
 	
@@ -56,6 +93,8 @@ public class Devices {
 	 * @param right speed of the right motor from 0.0 to 1.0
 	 */
 	public void setMotors(double left, double right){
+	    leftMotorRawSpeed = left;
+	    rightMotorRawSpeed = right;
 		leftMotor.setSpeed(left);
 		rightMotor.setSpeed(right);
 		maple.transmit();
@@ -63,10 +102,38 @@ public class Devices {
 	
 	
 	/**
+	 * @param left target speed of the left motor in inches per second
+	 * @param right target speed of the right motor in inches per second
+	 */
+	synchronized public void setMotorSpeed(double left, double right){
+	    leftMotorSetSpeed = left;
+	    rightMotorSetSpeed = right;
+	}
+	
+	
+	/**
+	 * @return list containing the speeds of the motor, in inches per second, as
+	 * set in setMotorSpeed. The left motor is the first index and the right motor 
+	 * is the second index.
+	 */
+	synchronized public List<Double> getSetSpeed(){
+	    List<Double> speeds = new ArrayList<Double>();
+	    speeds.add(leftMotorSetSpeed);
+	    speeds.add(rightMotorSetSpeed);
+	    return speeds;
+	}
+	
+	
+	synchronized public double getLeftMotorRawSpeed(){
+	    return leftMotorRawSpeed;
+	}
+	
+	
+	/**
 	 * Turns the rubber band roller on or off.
 	 * @param on turns the roller on if true, off otherwise.
 	 */
-	public void setRoller(boolean on){
+	synchronized public void setRoller(boolean on){
 	    double rollerOnSpeed = 0.5;
 	    double rollerOffSpeed = 0.0;
 	    double speedToSet = on ? rollerOnSpeed : rollerOffSpeed;
@@ -80,7 +147,7 @@ public class Devices {
 	 * Turns the spiral lift on or off.
 	 * @param on turns the lift on if true, off otherwise.
 	 */
-	public void setSpiral(boolean on){
+	synchronized public void setSpiral(boolean on){
 	    double spiralOnSpeed = 0.2;
 	    double spiralOffSpeed = 0.0;
 	    double speedToSet = on ? spiralOnSpeed : spiralOffSpeed;
@@ -93,7 +160,7 @@ public class Devices {
 	/**
 	 * Turns all motors on the robot off.
 	 */
-	public void allMotorsOff(){
+	synchronized public void allMotorsOff(){
 	    setSpiral(false);
 	    setRoller(false);
 	    setMotors(0.0,0.0);
@@ -104,7 +171,7 @@ public class Devices {
 	 * @return List containing total angular distance in radians of each wheel. The
 	 * left motor is the first index and the right motor is the second index.
 	 */
-    public List<Double> getTotalAngularDistance() {
+	synchronized public List<Double> getTotalAngularDistance() {
         List<Double> angularDistance = new ArrayList<Double>();
         
         maple.updateSensorData();
@@ -119,7 +186,7 @@ public class Devices {
      * @return List containing delta angular distance in radians of each wheel. The
      * left motor is the first index and the right motor is the second index.
      */
-    public List<Double> getDeltaAngularDistance() {
+	synchronized public List<Double> getDeltaAngularDistance() {
         List<Double> deltaAngularDistance = new ArrayList<Double>();
         
         maple.updateSensorData();
@@ -134,7 +201,7 @@ public class Devices {
      * @return List containing angular speed in radians per second of each wheel. The
      * left motor is the first index and the right motor is the second index.
      */
-    public List<Double> getAngularSpeed() {
+	synchronized public List<Double> getAngularSpeed() {
         List<Double> angularSpeed = new ArrayList<Double>();
         
         maple.updateSensorData();
@@ -150,7 +217,7 @@ public class Devices {
      * @return List containing delta distance traveled by each wheel in inches. The
      * left motor is the first index and the right motor is the second index.
      */
-    public List<Double> getDeltaDistance(){
+	synchronized public List<Double> getDeltaDistance(){
         final double radiusOfWheelInInches = 3.875 / 2;
         List<Double> deltaDistanceInches = new ArrayList<Double>();
       
@@ -166,7 +233,7 @@ public class Devices {
      * @return List containing speed of each wheel in inches per second. The left motor
      * is the first index and the right motor is the second index.
      */
-    public List<Double> getSpeed(){
+	synchronized public List<Double> getMeasuredSpeed(){
         final double radiusOfWheelInInches = 3.875 / 2;
         List<Double> speed = new ArrayList<Double>();
       
@@ -176,6 +243,65 @@ public class Devices {
         
         return speed;
     }
+	
+	
+	private class PIDMotor{
+	    private final static double KP = 0.1;
+	    private final static double KI = 0.01;
+	    private final static double KD = 0.;
+	    private final static double MAX_SPEED = 0.6;
+	    private final static double MIN_SPEED = 0.0;
+	    
+	    private double previousError = 0;
+	    private double integral = 0;
+	    private double setPoint;
+	           
+	    public PIDMotor(double setPoint){
+	        this.setPoint = setPoint;
+	    }
+	    
+	    public double update(double measuredValue){	        
+	        if(setPoint == 0){
+	            return 0;
+	        }
+	        
+	        double error = setPoint - measuredValue;	        
+	        double proportional = KP * error;
+	        integral += KI * error;
+	        double derivative = KD * (error - previousError);
+	        previousError = error;
+	        
+	        double returnValue = proportional + integral + derivative;
+	        returnValue = clampSpeed(returnValue, MIN_SPEED, MAX_SPEED);
+	        
+	        return ( returnValue);
+	    }
+	    
+	    public void newSetPoint(double setPoint){
+	        integral = 0;
+	        previousError = 0;
+	        this.setPoint = setPoint;
+	    }
+	    
+	    public double getSetPoint(){
+	        return setPoint;
+	    }
+	    
+	    
+	    /**
+	     * Keeps a speed between a minimum and maximum
+	     * @param currentSpeed the speed to be clamped
+	     * @param minSpeed the minimum allowed speed
+	     * @param maxSpeed the maximum allowed speed
+	     * @return returns minSpeed if currentSpeed < minSpeed, maxSpeed if currentSpeed > maxSpeed,
+	     *         or currentSpeed otherwise.
+	     */
+	    private double clampSpeed(double currentSpeed, double minSpeed, double maxSpeed){
+	        final double topClamp = Math.min(currentSpeed, maxSpeed);
+	        final double bottomClamp  = Math.max(topClamp, minSpeed);
+	        return bottomClamp;
+	    }
+	}
     
-
 }
+
