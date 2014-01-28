@@ -1,5 +1,4 @@
 package driving;
-import org.opencv.core.Scalar;
 
 public class PID{
 	private final double kp,ki,kd;

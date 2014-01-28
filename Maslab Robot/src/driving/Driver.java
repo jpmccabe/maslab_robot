@@ -2,10 +2,6 @@ package driving;
 import java.lang.Math;
 import java.util.*;
 
-import org.opencv.core.Mat;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-
 public class Driver{
 	
 	private final PID angularPID;

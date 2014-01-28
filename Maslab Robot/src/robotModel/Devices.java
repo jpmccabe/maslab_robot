@@ -1,12 +1,10 @@
 package robotModel;
-import org.opencv.core.Core;
 
 import comm.MapleComm;
 import comm.MapleIO;
 import comm.MapleIO.SerialPortType;
 import devices.actuators.Cytron;
 import devices.actuators.PWMOutput;
-import devices.sensors.Ultrasonic;
 
 public class Devices {
 	private final MapleComm maple;
