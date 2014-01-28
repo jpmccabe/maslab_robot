@@ -35,12 +35,12 @@ public class BallCollectionStateController extends StateMachine {
     	System.out.println("Collect Ball");
         final double forwardSpeed = 0.15;
         robotModel.setMotors(forwardSpeed, forwardSpeed);
+        robotModel.setRoller(true);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
         stop();
     }
     
@@ -49,6 +49,7 @@ public class BallCollectionStateController extends StateMachine {
     @Override
     public void stop() {
         robotModel.setMotors(0,0);
+        robotModel.setRoller(false);
         done = true;
     }
 

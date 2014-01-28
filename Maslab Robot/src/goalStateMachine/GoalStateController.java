@@ -145,11 +145,12 @@ public class GoalStateController{
         
         
         // if a wall is close, and we are not currently avoiding walls, then avoid walls
-        if(summaryOfImage.isBlueWall() && 
-            !(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
-            !currentStateController.isDone())){
-            System.out.println("Avoiding walls");
-            avoidWalls();
+        if(summaryOfImage.isBlueWall()){
+        	if(!(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
+                    !currentStateController.isDone())){
+        		System.out.println("Avoiding walls");
+        		avoidWalls();
+        	}
         }
         
         // else if see ball, and not currently collecting one, then collect ball

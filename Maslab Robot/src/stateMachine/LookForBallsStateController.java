@@ -16,7 +16,7 @@ public class LookForBallsStateController extends StateMachine {
     @Override
     public void stop() {
         robotModel.setMotors(0, 0);
-        isDone = false;
+        isDone = true;
     }
     
     
@@ -24,7 +24,7 @@ public class LookForBallsStateController extends StateMachine {
         double forwardSpeed = 0.175;
         robotModel.setMotors(forwardSpeed, forwardSpeed);
         try {
-            Thread.sleep(100);
+            Thread.sleep(20);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -26,8 +26,6 @@ public class AvoidWallStateController extends StateMachine {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
-        stop();
     }
     
     @Override

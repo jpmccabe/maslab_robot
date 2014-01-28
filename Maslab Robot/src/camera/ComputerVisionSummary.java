@@ -12,7 +12,8 @@ public class ComputerVisionSummary {
     private final CameraProcessor4 reactorProcessor;
     
     private final static double MAX_BALL_DISTANCE  = 60;
-    private final static double MAX_WALL_DISTANCE = 7;
+    private final static double MAX_WALL_DISTANCE_MIDDLE = 7;
+    private final static double MAX_WALL_DISTANCE_SIDES = 10;
     private final static double MAX_REACTOR_DISTANCE = 36;
         
     public ComputerVisionSummary(){
@@ -108,9 +109,9 @@ public class ComputerVisionSummary {
      * @return true if a blue wall is in the image and is close, false otherwise.
      */
     public boolean isBlueWall(){
-        return ((blueWallProcessor.getCenterDistanceToBlueWall() <= MAX_WALL_DISTANCE) ||
-                (blueWallProcessor.getLeftDistanceToBlueWall() <= MAX_WALL_DISTANCE) ||
-                (blueWallProcessor.getRightDistanceToBlueWall() <= MAX_WALL_DISTANCE));
+        return ((blueWallProcessor.getCenterDistanceToBlueWall() <= MAX_WALL_DISTANCE_SIDES) ||
+                (blueWallProcessor.getLeftDistanceToBlueWall() <= MAX_WALL_DISTANCE_MIDDLE) ||
+                (blueWallProcessor.getRightDistanceToBlueWall() <= MAX_WALL_DISTANCE_SIDES));
     }
     
     
