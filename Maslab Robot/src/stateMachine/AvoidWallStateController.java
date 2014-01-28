@@ -8,17 +8,20 @@ import camera.*;
 public class AvoidWallStateController extends StateMachine {
 
     private final Devices robotModel;
-    private final ComputerVisionSummary wallSummary;
+    private final ComputerVisionSummary obstacleSummary;
     private volatile boolean done;
+    private final ObstacleDirection spinDirection;
     
-    public AvoidWallStateController(Devices robotModel){
+    public AvoidWallStateController(Devices robotModel, ObstacleDirection spinDirection){
         this.robotModel = robotModel;
-        wallSummary = new ComputerVisionSummary();
+        obstacleSummary = new ComputerVisionSummary();
         done = false;
+        this.spinDirection = spinDirection;
     }
     
     private void avoidWall(){
-        final double turnSpeed = 0.175;
+        double turnSpeed = 0.175;
+        turnSpeed = (spinDirection == ObstacleDirection.RIGHT) ? turnSpeed : -1*turnSpeed;
         robotModel.setMotors(turnSpeed, -1*turnSpeed);
         
         try {
@@ -36,8 +39,8 @@ public class AvoidWallStateController extends StateMachine {
 
     @Override
     public void controlState(Mat image) {
-        wallSummary.updateWallSummary(image);
-        if(wallSummary.isBlueWall()){
+        obstacleSummary.updateObstacleSummary(image);
+        if(obstacleSummary.getObstacle() != ObstacleDirection.NONE){
             avoidWall();
         }
         else{

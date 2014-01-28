@@ -95,7 +95,7 @@ class CameraProcessor4 extends CameraProcessor{
 
         final double leftDistance = distanceToWall[firstX/10];
         final double rightDistance = distanceToWall[lastX/10];
-        final double angleInRadians = (leftDistance-rightDistance)/averageDistance*1.80;
+        final double angleInRadians = (rightDistance-leftDistance)/averageDistance*1.80;
         final double angleInDegrees = angleInRadians * (180/Math.PI);
         final int centerXValue = (int) ((boundingRect.x) + (boundingRect.width/2.0));
         

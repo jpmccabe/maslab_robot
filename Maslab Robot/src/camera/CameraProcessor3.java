@@ -82,7 +82,7 @@ public class CameraProcessor3 extends CameraProcessor{
                 Core.line(processedImage, new Point(x,firstPixel), new Point(x,secondPixel), new Scalar(255,0,0));
             }
         }
-        averageDistance = sampleSize > 0 ? averageDistance/sampleSize : 100;
+        averageDistance = sampleSize > 0 ? averageDistance/sampleSize : 1000;
         return averageDistance;
     }
     

@@ -43,26 +43,11 @@ public class ComputerVisionSummary {
             redBallProcessorThread.join();
             greenBallProcessorThread.join();
             blueWallProcessorThread.join();
-           // reactorProcessorThread.join();
+            reactorProcessorThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-    
-    
-    public void updateRedBallSummary(Mat image){
-        final Mat HSVImage = new Mat();
-        Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
-        redBallProcessor.processImage(HSVImage);
-    }
-    
-    
-    public void updateGreenBallSummar(Mat image){
-        final Mat HSVImage = new Mat();
-        Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
-        greenBallProcessor.processImage(HSVImage);
-    }
-    
     
     public void updateBallSummary(Mat image){
         final Mat HSVImage = new Mat();
@@ -82,10 +67,11 @@ public class ComputerVisionSummary {
     }
     
     
-    public void updateWallSummary(Mat image){
+    public void updateObstacleSummary(Mat image){
         final Mat HSVImage = new Mat();
         Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
         blueWallProcessor.processImage(HSVImage);
+        reactorProcessor.processImage(HSVImage);
     }
     
     
@@ -109,9 +95,28 @@ public class ComputerVisionSummary {
      * @return true if a blue wall is in the image and is close, false otherwise.
      */
     public boolean isBlueWall(){
-        return ((blueWallProcessor.getCenterDistanceToBlueWall() <= MAX_WALL_DISTANCE_SIDES) ||
-                (blueWallProcessor.getLeftDistanceToBlueWall() <= MAX_WALL_DISTANCE_MIDDLE) ||
-                (blueWallProcessor.getRightDistanceToBlueWall() <= MAX_WALL_DISTANCE_SIDES));
+        return ((getCenterDistanceToBlueWall() <= MAX_WALL_DISTANCE_MIDDLE) ||
+                (getRightDistanceToBlueWall() <= MAX_WALL_DISTANCE_SIDES) ||
+                (getLeftDistanceToBlueWall() <= MAX_WALL_DISTANCE_SIDES));
+    }
+    
+    
+    /**
+     * @return if there is an obstacle, returns the direction where it is at (left or right). Returns
+     * ObstacleDirection.NONE if there is no obstacle.
+     */
+    public ObstacleDirection getObstacle(){
+        ObstacleDirection direction = ObstacleDirection.NONE;
+        
+        if(isBlueWall()){
+            direction = getLeftDistanceToBlueWall() <= getRightDistanceToBlueWall() ? ObstacleDirection.LEFT :
+                        ObstacleDirection.RIGHT;
+        }    
+        else if(isReactor()){
+            direction = getReactorAngleInDegrees() <= 0 ? ObstacleDirection.RIGHT: ObstacleDirection.LEFT;
+        }
+        
+        return direction;
     }
     
     
@@ -119,7 +124,9 @@ public class ComputerVisionSummary {
      * @return true if a reactor is in the image and is close, false otherwise.
      */
     public boolean isReactor(){
-        return (reactorProcessor.getCenterDistance() <= MAX_REACTOR_DISTANCE);
+        return (getReactorCenterDistance() <= MAX_WALL_DISTANCE_MIDDLE ||
+                getReactorLeftDistance() <= MAX_WALL_DISTANCE_SIDES ||
+                getReactorRightDistance() <= MAX_WALL_DISTANCE_SIDES);
     }
     
     

@@ -81,8 +81,9 @@ public class GoalStateController{
     
     private void avoidWalls(){
         currentStateController.stop();
+        ObstacleDirection direction = summaryOfImage.getObstacle();
         final AvoidWallStateController avoidWallController = 
-                new AvoidWallStateController(robotModel);
+                new AvoidWallStateController(robotModel, direction);
         
         currentStateController = avoidWallController;
         
