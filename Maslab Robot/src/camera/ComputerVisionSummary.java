@@ -82,7 +82,9 @@ public class ComputerVisionSummary {
     
     
     public void updateWallSummary(Mat image){
-        
+        final Mat HSVImage = new Mat();
+        Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        blueWallProcessor.processImage(HSVImage);
     }
     
     

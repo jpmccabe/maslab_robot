@@ -86,7 +86,9 @@ public class GoalStateController{
         
         Thread avoidWallThread = new Thread(new Runnable(){
             public void run(){
-                avoidWallController.controlState(lastFrame);
+                while(!avoidWallController.isDone()){
+                    avoidWallController.controlState(lastFrame);
+                }
             }
         });
         
