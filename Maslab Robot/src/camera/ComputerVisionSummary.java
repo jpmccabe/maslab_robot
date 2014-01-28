@@ -101,6 +101,11 @@ public class ComputerVisionSummary {
     }
     
     
+    public boolean isObstacle(){
+        return getObstacle() != ObstacleDirection.NONE;
+    }
+    
+    
     /**
      * @return if there is an obstacle, returns the direction where it is at (left or right). Returns
      * ObstacleDirection.NONE if there is no obstacle.
