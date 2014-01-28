@@ -108,7 +108,7 @@ public class Devices {
         List<Double> angularDistance = new ArrayList<Double>();
         
         maple.updateSensorData();
-        angularDistance.add(leftEncoder.getTotalAngularDistance());
+        angularDistance.add(-1*leftEncoder.getTotalAngularDistance());
         angularDistance.add(rightEncoder.getTotalAngularDistance());
         
         return angularDistance;
@@ -123,7 +123,7 @@ public class Devices {
         List<Double> deltaAngularDistance = new ArrayList<Double>();
         
         maple.updateSensorData();
-        deltaAngularDistance.add(leftEncoder.getDeltaAngularDistance());
+        deltaAngularDistance.add(-1*leftEncoder.getDeltaAngularDistance());
         deltaAngularDistance.add(rightEncoder.getDeltaAngularDistance());
         
         return deltaAngularDistance;
@@ -138,7 +138,7 @@ public class Devices {
         List<Double> angularSpeed = new ArrayList<Double>();
         
         maple.updateSensorData();
-        angularSpeed.add(leftEncoder.getAngularSpeed());
+        angularSpeed.add(-1*leftEncoder.getAngularSpeed());
         angularSpeed.add(rightEncoder.getAngularSpeed());
         
         return angularSpeed;
