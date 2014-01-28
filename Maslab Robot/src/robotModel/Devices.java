@@ -22,10 +22,10 @@ public class Devices {
 	private static final int leftMotor_PWM_Pin = 7;
 	private static final int rightMotor_Dir_Pin = 1;
 	private static final int rightMotor_PWM_Pin = 2;
-	private static final int leftMotor_Encoder_A = 30;
-	private static final int leftMotor_Encoder_B = 29;
-	private static final int rightMotor_Encoder_A = 34;
-	private static final int rightMotor_Encoder_B = 32;
+	private static final int rightMotor_Encoder_A = 30;
+	private static final int rightMotor_Encoder_B = 29;
+	private static final int leftMotor_Encoder_A = 34;
+	private static final int leftMotor_Encoder_B = 32;
 	private static final int spiral_Dir_Pin = 4;
 	private static final int spiral_PWM_Pin = 5;
 	private static final int roller_PWM_Pin = 3;
