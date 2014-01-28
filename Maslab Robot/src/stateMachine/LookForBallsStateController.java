@@ -20,10 +20,9 @@ public class LookForBallsStateController extends StateMachine {
     }
     
     
-    private void turn(){
-        double turnSpeed = 0.175;
-        System.out.println("hola");
-        //robotModel.setMotors(turnSpeed, turnSpeed);
+    private void forward(){
+        double forwardSpeed = 0.175;
+        robotModel.setMotors(forwardSpeed, forwardSpeed);
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -34,7 +33,7 @@ public class LookForBallsStateController extends StateMachine {
 
     @Override
     public void controlState(Mat image) {
-        turn();
+        forward();
     }
 
     @Override
