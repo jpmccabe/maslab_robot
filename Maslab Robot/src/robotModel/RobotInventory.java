@@ -15,7 +15,7 @@ public class RobotInventory {
      * Adds one ball to the number of green
      * balls stored on the robot
      */
-    public void addGreenBall(){
+    synchronized public void addGreenBall(){
         numGreenBallsOnBoard++;
     }
     
@@ -24,7 +24,7 @@ public class RobotInventory {
      * Adds one ball to the number of red
      * balls stored on the robot
      */
-    public void addRedBall(){
+    synchronized public void addRedBall(){
         numRedBallsOnBoard++;
     }
     
@@ -35,7 +35,7 @@ public class RobotInventory {
      * @param numberToRemove number of green balls that
      * were removed from the robot.
      */
-    public void removeGreenBalls(int numberToRemove){
+    synchronized public void removeGreenBalls(int numberToRemove){
         numGreenBallsOnBoard -= numberToRemove;
     }
     
@@ -46,7 +46,40 @@ public class RobotInventory {
      * @param numberToRemove number of red balls that were
      * removed from the robot.
      */
-    public void removeRedBalls(int numberToRemove){
+    synchronized public void removeRedBalls(int numberToRemove){
         numRedBallsOnBoard -= numberToRemove;
     }
+    
+    
+    /**
+     * @return true if the robot has green balls on board, false otherwise.
+     */
+    synchronized boolean hasGreenBalls(){
+        return numGreenBallsOnBoard > 0;
+    }
+    
+    
+    /**
+     * @return true if the robot has red balls on board, false otherwise.
+     */
+    synchronized boolean hasRedBalls(){
+        return numRedBallsOnBoard > 0;
+    }
+    
+    
+    /**
+     * @return the number of green balls on board.
+     */
+    synchronized int getNumGreenBalls(){
+        return numGreenBallsOnBoard;
+    }
+    
+    
+    /**
+     * @return the number of red balls on board.
+     */
+    synchronized int getNumRedBalls(){
+        return numRedBallsOnBoard;
+    }
+    
 }

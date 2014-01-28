@@ -1,20 +1,21 @@
 package stateMachine;
 
 import org.opencv.core.Mat;
-
-import robotModel.Devices;
+import robotModel.*;
 import camera.ComputerVisionSummary;
 
 public class ScoreInReactorStateController extends StateMachine {
 
     
     private final Devices robotModel;
+    private final RobotInventory robotInventory;
     private volatile boolean done;
     private final ComputerVisionSummary reactorSummary;
     
     
-    public ScoreInReactorStateController(Devices robotModel){
+    public ScoreInReactorStateController(Devices robotModel, RobotInventory robotInventory){
         this.robotModel = robotModel;
+        this.robotInventory = robotInventory;
         this.reactorSummary = new ComputerVisionSummary();
         done = false;
     }

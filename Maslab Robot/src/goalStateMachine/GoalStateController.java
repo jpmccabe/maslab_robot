@@ -11,6 +11,7 @@ import robotModel.*;
 public class GoalStateController{
     
     private final Devices robotModel;
+    private final RobotInventory robotInventory;
     //private final CameraGUI redBallProcessedImageGUI;
     private final ComputerVisionSummary summaryOfImage;
     private StateMachine currentStateController;
@@ -18,12 +19,13 @@ public class GoalStateController{
     private Mat lastFrame;
 
 
-    public GoalStateController(Devices robotModel){
+    public GoalStateController(){
         // Load the OpenCV library
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         
         this.currentStateController = new StopStateController();
-        this.robotModel = robotModel;
+        this.robotModel = new Devices();
+        this.robotInventory = new RobotInventory();
         summaryOfImage = new ComputerVisionSummary();
          
         lastFrame = new Mat();
@@ -50,6 +52,7 @@ public class GoalStateController{
         });
         
         cameraReadThread.start();
+        robotModel.allMotorsOff();
     }
     
     
@@ -100,8 +103,22 @@ public class GoalStateController{
     
     
     
-    private void score(){
+    private void scoreInReactor(){
+        currentStateController.stop();
+        final ScoreInReactorStateController scoreInReactorController = 
+                new ScoreInReactorStateController(robotModel, robotInventory);
         
+        currentStateController = scoreInReactorController;
+        
+        Thread scoreInReactorThread = new Thread(new Runnable(){
+            public void run(){
+                while(!scoreInReactorController.isDone()){
+                    scoreInReactorController.controlState(lastFrame);
+                }
+            }
+        });
+        
+        scoreInReactorThread.start();
     }
     
     
@@ -143,24 +160,33 @@ public class GoalStateController{
         summaryOfImage.updateFullSummary(lastFrame);
         //redBallProcessedImageGUI.updateImagePane(summaryOfImage.getRedBallProcessedImage());
         
+        final boolean haveGreenBalls = true;
         
-        // if a wall is close, and we are not currently avoiding walls, then avoid walls
-        if(summaryOfImage.isObstacle()){
+        // if a reactor is in view and we have green balls, and we are not currently scoring, then score.
+        if(summaryOfImage.isReactorScoreable() && haveGreenBalls){
+            if(!(currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR &&
+                    !currentStateController.isDone())){
+                System.out.println("Score in reactor");
+                scoreInReactor();
+            }
+        }
+        // else if a wall is close, and we are not currently avoiding walls, then avoid walls
+        else if(summaryOfImage.isObstacle()){
         	if(!(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
                     !currentStateController.isDone())){
         		System.out.println("Avoiding walls");
         		avoidWalls();
         	}
+        }      
+            // else if see ball, and not currently collecting one, then collect ball
+        else if(summaryOfImage.isGreenBall() || summaryOfImage.isRedBall()){
+            if(!(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
+                    && !currentStateController.isDone())){
+                System.out.println("Collecting balls");
+                collectGroundBalls();
+            }
         }
-        
-        // else if see ball, and not currently collecting one, then collect ball
-        else if((summaryOfImage.isGreenBall() || summaryOfImage.isRedBall()) && 
-                !(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
-                && !currentStateController.isDone())){
-            System.out.println("Collecting balls");
-            collectGroundBalls();
-        }
-        
+        // else look for balls
         else if(currentStateController.getStateMachineType() != StateMachineType.LOOK_FOR_BALLS &&
                 currentStateController.isDone()){
             System.out.println("Looking for balls");
@@ -178,8 +204,7 @@ public class GoalStateController{
     
     
     public static void main(String args[]){
-        final Devices robotModel = new Devices();
-        final GoalStateController goalController = new GoalStateController(robotModel);
+        final GoalStateController goalController = new GoalStateController();
   
         Thread goalControllerThread  = new Thread(new Runnable(){
             public void run(){
@@ -189,7 +214,6 @@ public class GoalStateController{
             }
         });
         
-        robotModel.allMotorsOff();
         
         try {
             Thread.sleep(1000);
@@ -198,7 +222,5 @@ public class GoalStateController{
         }
         
         goalControllerThread.start();
-        robotModel.setRoller(true);
-        robotModel.setSpiral(true);
     }
 }
