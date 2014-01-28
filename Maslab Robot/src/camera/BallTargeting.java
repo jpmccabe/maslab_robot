@@ -39,7 +39,7 @@ class BallTargeting{
 	public double getAngle(){
         final double xCircle = ballStruct.getCenter().x;
         final double yCircle = ballStruct.getCenter().y;
-        final double angle= Math.atan((320.0-xCircle)/(480.0-yCircle));
+        final double angle= Math.atan((360.0-xCircle)/(480.0-yCircle));
     
         return angle;
 	}

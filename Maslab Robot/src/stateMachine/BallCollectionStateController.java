@@ -11,7 +11,7 @@ import camera.*;
 public class BallCollectionStateController extends StateMachine {
     
     private final Devices robotModel;
-    private boolean done;
+    private volatile boolean done;
     private final ComputerVisionSummary ballSummary;
     
     
@@ -99,7 +99,7 @@ public class BallCollectionStateController extends StateMachine {
     
 
     @Override
-    synchronized public boolean isDone() {
+    public boolean isDone() {
         return done;
     }
 }

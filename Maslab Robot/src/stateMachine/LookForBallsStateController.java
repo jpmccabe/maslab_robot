@@ -7,7 +7,7 @@ import robotModel.Devices;
 public class LookForBallsStateController extends StateMachine {
 
     private final Devices robotModel;
-    private boolean isDone;
+    private volatile boolean isDone;
     
     public LookForBallsStateController(Devices robotModel){
         this.robotModel = robotModel;
@@ -43,7 +43,7 @@ public class LookForBallsStateController extends StateMachine {
     }
 
     @Override
-    synchronized public boolean isDone() {
+     public boolean isDone() {
         return isDone;
     }
 

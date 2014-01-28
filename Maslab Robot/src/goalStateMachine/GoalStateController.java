@@ -159,6 +159,7 @@ public class GoalStateController{
                 && !currentStateController.isDone())){
             System.out.println("Collecting balls");
             collectGroundBalls();
+            System.out.println("returned from collect balls");
         }
         
         else{

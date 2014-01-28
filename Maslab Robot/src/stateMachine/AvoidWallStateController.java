@@ -9,7 +9,7 @@ public class AvoidWallStateController extends StateMachine {
 
     private final Devices robotModel;
     private final ComputerVisionSummary wallSummary;
-    private boolean done;
+    private volatile boolean done;
     
     public AvoidWallStateController(Devices robotModel){
         this.robotModel = robotModel;
@@ -37,7 +37,7 @@ public class AvoidWallStateController extends StateMachine {
     }
 
     @Override
-    synchronized public void controlState(Mat image) {
+    public void controlState(Mat image) {
         wallSummary.updateWallSummary(image);
         avoidWall();
     }
@@ -48,7 +48,7 @@ public class AvoidWallStateController extends StateMachine {
     }
 
     @Override
-    synchronized public boolean isDone() {
+    public boolean isDone() {
         return done;
     }
     
