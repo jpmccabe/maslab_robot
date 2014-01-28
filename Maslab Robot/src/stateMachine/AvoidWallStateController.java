@@ -39,7 +39,12 @@ public class AvoidWallStateController extends StateMachine {
     @Override
     public void controlState(Mat image) {
         wallSummary.updateWallSummary(image);
-        avoidWall();
+        if(wallSummary.isBlueWall()){
+            avoidWall();
+        }
+        else{
+            stop();
+        }
     }
 
     @Override
