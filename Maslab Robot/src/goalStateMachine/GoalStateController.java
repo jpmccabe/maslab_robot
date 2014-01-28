@@ -53,6 +53,9 @@ public class GoalStateController{
         
         cameraReadThread.start();
         robotModel.allMotorsOff();
+        robotModel.setServoArmToUpPosition();
+        robotModel.setServoSorterToCenterPosition();
+        robotModel.setServoReleaseToScoreLowerPosition();
     }
     
     
