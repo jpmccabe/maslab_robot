@@ -14,8 +14,8 @@ public class LookForBallsStateController extends StateMachine {
     }
     
     @Override
-    synchronized public void stop() {
-        //robotModel.setMotors(0, 0);
+    public void stop() {
+        robotModel.setMotors(0, 0);
         isDone = false;
     }
     
@@ -33,12 +33,12 @@ public class LookForBallsStateController extends StateMachine {
     
 
     @Override
-    synchronized public void controlState(Mat image) {
+    public void controlState(Mat image) {
         turn();
     }
 
     @Override
-    synchronized public StateMachineType getStateMachineType() {
+    public StateMachineType getStateMachineType() {
         return StateMachineType.LOOK_FOR_BALLS;
     }
 

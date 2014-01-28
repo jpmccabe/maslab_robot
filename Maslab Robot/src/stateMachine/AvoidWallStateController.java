@@ -31,8 +31,8 @@ public class AvoidWallStateController extends StateMachine {
     }
     
     @Override
-    synchronized public void stop() {
-        //robotModel.setMotors(0,0);
+    public void stop() {
+        robotModel.setMotors(0,0);
         done = true;
     }
 

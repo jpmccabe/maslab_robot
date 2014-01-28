@@ -47,7 +47,7 @@ public class BallCollectionStateController extends StateMachine {
     
 
     @Override
-    synchronized public void stop() {
+    public void stop() {
         robotModel.setMotors(0,0);
         done = true;
     }
@@ -55,7 +55,7 @@ public class BallCollectionStateController extends StateMachine {
     
 
     @Override
-    synchronized public void controlState(Mat image) {
+    public void controlState(Mat image) {
         final double collectAngleMax = 90;
         final double collectDistanceMax = 6;
         
