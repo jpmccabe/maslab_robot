@@ -17,6 +17,9 @@ public class Devices {
 	private final PWMOutput roller;
 	private final Encoder leftEncoder;
 	private final Encoder rightEncoder;
+	private final Servo6001HB servoSorter;
+	private final Servo3001HB servoReleaser;
+	private final Servo6001HB servoArm;
 
 	private static final int leftMotor_Dir_Pin = 6;
 	private static final int leftMotor_PWM_Pin = 7;
@@ -29,6 +32,9 @@ public class Devices {
 	private static final int spiral_Dir_Pin = 4;
 	private static final int spiral_PWM_Pin = 5;
 	private static final int roller_PWM_Pin = 3;
+	private static final int servo_Sorter_Pin = 8;
+	private static final int servo_Release_Pin = 9;
+	private static final int servo_Arm_Pin = 11;
 	
 	private double leftMotorSetSpeed = 0;
 	private double rightMotorSetSpeed = 0;
@@ -43,6 +49,9 @@ public class Devices {
 	    roller = new PWMOutput(roller_PWM_Pin);
 	    leftEncoder = new Encoder(leftMotor_Encoder_A, leftMotor_Encoder_B);
 	    rightEncoder = new Encoder(rightMotor_Encoder_A, rightMotor_Encoder_B);
+	    servoSorter = new Servo6001HB(servo_Sorter_Pin);
+	    servoReleaser = new Servo3001HB(servo_Release_Pin);
+	    servoArm = new Servo6001HB(servo_Arm_Pin);
 	    
 	    maple.registerDevice(leftMotor);
         maple.registerDevice(rightMotor);
@@ -50,6 +59,9 @@ public class Devices {
         maple.registerDevice(spiral);
         maple.registerDevice(leftEncoder);
         maple.registerDevice(rightEncoder);
+        maple.registerDevice(servoSorter);
+        maple.registerDevice(servoReleaser);
+        maple.registerDevice(servoArm);
         maple.initialize();
         
         Thread PIDThread =  new Thread(new Runnable(){
@@ -167,6 +179,87 @@ public class Devices {
 	}
 	
 	
+	/**
+	 * Sets the sorter servo to center position
+	 */
+	synchronized public void setServoSorterToCenterPosition(){
+	    servoSorter.setAngle(90);
+	    maple.transmit();
+	}
+	
+	
+	/**
+     * Sets the sorter servo to green position
+     */
+    synchronized public void setServoSorterToGreenPosition(){
+        servoSorter.setAngle(195);
+        maple.transmit();
+    }
+    
+    
+    /**
+     * Sets the sorter servo to red ball position
+     */
+    synchronized public void setServoSorterToRedPosition(){
+        servoSorter.setAngle(0);
+        maple.transmit();
+    }
+    
+    
+    /**
+     * Sets the release servo to red ball channel position
+     */
+    synchronized public void setServoReleaseToRedPosition(){
+        servoReleaser.setAngle(180);
+        maple.transmit();
+    }
+    
+    
+    /**
+     * Sets the release servo to green ball channel position
+     */
+    synchronized public void setServoReleaseToGreenPosition(){
+        servoReleaser.setAngle(62);
+        maple.transmit();
+    }
+    
+    
+    /**
+     * Sets the release servo to score upper position
+     */
+    synchronized public void setServoReleaseToScoreUpperPosition(){
+        servoReleaser.setAngle(0);
+        maple.transmit();
+    }
+    
+    
+    /**
+     * Sets the release servo to lower upper position
+     */
+    synchronized public void setServoReleaseToScoreLowerPosition(){
+        servoReleaser.setAngle(121);
+        maple.transmit();
+    }
+    
+    
+    /**
+     * Sets the arm servo to upper position
+     */
+    synchronized public void setServoArmToUpPosition(){
+        servoArm.setAngle(140);
+        maple.transmit();
+    }
+    
+    
+    /**
+     * Sets the arm servo to down position
+     */
+    synchronized public void setServoArmToDownPosition(){
+        servoArm.setAngle(60);
+        maple.transmit();
+    }
+    
+    
 	/**
 	 * @return List containing total angular distance in radians of each wheel. The
 	 * left motor is the first index and the right motor is the second index.

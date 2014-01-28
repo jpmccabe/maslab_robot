@@ -7,15 +7,18 @@ public class SimulatedPort extends SerialPort {
 	public SimulatedPort() {
 		super("");
 	}
-	
-	public byte[] readBytes(int numBytes) {
-		return new byte[numBytes];
-	}
 
-	public byte[] readBytes() {
-		byte[] data = new byte[] {MapleIO.RESPONSE_SIGNAL, 0, 10, 2, MapleIO.END_SIGNAL};
+	public byte[] readBytes(int numBytes) {
+		byte[] data = new byte[numBytes];
+		for (int i = 0; i < numBytes; i++) {
+			data[i] = MapleIO.END_SIGNAL;
+		}
 		System.out.println("Receiving: " + formatBytes(data));
 		return data;
+	}
+	
+	public byte[] readBytes() {
+		return readBytes(1);
 	}
 	
 	public boolean writeByte(byte b) {
@@ -39,8 +42,10 @@ public class SimulatedPort extends SerialPort {
 	
 	public static String formatBytes(byte[] data) {
 		String str = "";
-		for (byte b : data) {
-			str += formatByte(b) + " ";
+		if (data != null) {
+			for (byte b : data) {
+				str += formatByte(b) + " ";
+			}
 		}
 		return str;
 	}

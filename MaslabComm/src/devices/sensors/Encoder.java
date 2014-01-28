@@ -18,6 +18,13 @@ public class Encoder extends Sensor {
 	long lastUpdateTime;
 	long deltaTime;
 	
+	/*
+	 * Takes two digital pins.
+	 *
+	 * The Maple will place an interrupt on pin A.
+	 * Be aware that the Maple has a total of 16 interrupt lines,
+	 * and their website details which interrupt pins you can't use together.
+	 */
 	public Encoder(int pinA, int pinB) {
 		this.pinA = (byte) pinA;
 		this.pinB = (byte) pinB;

@@ -2,6 +2,9 @@ package comm;
 
 
 import devices.actuators.Cytron;
+import devices.actuators.Servo;
+import devices.actuators.Servo3001HB;
+import devices.actuators.Servo6001HB;
 import devices.sensors.Encoder;
 import devices.sensors.Gyroscope;
 import devices.sensors.Ultrasonic;
@@ -19,8 +22,7 @@ public class Test {
 		 * Create your Maple communication framework by specifying what kind of 
 		 * serial port you would like to try to autoconnect to.
 		 */
-		MapleComm comm = new MapleComm(MapleIO.SerialPortType.SIMULATION);
-		//MapleComm comm = new MapleComm(MapleIO.SerialPortType.LINUX);
+		MapleComm comm = new MapleComm(MapleIO.SerialPortType.LINUX);
 
 		/*
 		 * Create an object for each device. The constructor arguments specify
@@ -29,48 +31,43 @@ public class Test {
 		 * Devices are generally either Sensors or Actuators. For example, a
 		 * motor controller is an actuator, and an encoder is a sensor.
 		 */
-//		Cytron motor1 = new Cytron(4, 5);
-//		Cytron motor2 = new Cytron(6, 7);
-		Ultrasonic ultra1 = new Ultrasonic(13, 12);
-		Ultrasonic ultra2 = new Ultrasonic(36, 34);
-//		Gyroscope gyro = new Gyroscope(1, 9);
-//		Encoder enc = new Encoder(2, 3);
+		Servo servo1 = new Servo6001HB(0);
 
 		/*
 		 * Build up a list of devices that will be sent to the Maple for the
 		 * initialization step.
 		 */
-//		comm.registerDevice(motor1);
-//		comm.registerDevice(motor2);
-		comm.registerDevice(ultra1);
-//		comm.registerDevice(ultra2);
-//		comm.registerDevice(gyro);
-//		comm.registerDevice(enc);
+		comm.registerDevice(servo1);
 
 		// Send information about connected devices to the Maple
 		comm.initialize();
 
+		double angle = servo1.getMinAngle();
+		
 		while (true) {
-			
+
 			// Request sensor data from the Maple and update sensor objects accordingly
-			comm.updateSensorData();
+			//comm.updateSensorData();
 			
 			// All sensor classes have getters.
-			//System.out.println(gyro.getOmega() + " " + ultra1.getDistance());
-			System.out.println(ultra1.getDistance() + " " + ultra2.getDistance());
-			//System.out.println(enc.getTotalAngularDistance() + " " + enc.getAngularSpeed());
 			
 			// All actuator classes have setters.
-			//motor1.setSpeed(0.2);
-			//motor2.setSpeed(-0.3);
+			servo1.setAngle(angle);
 
 			// Request that the Maple write updated values to the actuators
-			//comm.transmit();
+			comm.transmit();
+			
+			angle += (servo1.getMaxAngle() - servo1.getMinAngle()) / 4;
+			if (angle > servo1.getMaxAngle()) {
+				angle = servo1.getMinAngle();
+			}
 			
 			// Just for console-reading purposes; don't worry about timing
 			try {
-				Thread.sleep(100);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) { }
+			
+//			comm.updateSensorData();
 		}
 	}
 }

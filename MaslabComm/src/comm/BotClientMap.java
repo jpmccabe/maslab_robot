@@ -61,6 +61,10 @@ public class BotClientMap {
 		public String toString() {
 			return String.format("(%.2f, %.2f)", x, y);
 		}
+		
+		public String toBotClientString() {
+			return String.format("%.2f,%.2f", x, y);
+		}
 	}
 	
 	public static class Pose extends Point{
@@ -74,6 +78,10 @@ public class BotClientMap {
 		@Override
 		public String toString() {
 			return String.format("(%.2f, %.2f, %.2f)", x, y, theta);
+		}
+		
+		public String toBotClientString() {
+			return String.format("%.2f,%.2f,%.2f", x, y, theta);
 		}
 	}
 	
@@ -96,6 +104,10 @@ public class BotClientMap {
 		public String toString() {
 			return String.format("Wall: %s\t[%s - %s]", type, start, end);
 		}
+		
+		public String toBotClientString() {
+			return String.format("%s,%s,%s", start.toBotClientString(), end.toBotClientString(), WallTypeShort.values()[type.ordinal()]);
+		}
 	}
 	
 	@Override
@@ -107,14 +119,22 @@ public class BotClientMap {
 		return mapString;
 	}
 	
+	public String toBotClientString() {
+		String mapString = String.format("%.2f:", gridSize);
+		mapString += startPose.toBotClientString() + ":";
+		for (Wall w : walls)
+			mapString += w.toBotClientString() + ":";
+		
+		return mapString;
+	}
+	
 	public static BotClientMap getDefaultMap() {
 		String mapString = "22.0:4.5,5.5,3.14159:";
-		mapString += "0,0,0,1,N:0,1,1,2,O:1,2,1,3,O:1,3,0,4,O:0,4,0,6,S:0,6,3,6,N:3,6,4,6,R:4,6,7,6,N:7,6,7,1,N:7,1,6,0,N:";
-		mapString += "6,0,5,0,R:5,0,3,0,N:3,0,2,1,N:2,1,1,0,N:1,0,0,0,R:";
-		mapString += "4,0,4,5,N:4,5,5,5,N:";
-		mapString += "4,1,3,2,N:3,2,2,2,N:2,2,2,3,N:2,3,4,3,N:";
-		mapString += "5,1,5,3,N:5,3,6,3,N:6,3,6,2,N:6,2,5,1,N:";
-		
+		mapString += "0,1,0,2,R:0,2,1,3,N:1,3,0,3,N:0,3,0,4,N:0,4,1,5,N:";
+		mapString += "1,5,3,5,N:3,5,3,4,N:3,4,4,5,N:4,5,5,5,N:";
+		mapString += "5,5,5,3,N:5,3,4,2,N:4,2,4,1,N:4,1,3,0,N:";
+		mapString += "3,0,2,0,N:2,0,2,1,N:2,1,0,1,N:";
+				
 		BotClientMap m = new BotClientMap();
 		m.load(mapString);
 		return m;
@@ -154,5 +174,7 @@ public class BotClientMap {
 	public static void main(String[] args) {
 		BotClientMap map = getDefaultMap();
 		map.drawMap();
+		System.out.println(map);
+		System.out.println(map.toBotClientString());
 	}
 }

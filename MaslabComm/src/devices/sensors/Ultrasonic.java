@@ -11,7 +11,11 @@ public class Ultrasonic extends Sensor {
 	private double distance;
 	
 	/*
-	 * Takes two digital pins
+	 * Takes two digital pins.
+	 *
+	 * The Maple will place an interrupt on the echo pin.
+	 * Be aware that the Maple has a total of 16 interrupt lines,
+	 * and their website details which interrupt pins you can't use together.
 	 */
 	public Ultrasonic(int trig, int echo) {
 		this.trig = (byte) trig;
@@ -33,6 +37,7 @@ public class Ultrasonic extends Sensor {
 		byte msb = buff.get();
 		byte lsb = buff.get();
 		distance = ((((int) msb & 0xff) * 256) + ((int) lsb & 0xff)) * CONVERSION_FACTOR;
+		//distance = ((((int) msb & 0xff) * 256) + ((int) lsb & 0xff));
 	}
 
 	@Override

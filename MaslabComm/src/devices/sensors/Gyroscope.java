@@ -49,7 +49,7 @@ public class Gyroscope extends Sensor {
 	}
 	
 	// in radians per second
-	public double getOmega() {
+	public double getAngularSpeed() {
 		return omega;
 	}
 	
