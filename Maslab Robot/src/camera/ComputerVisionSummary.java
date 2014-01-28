@@ -74,9 +74,29 @@ public class ComputerVisionSummary {
     public void updateObstacleSummary(Mat image){
         final Mat HSVImage = new Mat();
         Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
-        blueWallProcessor.processImage(HSVImage);
+        
+        Thread blueWallProcessorThread = new Thread(new ProcessorRunner(blueWallProcessor, HSVImage));
+        Thread reactorProcessorThread = new Thread(new ProcessorRunner(reactorProcessor, HSVImage));
+        Thread interfaceWallProcessorThread = new Thread(new ProcessorRunner(interfaceWallProcessor, HSVImage));
+        
+        blueWallProcessorThread.start();
+        reactorProcessorThread.start();
+        interfaceWallProcessorThread.start();
+        
+        try{
+           blueWallProcessorThread.join();
+           reactorProcessorThread.join();
+           interfaceWallProcessorThread.join();
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+    
+    
+    public void updateReactorSummary(Mat image){
+        final Mat HSVImage = new Mat();
+        Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
         reactorProcessor.processImage(HSVImage);
-        interfaceProcessor.processImage(HSVImage);
     }
     
     
@@ -128,7 +148,7 @@ public class ComputerVisionSummary {
         else if(isInterfaceWall()){
             direction = getInterfaceWallAngleInDegrees() <= 0 ? ObstacleDirection.RIGHT: ObstacleDirection.LEFT;
         }
-        
+       
         return direction;
     }
     
