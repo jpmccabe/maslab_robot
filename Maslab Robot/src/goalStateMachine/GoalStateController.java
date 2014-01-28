@@ -195,10 +195,6 @@ public class GoalStateController{
         
         long estimatedTime = (System.nanoTime() - startTime);
         System.out.println(estimatedTime);
-        // if see reactor and have green balls then score
-        // if see interface wall and have red balls then score over wall
-        // if see energy silo then collect ball
-        
     }
 
     
