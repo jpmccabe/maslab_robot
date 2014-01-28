@@ -7,7 +7,7 @@ public class RobotInventory {
     
     private int numRedBallsOnBoard;
     private int numGreenBallsOnBoard;
-    private Queue<String> unsortedBalls =new LinkedList<String>();
+    private Queue<Ball> unsortedBalls = new LinkedList<Ball>();
     
     
     public RobotInventory(){
@@ -39,18 +39,18 @@ public class RobotInventory {
      * add the ball color to the unsorted balls queue 
      * unsorted balls on the first channel from spiral tube window
      */
-    synchronized public void addBallToQueue(String ballColor){
+    synchronized public void addBallToQueue(Ball ballColor){
         unsortedBalls.add(ballColor);   
     }
     
     /**
-     * add the ball color to the unsorted balls queue 
-     * unsorted balls on the first channel from spiral tube window
-     * @return 
+     * returns the next ball in the to be sorted queue
+     * @return ball color of next ball to be sorted. Returns Ball.NONE
+     * if there is no ball in the queue
      */
-    synchronized public String ballToBeSorted(){
+    synchronized public Ball ballToBeSorted(){
         if(unsortedBalls.size()>0) return unsortedBalls.remove();
-        else return "empty";
+        else return Ball.NONE;
     }
     
     
