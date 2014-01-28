@@ -27,6 +27,7 @@ public class ScoreInReactorStateController extends StateMachine {
 
     @Override
     public void controlState(Mat image) {
+        reactorSummary.updateReactorSummary(image);
         // TODO Auto-generated method stub
         
     }
