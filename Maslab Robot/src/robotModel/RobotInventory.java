@@ -7,7 +7,7 @@ public class RobotInventory {
     
     private int numRedBallsOnBoard;
     private int numGreenBallsOnBoard;
-    private Queue<BallColor> unsortedBalls = new LinkedList<BallColor>();
+    private Queue<TimedBall> unsortedBalls = new LinkedList<TimedBall>();
     
     
     public RobotInventory(){
@@ -39,18 +39,18 @@ public class RobotInventory {
      * add the ball color to the unsorted balls queue 
      * unsorted balls on the first channel from spiral tube window
      */
-    synchronized public void addBallToQueue(BallColor ballColor){
-        unsortedBalls.add(ballColor);   
+    synchronized public void addBallToQueue(TimedBall timedBall){
+        unsortedBalls.add(timedBall);   
     }
     
     /**
      * returns the next ball in the to be sorted queue
-     * @return ball color of next ball to be sorted. Returns Ball.NONE
-     * if there is no ball in the queue
+     * @return Timed ball of next ball to be sorted. Timed ball will 
+     * have color of BallColor.NONE if there is not a ball in the queue.
      */
-    synchronized public BallColor ballToBeSorted(){
+    synchronized public TimedBall ballToBeSorted(){
         if(unsortedBalls.size()>0) return unsortedBalls.remove();
-        else return BallColor.NONE;
+        else return new TimedBall(0,BallColor.NONE);
     }
     
     
