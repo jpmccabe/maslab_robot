@@ -44,7 +44,12 @@ public class BallCollectionStateController extends StateMachine {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
+        robotModel.setMotors(-forwardSpeed,-forwardSpeed);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Thread rollerThread = new Thread(new Runnable(){
             public void run(){
                 try {

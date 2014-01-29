@@ -186,6 +186,8 @@ public class GoalStateController{
         long startTime = System.nanoTime();
         summaryOfImage.updateFullSummary(lastFrame);
         //GUI.updateImagePane(summaryOfImage.getReactorProcessedImage());
+        
+        System.out.println("Reactor angle to turn: " + summaryOfImage.getReactorAngleToTurn());
                 
         // if a reactor is in view and we have green balls, and we are not currently scoring, then score.
         if((summaryOfImage.isReactorScoreable() && robotInventory.hasGreenBalls()) || 
@@ -226,12 +228,12 @@ public class GoalStateController{
     
     
     public static void main(String args[]){  
-        /*
+        
         BotClient botclient = new BotClient("18.150.7.174:6667","1221",false);
         while( !botclient.gameStarted() ) {
         }
         botclient.close();
-        */
+        
         
         final GoalStateController goalController = new GoalStateController();
   

@@ -23,6 +23,7 @@ class CameraProcessor4 extends CameraProcessor{
     private double centerDistance;
     private double angleInDegrees;
     private int centerXValue;
+    private double angleToTurn;
 
     static {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -82,9 +83,9 @@ class CameraProcessor4 extends CameraProcessor{
                         else secondPixel=y;
                     }
                 }
-                averageDistance+=500.0/(firstPixel-secondPixel);
-                if (count<10){leftDistance+=500.0/(firstPixel-secondPixel);}
-                if (count>40){rightDistance+=500.0/(firstPixel-secondPixel);}
+                averageDistance+=640.0/(firstPixel-secondPixel);
+                if (count<10){leftDistance+=640.0/(firstPixel-secondPixel);}
+                if (count>40){rightDistance+=640.0/(firstPixel-secondPixel);}
                 sampleSize+=1;
                 count+=1;
                 Core.line(processedImage, new Point((int)x,firstPixel), new Point((int)x,secondPixel), new Scalar(255,0,0));
@@ -96,7 +97,15 @@ class CameraProcessor4 extends CameraProcessor{
 
 
         Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
-
+        
+        double smallOffAngle = (Math.acos((Math.pow(5.75, 2) - Math.pow(Math.max(rightDistance, leftDistance), 2) - Math.pow(averageDistance,2))/ (-2*Math.max(rightDistance, leftDistance)*averageDistance)));
+        //double smallOffAngle=(Math.pow(5.75, 2) - Math.pow(Math.max(rightDistance, leftDistance), 2) - Math.pow(averageDistance,2))/ (-2*Math.max(rightDistance, leftDistance)*averageDistance);
+        System.out.println("Right distance: " + rightDistance);
+        System.out.println("Left distance: " + leftDistance);
+        System.out.println("Average distance: " + averageDistance);
+        double angleToVertical = boundingRect.x;
+        double angleToTurn = Math.toDegrees(angleToVertical) - 90;
+        System.out.println("Angle to turn: " + angleToTurn);
         final double angleInRadians = (rightDistance-leftDistance)/averageDistance*2.25;
         final double angleInDegrees = angleInRadians * (180/Math.PI);
         final int centerXValue = (int) ((boundingRect.x) + (boundingRect.width/2.0));
@@ -108,11 +117,27 @@ class CameraProcessor4 extends CameraProcessor{
             this.angleInDegrees = angleInDegrees;
             this.centerXValue = centerXValue;
             this.processedImage = processedImage;
+            this.angleToTurn = angleToTurn;
         }
 
   
     }
     
+    /**
+     * 
+     * @param pixel the pixel to be converted to angle
+     * @return angle in degrees from front of robot
+     */
+    private double pixelToAngle(int pixel){
+    	final int centerPixel = 348;
+    	int direction=1;
+    	if (pixel<348){
+    		pixel=348+(348-pixel);
+    		direction=-1;
+    	}
+    	double absoluteAngleInDegrees =  (348 + (2.53333*pixel) + (0.08*Math.pow(pixel, 2)));
+    	return absoluteAngleInDegrees*direction;
+    }
     
     synchronized public double getLeftDistance(){
         return leftDistance;
@@ -136,6 +161,10 @@ class CameraProcessor4 extends CameraProcessor{
     
     synchronized public Mat getProcessedImage(){
         return processedImage;
+    }
+    
+    synchronized public double getAngleToTurn(){
+    	return angleToTurn;
     }
 }
 
