@@ -60,8 +60,8 @@ public class Devices {
         maple.registerDevice(rightMotor);
         maple.registerDevice(roller);
         maple.registerDevice(spiral);
-        maple.registerDevice(leftEncoder);
-        maple.registerDevice(rightEncoder);
+       // maple.registerDevice(leftEncoder);
+       // maple.registerDevice(rightEncoder);
         maple.registerDevice(servoSorter);
         maple.registerDevice(servoReleaser);
         maple.registerDevice(servoArm);
