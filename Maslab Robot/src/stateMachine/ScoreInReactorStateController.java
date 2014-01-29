@@ -74,7 +74,7 @@ public class ScoreInReactorStateController extends StateMachine {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("Down depositing balls in top");
+        System.out.println("Done depositing balls in top");
     }
     
     private void reverse(){
@@ -97,6 +97,32 @@ public class ScoreInReactorStateController extends StateMachine {
         System.out.println("Angle:"+angle);
         System.out.println("Distance:"+distance);
         
+        if(centerX < 340 && state == ScoreInReactorStates.TURN_RIGHT){
+            state = ScoreInReactorStates.WALK_LEFT;
+        }
+        else if((centerX >= 590 && state == ScoreInReactorStates.WALK_LEFT) || state == ScoreInReactorStates.TURN_RIGHT){
+            state = ScoreInReactorStates.TURN_RIGHT;
+            robotModel.setMotors(0.2,-0.2);
+        }
+        else if(centerX < 340 || state == ScoreInReactorStates.WALK_LEFT){
+            state = ScoreInReactorStates.WALK_LEFT;
+            robotModel.setMotors(0, 0.2);
+        }
+        
+        
+        else if(centerX >= 340 && state == ScoreInReactorStates.TURN_LEFT){
+            state = ScoreInReactorStates.WALK_RIGHT;
+        }
+        else if((centerX <= 50 && state == ScoreInReactorStates.WALK_RIGHT) || state == ScoreInReactorStates.TURN_LEFT){
+            state = ScoreInReactorStates.TURN_LEFT;
+            robotModel.setMotors(-0.2,0.2);
+        }
+        else if(centerX >= 340 || state == ScoreInReactorStates.WALK_RIGHT){
+            state = ScoreInReactorStates.WALK_RIGHT;
+            robotModel.setMotors(0.2,0);
+        }
+        
+        /*
         if(angle >=0 ){
         	centerOfScreen = 220;
         } else{
@@ -133,7 +159,7 @@ public class ScoreInReactorStateController extends StateMachine {
         		state == ScoreInReactorStates.DEPOSIT)){
         	deposit();
         }
- 
+         */
        
     }
 
