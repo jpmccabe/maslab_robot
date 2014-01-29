@@ -42,10 +42,10 @@ public class ScoreInReactorStateController extends StateMachine {
         if (centerX<centerOfScreen) rotationDirection=-1;
         double prop = (centerX-centerOfScreen)*0.001;
         if(Math.abs(prop) < minSpeed){
-        	prop = prop >= 0 ? minSpeed : -minSpeed;
+            prop = prop >= 0 ? minSpeed : -minSpeed;
         }
         if(Math.abs(prop) > maxSpeed){
-        	prop = prop >= 0 ? maxSpeed: -maxSpeed;
+            prop = prop >= 0 ? maxSpeed: -maxSpeed;
         }
         System.out.println("Center Speed L: " + prop + " R: " +(-prop));
         robotModel.setMotors(prop,-prop);
@@ -55,15 +55,15 @@ public class ScoreInReactorStateController extends StateMachine {
         System.out.println("Go Straight");
         robotModel.setMotors(0.2,0.2);
         try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
     private void deposit(){
-    	robotModel.setMotors(0,0);
+        robotModel.setMotors(0,0);
         System.out.println("Deposit balls in top");
         try {
             robotModel.setServoReleaseToGreenPosition();
@@ -96,43 +96,18 @@ public class ScoreInReactorStateController extends StateMachine {
         int centerX=reactorSummary.getReactorCenterXValue();
         System.out.println("Angle:"+angle);
         System.out.println("Distance:"+distance);
-        
-        if(centerX < 340 && state == ScoreInReactorStates.TURN_RIGHT){
-            state = ScoreInReactorStates.WALK_LEFT;
-        }
-        else if((centerX >= 590 && state == ScoreInReactorStates.WALK_LEFT) || state == ScoreInReactorStates.TURN_RIGHT){
-            state = ScoreInReactorStates.TURN_RIGHT;
-            robotModel.setMotors(0.2,-0.2);
-        }
-        else if(centerX < 340 || state == ScoreInReactorStates.WALK_LEFT){
-            state = ScoreInReactorStates.WALK_LEFT;
-            robotModel.setMotors(0, 0.2);
-        }
-        
-        
-        else if(centerX >= 340 && state == ScoreInReactorStates.TURN_LEFT){
-            state = ScoreInReactorStates.WALK_RIGHT;
-        }
-        else if((centerX <= 50 && state == ScoreInReactorStates.WALK_RIGHT) || state == ScoreInReactorStates.TURN_LEFT){
-            state = ScoreInReactorStates.TURN_LEFT;
-            robotModel.setMotors(-0.2,0.2);
-        }
-        else if(centerX >= 340 || state == ScoreInReactorStates.WALK_RIGHT){
-            state = ScoreInReactorStates.WALK_RIGHT;
-            robotModel.setMotors(0.2,0);
-        }
-        
         /*
         if(angle >=0 ){
-        	centerOfScreen = 220;
+            centerOfScreen = 220;
         } else{
-        	centerOfScreen = 420;
+            centerOfScreen = 420;
         }
+        */
         
         
         
         if(!reactorSummary.isReactorScoreable()){
-        	stop();
+            stop();
         }
         else if(!robotInventory.hasGreenBalls()){
             reverse();
@@ -140,26 +115,26 @@ public class ScoreInReactorStateController extends StateMachine {
         }
         // center reactor in camera view if too far off
         else if(Math.abs(centerX-centerOfScreen) > 50 && distance > 6 && state == ScoreInReactorStates.NONE) {
-        	centerRobot(centerX);
+            centerRobot(centerX);
         }
         
         // drive straight towards the reactor if the angle is small
         else if(Math.abs(centerX-centerOfScreen) <= 50 && distance >= 6){
-        	List<Double> motorSpeeds = driver.driveToReactor(distance, 6, centerX-centerOfScreen, 0);
-        	System.out.println("Left: " + motorSpeeds.get(0) + " Right: " + motorSpeeds.get(1));
-        	robotModel.setMotors(motorSpeeds.get(0), motorSpeeds.get(1));
-        	state = ScoreInReactorStates.STRAIGHT;
+            List<Double> motorSpeeds = driver.driveToReactor(distance, 6, centerX-centerOfScreen, 0);
+            System.out.println("Left: " + motorSpeeds.get(0) + " Right: " + motorSpeeds.get(1));
+            robotModel.setMotors(motorSpeeds.get(0), motorSpeeds.get(1));
+            state = ScoreInReactorStates.STRAIGHT;
         }
         
         else if( distance < 6 && robotInventory.hasGreenBalls() && !(state ==ScoreInReactorStates.INSERT)){
             state = ScoreInReactorStates.INSERT;
-        	straight();
+            straight();
         }
         else if(robotInventory.hasGreenBalls() && (state == ScoreInReactorStates.INSERT ||
-        		state == ScoreInReactorStates.DEPOSIT)){
-        	deposit();
+                state == ScoreInReactorStates.DEPOSIT)){
+            deposit();
         }
-         */
+ 
        
     }
 
