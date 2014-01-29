@@ -20,6 +20,7 @@ public class Devices {
 	private final Servo6001HB servoSorter;
 	private final Servo3001HB servoReleaser;
 	private final Servo6001HB servoArm;
+	private final AnalogInput ballSensor;
 
 	private static final int leftMotor_Dir_Pin = 6;
 	private static final int leftMotor_PWM_Pin = 7;
@@ -35,6 +36,7 @@ public class Devices {
 	private static final int servo_Sorter_Pin = 8;
 	private static final int servo_Release_Pin = 9;
 	private static final int servo_Arm_Pin = 11;
+	private static final int ball_Sensor_Pin = 12;
 	
 	private double leftMotorSetSpeed = 0;
 	private double rightMotorSetSpeed = 0;
@@ -52,6 +54,7 @@ public class Devices {
 	    servoSorter = new Servo6001HB(servo_Sorter_Pin);
 	    servoReleaser = new Servo3001HB(servo_Release_Pin);
 	    servoArm = new Servo6001HB(servo_Arm_Pin);
+	    ballSensor = new AnalogInput(ball_Sensor_Pin);
 	    
 	    maple.registerDevice(leftMotor);
         maple.registerDevice(rightMotor);
@@ -62,6 +65,7 @@ public class Devices {
         maple.registerDevice(servoSorter);
         maple.registerDevice(servoReleaser);
         maple.registerDevice(servoArm);
+        maple.registerDevice(ballSensor);
         maple.initialize();
         
         Thread PIDThread =  new Thread(new Runnable(){
@@ -259,6 +263,28 @@ public class Devices {
         maple.transmit();
     }
     
+    
+    /**
+     * @return the ball sensor reading
+     */
+    private float getBallSensorReading(){
+        float average = 0;
+        for(int i=0; i <5; i++){
+            maple.updateSensorData();
+            average += ballSensor.getValue();
+        }
+        
+        return (average / 5);
+    }
+    
+    
+    /**
+     * @return true if there is a ball detected in the sorter
+     */
+    synchronized public boolean isBallInSorter(){
+        float threshold = 3900;
+        return (getBallSensorReading() >= threshold);
+    }
     
 	/**
 	 * @return List containing total angular distance in radians of each wheel. The

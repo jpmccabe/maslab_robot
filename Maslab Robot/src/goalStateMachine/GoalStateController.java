@@ -135,7 +135,7 @@ public class GoalStateController{
     private void collectGroundBalls(){
         currentStateController.stop();
         final BallCollectionStateController ballCollectionController = 
-                new BallCollectionStateController(robotModel);
+                new BallCollectionStateController(robotModel, robotInventory);
         
         currentStateController = ballCollectionController;
         
@@ -221,5 +221,6 @@ public class GoalStateController{
         }
         
         goalControllerThread.start();
+        
     }
 }

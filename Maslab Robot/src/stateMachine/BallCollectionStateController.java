@@ -11,12 +11,14 @@ import camera.*;
 public class BallCollectionStateController extends StateMachine {
     
     private final Devices robotModel;
+    private final RobotInventory robotInventory;
     private volatile boolean done;
     private final ComputerVisionSummary ballSummary;
     
     
-    public BallCollectionStateController(Devices robotModel){
+    public BallCollectionStateController(Devices robotModel, RobotInventory robotInventory){
         this.robotModel = robotModel;
+        this.robotInventory = robotInventory;
         this.ballSummary = new ComputerVisionSummary();
         done = false;
     }
@@ -31,11 +33,12 @@ public class BallCollectionStateController extends StateMachine {
     
     
     
-    private void collect(){
+    private void collect(BallColor ballColor){
     	System.out.println("Collect Ball");
         final double forwardSpeed = 0.15;
         robotModel.setMotors(forwardSpeed, forwardSpeed);
         robotModel.setRoller(true);
+        robotInventory.addBallToQueue(new TimedBall(System.currentTimeMillis(), ballColor));
         try {
             Thread.sleep(1500);
         } catch (InterruptedException e) {
@@ -69,7 +72,7 @@ public class BallCollectionStateController extends StateMachine {
             double greenBallDistance = ballSummary.getDistanceToGreenBall();
             
             if(Math.abs(greenBallAngle) <= collectAngleMax && greenBallDistance <= collectDistanceMax){
-                collect();
+                collect(BallColor.GREEN);
             } else{
                 approach(greenBallDistance, greenBallAngle);
             }
@@ -79,7 +82,7 @@ public class BallCollectionStateController extends StateMachine {
             double redBallDistance = ballSummary.getDistanceToRedBall();
             
             if(Math.abs(redBallAngle) <= collectAngleMax && redBallDistance <= collectDistanceMax){
-                collect();
+                collect(BallColor.RED);
             } else{
                 approach(redBallDistance, redBallAngle);
             }
