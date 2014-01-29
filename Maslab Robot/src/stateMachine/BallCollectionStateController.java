@@ -35,12 +35,12 @@ public class BallCollectionStateController extends StateMachine {
     
     private void collect(BallColor ballColor){
     	System.out.println("Collect Ball");
-        final double forwardSpeed = 0.15;
+        final double forwardSpeed = 0.175;
         robotModel.setMotors(forwardSpeed, forwardSpeed);
         robotModel.setRoller(true);
         robotInventory.addBallToQueue(new TimedBall(System.currentTimeMillis(), ballColor));
         try {
-            Thread.sleep(1500);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -72,6 +72,7 @@ public class BallCollectionStateController extends StateMachine {
             double greenBallDistance = ballSummary.getDistanceToGreenBall();
             
             if(Math.abs(greenBallAngle) <= collectAngleMax && greenBallDistance <= collectDistanceMax){
+            	System.out.println("collecting green ball");
                 collect(BallColor.GREEN);
             } else{
                 approach(greenBallDistance, greenBallAngle);
@@ -82,6 +83,7 @@ public class BallCollectionStateController extends StateMachine {
             double redBallDistance = ballSummary.getDistanceToRedBall();
             
             if(Math.abs(redBallAngle) <= collectAngleMax && redBallDistance <= collectDistanceMax){
+            	System.out.println("collecting red ball");
                 collect(BallColor.RED);
             } else{
                 approach(redBallDistance, redBallAngle);

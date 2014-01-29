@@ -63,10 +63,8 @@ class CameraProcessor4 extends CameraProcessor{
         }
 
         Imgproc.Canny(processedImage, processedImage, 15, 200);		
-        double averageDistance = 1000.0;
-        int firstX=boundingRect.x+10;
-        int lastX=0;
         
+        double averageDistance = 1000.0;
         double leftDistance = 1000.0;
         double rightDistance = 1000.0;
         int count=0;

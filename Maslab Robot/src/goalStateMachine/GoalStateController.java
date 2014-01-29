@@ -200,8 +200,7 @@ public class GoalStateController{
         	if(!(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
                     !currentStateController.isDone())){
         		System.out.println("Avoiding walls");
-        		System.out.println(summaryOfImage.getReactorCenterDistance());
-        		//avoidWalls();
+        		avoidWalls();
         	}
         }      
             // else if see ball, and not currently collecting one, then collect ball
@@ -209,14 +208,14 @@ public class GoalStateController{
             if(!(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
                     && !currentStateController.isDone())){
                 System.out.println("Collecting balls");
-                //collectGroundBalls();
+                collectGroundBalls();
             }
         }
         // else look for balls
         else if(currentStateController.getStateMachineType() != StateMachineType.LOOK_FOR_BALLS &&
                 currentStateController.isDone()){
             System.out.println("Looking for balls");
-            //lookForBalls();
+            lookForBalls();
         }
         
         long estimatedTime = (System.nanoTime() - startTime);

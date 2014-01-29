@@ -42,6 +42,7 @@ public class ScoreInReactorStateController extends StateMachine {
     }
     
     private void deposit(){
+    	robotModel.setMotors(0,0);
         System.out.println("Deposit balls in top");
         try {
             robotModel.setServoReleaseToGreenPosition();
@@ -58,10 +59,11 @@ public class ScoreInReactorStateController extends StateMachine {
     private void reverse(){
         robotModel.setMotors(-0.16,-0.16);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        stop();
     }
     
     private void rotateAndDrive(double angle, double distance){
@@ -86,6 +88,12 @@ public class ScoreInReactorStateController extends StateMachine {
         }
         robotModel.setMotors(0,0);
     }
+    
+    
+    private void align(int centerX){
+    	int rotationDirection = (centerX >= 360) ? 1 : -1;
+        robotModel.setMotors(-0.175*rotationDirection,0.175*rotationDirection);
+    }
 
     @Override
     public void controlState(Mat image) {
@@ -105,13 +113,14 @@ public class ScoreInReactorStateController extends StateMachine {
         }
         
         // drive straight towards the reactor if the angle is small
-        else if(Math.abs(angle)<=22 && distance >= 5 && (state == ScoreInReactorStates.NONE ||
+        else if(Math.abs(angle)<=15 && distance >= 5 && (state == ScoreInReactorStates.NONE ||
                 state == ScoreInReactorStates.CENTER || state == ScoreInReactorStates.STRAIGHT)){
         	state = ScoreInReactorStates.STRAIGHT;
         	straight();
         }
         
-        else if((state == ScoreInReactorStates.STRAIGHT || state == ScoreInReactorStates.DEPOSIT)
+        else if((state == ScoreInReactorStates.STRAIGHT || state == ScoreInReactorStates.DEPOSIT ||
+        		state == ScoreInReactorStates.INSERT)
                 && distance < 5 && robotInventory.hasGreenBalls()){
             state = ScoreInReactorStates.DEPOSIT;
             deposit();
@@ -120,28 +129,26 @@ public class ScoreInReactorStateController extends StateMachine {
         
         else if(Math.abs(angle)>22 && (state == ScoreInReactorStates.NONE ||
                 state == ScoreInReactorStates.CENTER || state == ScoreInReactorStates.STRAIGHT)){	
+        	System.out.println("rotate and drive");
             state = ScoreInReactorStates.ROTATE_AND_DRIVE;
             rotateAndDrive(angle,distance);
         }
         
-        else if(state == ScoreInReactorStates.ROTATE_AND_DRIVE || state == ScoreInReactorStates.ALIGN){
-            state = ScoreInReactorStates.ALIGN;
-            int rotationDirection = (angle >= 0) ? 1 : -1;
-            robotModel.setMotors(-0.175*rotationDirection,0.175*rotationDirection);
-            try {
-                Thread.sleep(850);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        else if(Math.abs(centerX-360) <= 50 && state == ScoreInReactorStates.ALIGN){
+        	System.out.println("done aligning");
+            state = ScoreInReactorStates.INSERT;
         }
         
-        else if(Math.abs(centerX-360) <= 30 && state == ScoreInReactorStates.ALIGN){
-            state = ScoreInReactorStates.STRAIGHT;
-        }   
+        else if(state == ScoreInReactorStates.ROTATE_AND_DRIVE || state == ScoreInReactorStates.ALIGN){
+        	System.out.println("align: "+ Math.abs(centerX-360));
+            state = ScoreInReactorStates.ALIGN;
+            align(centerX);
+        }
+           
         
         else if(state == ScoreInReactorStates.DEPOSIT && !robotInventory.hasGreenBalls()){
             state = ScoreInReactorStates.REVERSE;
+            System.out.println("reverse");
             reverse();
         }
        

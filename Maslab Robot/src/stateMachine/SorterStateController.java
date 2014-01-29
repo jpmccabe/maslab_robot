@@ -33,9 +33,12 @@ public class SorterStateController {
             if(timeSincePickup <= expirationTime || colorOfBall == BallColor.NONE){
                 // if a ball sneaked in then assume it is red 
                 if(colorOfBall == BallColor.NONE || colorOfBall == BallColor.RED){
+                	System.out.println("Sorting red");
                     sortRed();
                 }
                 else if(colorOfBall == BallColor.GREEN){
+                	System.out.println("Sorting green");
+                	
                     sortGreen();
                 }
             } else{

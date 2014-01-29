@@ -25,7 +25,7 @@ public class AvoidWallStateController extends StateMachine {
         robotModel.setMotors(turnSpeed, -1*turnSpeed);
         
         try {
-            Thread.sleep(20);
+            Thread.sleep(150);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

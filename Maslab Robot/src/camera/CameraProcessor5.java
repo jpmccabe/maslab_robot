@@ -63,36 +63,36 @@ public class CameraProcessor5 extends CameraProcessor{
         }
 
         Imgproc.Canny(processedImage, processedImage, 15, 200);     
-        final double[] distanceToWall= new double[64];
         double averageDistance = 1000.0;
-        int firstX=boundingRect.x+10;
-        int lastX=0;
         
         double leftDistance = 1000.0;
         double rightDistance = 1000.0;
+        int count=0;
         if (reactorSpotted==true){
+        	leftDistance=0;
+        	rightDistance=0;
             averageDistance=0;
             int sampleSize=0;
-            for(int x=boundingRect.x+10;x<boundingRect.x+boundingRect.width-10;x+=10){
+            for(double x=boundingRect.x+15;x<boundingRect.x+boundingRect.width-15;x+=(boundingRect.width-30)/60.0){
                 int firstPixel=0;
                 int secondPixel=0;
-                lastX=x;
-                for(int y=Math.max(boundingRect.y-2, 1);y<= Math.min(boundingRect.y+boundingRect.height+2,479);y++){
-                    if( processedImage.get(y,x)[0]==255){
+                for(int y= Math.min(boundingRect.y+boundingRect.height+2,479);y>=Math.max(boundingRect.y-2, 1);y--){
+                    if( processedImage.get(y,(int)x)[0]==255){
                         if (firstPixel==0) firstPixel=y;
                         else secondPixel=y;
                     }
                 }
-                distanceToWall[x/10]=500.0/(secondPixel-firstPixel);
-                averageDistance+=distanceToWall[x/10];
+                averageDistance+=500.0/(firstPixel-secondPixel);
+                if (count<10){leftDistance+=500.0/(firstPixel-secondPixel);}
+                if (count>40){rightDistance+=500.0/(firstPixel-secondPixel);}
                 sampleSize+=1;
-                Core.line(processedImage, new Point(x,firstPixel), new Point(x,secondPixel), new Scalar(255,0,0));
+                count+=1;
+                Core.line(processedImage, new Point((int)x,firstPixel), new Point((int)x,secondPixel), new Scalar(255,0,0));
             }
             averageDistance/=sampleSize;
-            leftDistance = distanceToWall[firstX/10];
-            rightDistance = distanceToWall[lastX/10];
+            leftDistance/=10;
+            rightDistance/=(count-40);
         }
-
 
         Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
 
