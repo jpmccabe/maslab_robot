@@ -1,0 +1,171 @@
+<html>
+
+<head>
+<title>Bot Client</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript">
+	
+	var conn = null;
+	
+	$(document).ready( function() {
+		initSocket();
+	});
+	
+	function initSocket() {
+		conn = new WebSocket('ws://18.150.7.174:9000');//, ['soap', 'xmpp']);
+		
+		conn.onopen = function () {
+			var username = prompt("Team Username","");
+      greeting(username);
+      //request();
+			setInterval(function(){request();},50);
+		};
+		
+		// Log errors
+		conn.onerror = function (error) {
+			console.log(error);
+		};
+		
+		// Log messages from the server
+    conn.onmessage = function (e) {
+      if (e.data!='none')
+        {
+			  var data = JSON.parse(e.data);
+			
+			  /*if ( data[0]=="IMAGE_DATA" )
+				  setImage( data[1] );*/
+          setData( data );
+        }
+      };
+	}
+	
+	function greeting( username ) {
+		conn.send("set user "+username);
+		$("#botuser").html(username);
+	}
+	
+	function request() {
+		conn.send("n");
+	}
+	
+	var dataView = {};
+function setData( data ) {
+    for (var i=0;i<data.length;i+=3)
+    {
+      var field=data[i+1];
+      if (field=="IMAGE_DATA")
+      {
+        //console.log(data[i+2]);
+        setImage(data[i+2]);
+        continue;
+      }
+      var str="<h2>"+data[i+2][0]+"</h2>"+data[i+2][1]+"<br>";
+      $("#"+field).html(str);
+    }
+	}
+	
+	function setImage( uri ) {
+		$("#imgview").attr("src","data:image/png;base64,"+uri);
+		//$("#imgview").attr("src","data:image/png;base64,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");
+	}
+</script>
+<style>
+#botview {
+	width: 320px;
+	height: 240px;
+	margin: 10px;
+	background: #333;
+	box-shadow: 0px 1px 1px #777;
+}
+
+#imgview {
+	width: 320px;
+	height: 240px;
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+}
+
+#bottext {
+	line-height:8px;
+	width: 300px;
+	height: 220px;
+	margin: 10px;
+	background: #eee;
+	box-shadow: 0px 1px 1px #777;
+	padding: 10px;
+}
+
+#botuser {
+	color: #113;
+	font-size: 20px;
+	font-weight: bold;
+	margin: 0px;
+	margin-bottom: 10px;
+	padding: 0px;
+	text-decoration:underline;
+}
+
+#botdata {
+	font-size: 16px;
+	color: #333;
+	margin: 0px;
+	padding: 0px;
+}
+
+#a {
+	font-size: 16px;
+	color: #333;
+	margin: 0px;
+	padding: 0px;
+}
+
+#b {
+  font-size: 16px;
+  color: #333;
+  margin: 0px;
+  padding: 0px;
+}
+
+#c {
+	font-size: 16px;
+	color: #333;
+	margin: 0px;
+	padding: 0px;
+}
+
+#d {
+	font-size: 16px;
+	color: #333;
+	margin: 0px;
+	padding: 0px;
+}
+
+#z {
+	font-size: 16px;
+	color: #333;
+	margin: 0px;
+	padding: 0px;
+}
+
+</style>
+</head>
+
+<body>
+<div id='botview'>
+	<img id='imgview' src=''>
+</div> 
+<div id='bottext'>
+	<div id='botuser'>*Username*</div>
+	<div id='botdata'></div>
+	<div id='a'></div>
+	<div id='b'></div>
+	<div id='c'></div>
+  <div id='d'></div>
+  <div id='z'></div>
+</div>
+</body>
+
+</html>

@@ -4,6 +4,7 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.highgui.VideoCapture;
 
+import BotClient.BotClient;
 import stateMachine.*;
 import camera.*;
 import robotModel.*;
@@ -224,7 +225,13 @@ public class GoalStateController{
 
     
     
-    public static void main(String args[]){
+    public static void main(String args[]){  
+        /*
+        BotClient botclient = new BotClient("18.150.7.174:6667","1221",false);
+        while( !botclient.gameStarted() ) {
+        }
+        botclient.close();
+        */
         
         final GoalStateController goalController = new GoalStateController();
   
