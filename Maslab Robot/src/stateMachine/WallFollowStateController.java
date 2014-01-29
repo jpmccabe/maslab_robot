@@ -2,14 +2,17 @@ package stateMachine;
 
 import org.opencv.core.Mat;
 
+import camera.ComputerVisionSummary;
 import robotModel.*;
 
 public class WallFollowStateController extends StateMachine {
     private final Devices robotModel;
     private boolean done = false;
+    private final ComputerVisionSummary wallSummary;
     
     public WallFollowStateController(Devices robotModel){
         this.robotModel = robotModel;
+        wallSummary = new ComputerVisionSummary();
     }
 
     @Override
@@ -20,8 +23,9 @@ public class WallFollowStateController extends StateMachine {
 
     @Override
     public void controlState(Mat image) {
-        // TODO Auto-generated method stub
+        wallSummary.updateObstacleSummary(image);
         
+        //wallSummary.
     }
 
     @Override
