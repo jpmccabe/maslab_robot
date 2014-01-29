@@ -17,6 +17,12 @@ public class SorterStateController {
     public void controlState() {
         // if there is a ball in the sorter mechanism
         if(robotModel.isBallInSorter()){
+        	try {
+				Thread.sleep(400);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             TimedBall ballToSort = robotInventory.ballToBeSorted();
             long timeSincePickup = System.currentTimeMillis() - ballToSort.getPickupTime();
             BallColor colorOfBall = ballToSort.getBallColor();

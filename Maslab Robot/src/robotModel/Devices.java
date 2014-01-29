@@ -44,7 +44,7 @@ public class Devices {
 	private double rightMotorRawSpeed = 0;
 	
 	public Devices(){
-	    maple = new MapleComm();
+	    maple = new MapleComm(MapleIO.SerialPortType.WINDOWS);
 	    leftMotor = new Cytron(leftMotor_Dir_Pin, leftMotor_PWM_Pin);
 	    rightMotor = new Cytron(rightMotor_Dir_Pin, rightMotor_PWM_Pin);
 	    spiral = new Cytron(spiral_Dir_Pin, spiral_PWM_Pin);

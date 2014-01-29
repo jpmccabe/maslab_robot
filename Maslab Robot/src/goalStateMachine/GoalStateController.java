@@ -12,7 +12,7 @@ public class GoalStateController{
     
     private final Devices robotModel;
     private final RobotInventory robotInventory;
-    //private final CameraGUI redBallProcessedImageGUI;
+    private final CameraGUI GUI;
     private final ComputerVisionSummary summaryOfImage;
     private StateMachine currentStateController;
     private final VideoCapture camera;
@@ -32,7 +32,7 @@ public class GoalStateController{
         // Setup the camera
         camera = new VideoCapture();
         camera.open(0);
-        //this.redBallProcessedImageGUI = new CameraGUI(1280,720);
+        this.GUI = new CameraGUI(640,480);
 
         Thread cameraReadThread = new Thread(new Runnable(){
             public void run(){
@@ -67,7 +67,14 @@ public class GoalStateController{
         });
         
         cameraReadThread.start();
+        try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         robotModel.allMotorsOff();
+        robotModel.setSpiral(true);
         robotModel.setServoArmToUpPosition();
         robotModel.setServoSorterToCenterPosition();
         robotModel.setServoReleaseToScoreLowerPosition();
@@ -177,10 +184,10 @@ public class GoalStateController{
     public void controlState(){
         long startTime = System.nanoTime();
         summaryOfImage.updateFullSummary(lastFrame);
-        //redBallProcessedImageGUI.updateImagePane(summaryOfImage.getRedBallProcessedImage());
+        GUI.updateImagePane(summaryOfImage.getReactorProcessedImage());
                 
         // if a reactor is in view and we have green balls, and we are not currently scoring, then score.
-        if((summaryOfImage.isReactorScoreable() && robotInventory.hasGreenBalls()) || 
+        if((summaryOfImage.isReactorScoreable() /*&& robotInventory.hasGreenBalls()*/) || 
                 (currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR && !currentStateController.isDone())){
             if(!(currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR &&
                     !currentStateController.isDone())){
@@ -193,7 +200,8 @@ public class GoalStateController{
         	if(!(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
                     !currentStateController.isDone())){
         		System.out.println("Avoiding walls");
-        		avoidWalls();
+        		System.out.println(summaryOfImage.getReactorCenterDistance());
+        		//avoidWalls();
         	}
         }      
             // else if see ball, and not currently collecting one, then collect ball
@@ -201,18 +209,18 @@ public class GoalStateController{
             if(!(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
                     && !currentStateController.isDone())){
                 System.out.println("Collecting balls");
-                collectGroundBalls();
+                //collectGroundBalls();
             }
         }
         // else look for balls
         else if(currentStateController.getStateMachineType() != StateMachineType.LOOK_FOR_BALLS &&
                 currentStateController.isDone()){
             System.out.println("Looking for balls");
-            lookForBalls();
+            //lookForBalls();
         }
         
         long estimatedTime = (System.nanoTime() - startTime);
-        System.out.println(estimatedTime);
+        //System.out.println(estimatedTime);
     }
 
     

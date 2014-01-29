@@ -35,26 +35,29 @@ public class ScoreInReactorStateController extends StateMachine {
         double angle=reactorSummary.getReactorAngleInDegrees();
         double distance=reactorSummary.getReactorCenterDistance();
         
-        if(Math.abs(centerX-360)>75){
+        System.out.println("Angle:"+angle);
+        
+        if(Math.abs(centerX-360)>100){
+        	System.out.println("CenterX:"+centerX);
         	System.out.println("adjust to center");
-        	robotModel.setMotors(0.175,-0.175);
-        	System.out.println("center:"+centerX);
+        	int rotationDirection=1;
+        	if (centerX<360) rotationDirection=-1;
+        	robotModel.setMotors(0.17*rotationDirection,-0.17*rotationDirection);
         }
-        else if (distance>20 || Math.abs(angle)<10){
+        else if (Math.abs(angle)<=22){
         	System.out.println("Go Straight");
-        	robotModel.setMotors(0.18,0.18);
+        	robotModel.setMotors(0.16,0.16);
+        	if(reactorSummary.getReactorCenterDistance()<5){
+        		System.out.print("GOAAAAAAAL");
+        		try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
         }
-        else if(distance<20 && Math.abs(angle)<10){
-        	robotModel.setMotors(0,0);
-        	System.out.println("Approach & Score");
-        	try {
-				Thread.sleep(100000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-        else if(angle>10)
+        else if(Math.abs(angle)>22)
         {	
         	System.out.println("rotateMode");
         	
@@ -63,26 +66,25 @@ public class ScoreInReactorStateController extends StateMachine {
         	
         	if (angle>=0) rotationDirection=1;
         	if (angle<0) rotationDirection=-1;
-        	System.out.println(angle);
-        	if(Math.abs(angle)>15){
-        		robotModel.setMotors(0.175*rotationDirection,-0.175*rotationDirection);
-        		try {
-        			Thread.sleep((long) (Math.abs((90-Math.abs(angle))*12)));
-        		} catch (InterruptedException e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
-        		}
+        	robotModel.setMotors(0.175*rotationDirection,-0.175*rotationDirection);
+        	try {
+        		Thread.sleep((long) (Math.abs((90-Math.abs(angle))*12)));
+        	} catch (InterruptedException e) {
+        		// TODO Auto-generated catch block
+        		e.printStackTrace();
         	}
+
         	robotModel.setMotors(0.225,0.225);
         	try {
-				Thread.sleep((long) (distance*sinAngle*150));
+				Thread.sleep((long) (Math.abs(distance*sinAngle*150)));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         	robotModel.setMotors(0,0);
+        	robotModel.setMotors(-0.175*rotationDirection,0.175*rotationDirection);
         	try {
-				Thread.sleep(100000);
+				Thread.sleep(850);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -91,8 +93,6 @@ public class ScoreInReactorStateController extends StateMachine {
         	
         	
         }
-        System.out.println("center yo:"+reactorSummary.getReactorCenterXValue());
-        System.out.println(angle);
     }
 
     @Override

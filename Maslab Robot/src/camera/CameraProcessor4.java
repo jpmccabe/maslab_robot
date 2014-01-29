@@ -84,9 +84,9 @@ class CameraProcessor4 extends CameraProcessor{
                         else secondPixel=y;
                     }
                 }
-                averageDistance+=500.0/(secondPixel-firstPixel);
-                if (count<10){leftDistance+=500.0/(secondPixel-firstPixel);}
-                if (count>40){rightDistance+=500.0/(secondPixel-firstPixel);}
+                averageDistance+=500.0/(firstPixel-secondPixel);
+                if (count<10){leftDistance+=500.0/(firstPixel-secondPixel);}
+                if (count>40){rightDistance+=500.0/(firstPixel-secondPixel);}
                 sampleSize+=1;
                 count+=1;
                 Core.line(processedImage, new Point((int)x,firstPixel), new Point((int)x,secondPixel), new Scalar(255,0,0));

@@ -93,7 +93,7 @@ public class MapleIO {
             }
         });
 
-        String port = "/dev/tty.usbmodem1a1231";
+        String port = "COM16";
 
         boolean isConnected = false;
         try {
