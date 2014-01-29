@@ -164,7 +164,7 @@ public class Devices {
 	 * @param on turns the lift on if true, off otherwise.
 	 */
 	synchronized public void setSpiral(boolean on){
-	    double spiralOnSpeed = 0.2;
+	    double spiralOnSpeed = 0.23;
 	    double spiralOffSpeed = 0.0;
 	    double speedToSet = on ? spiralOnSpeed : spiralOffSpeed;
 		
