@@ -12,7 +12,7 @@ public class GoalStateController{
     
     private final Devices robotModel;
     private final RobotInventory robotInventory;
-    private final CameraGUI GUI;
+    //private final CameraGUI GUI;
     private final ComputerVisionSummary summaryOfImage;
     private StateMachine currentStateController;
     private final VideoCapture camera;
@@ -32,7 +32,7 @@ public class GoalStateController{
         // Setup the camera
         camera = new VideoCapture();
         camera.open(0);
-        this.GUI = new CameraGUI(640,480);
+        //this.GUI = new CameraGUI(640,480);
 
         Thread cameraReadThread = new Thread(new Runnable(){
             public void run(){
@@ -184,10 +184,10 @@ public class GoalStateController{
     public void controlState(){
         long startTime = System.nanoTime();
         summaryOfImage.updateFullSummary(lastFrame);
-        GUI.updateImagePane(summaryOfImage.getReactorProcessedImage());
+        //GUI.updateImagePane(summaryOfImage.getReactorProcessedImage());
                 
         // if a reactor is in view and we have green balls, and we are not currently scoring, then score.
-        if((summaryOfImage.isReactorScoreable() /*&& robotInventory.hasGreenBalls()*/) || 
+        if((summaryOfImage.isReactorScoreable() && robotInventory.hasGreenBalls()) || 
                 (currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR && !currentStateController.isDone())){
             if(!(currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR &&
                     !currentStateController.isDone())){
