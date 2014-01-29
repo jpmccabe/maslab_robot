@@ -49,8 +49,12 @@ public class RobotInventory {
      * have color of BallColor.NONE if there is not a ball in the queue.
      */
     synchronized public TimedBall ballToBeSorted(){
-        if(unsortedBalls.size()>0) return unsortedBalls.remove();
-        else return new TimedBall(0,BallColor.NONE);
+        TimedBall ballToReturn = new TimedBall(0,BallColor.NONE);
+        if(unsortedBalls.size()>0){ 
+            ballToReturn =  unsortedBalls.remove();
+        }
+        
+        return ballToReturn;
     }
     
     
@@ -79,7 +83,7 @@ public class RobotInventory {
     /**
      * @return true if the robot has green balls on board, false otherwise.
      */
-    synchronized boolean hasGreenBalls(){
+    synchronized public boolean hasGreenBalls(){
         return numGreenBallsOnBoard > 0;
     }
     
@@ -87,7 +91,7 @@ public class RobotInventory {
     /**
      * @return true if the robot has red balls on board, false otherwise.
      */
-    synchronized boolean hasRedBalls(){
+    synchronized public boolean hasRedBalls(){
         return numRedBallsOnBoard > 0;
     }
     
@@ -95,7 +99,7 @@ public class RobotInventory {
     /**
      * @return the number of green balls on board.
      */
-    synchronized int getNumGreenBalls(){
+    synchronized public int getNumGreenBalls(){
         return numGreenBallsOnBoard;
     }
     
@@ -103,7 +107,7 @@ public class RobotInventory {
     /**
      * @return the number of red balls on board.
      */
-    synchronized int getNumRedBalls(){
+    synchronized public int getNumRedBalls(){
         return numRedBallsOnBoard;
     }
     

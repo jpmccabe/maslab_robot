@@ -51,11 +51,27 @@ public class GoalStateController{
             }
         });
         
+        
+        Thread ballSortingThread = new Thread(new Runnable(){
+            public void run(){
+                SorterStateController sorter = new SorterStateController(robotModel, robotInventory);
+                while(true){
+                    sorter.controlState();
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        
         cameraReadThread.start();
         robotModel.allMotorsOff();
         robotModel.setServoArmToUpPosition();
         robotModel.setServoSorterToCenterPosition();
         robotModel.setServoReleaseToScoreLowerPosition();
+        ballSortingThread.start();
     }
     
     
@@ -162,11 +178,10 @@ public class GoalStateController{
         long startTime = System.nanoTime();
         summaryOfImage.updateFullSummary(lastFrame);
         //redBallProcessedImageGUI.updateImagePane(summaryOfImage.getRedBallProcessedImage());
-        
-        final boolean haveGreenBalls = true;
-        
+                
         // if a reactor is in view and we have green balls, and we are not currently scoring, then score.
-        if(summaryOfImage.isReactorScoreable() && haveGreenBalls){
+        if((summaryOfImage.isReactorScoreable() && robotInventory.hasGreenBalls()) || 
+                (currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR && !currentStateController.isDone())){
             if(!(currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR &&
                     !currentStateController.isDone())){
                 System.out.println("Score in reactor");
@@ -203,6 +218,7 @@ public class GoalStateController{
     
     
     public static void main(String args[]){
+        
         final GoalStateController goalController = new GoalStateController();
   
         Thread goalControllerThread  = new Thread(new Runnable(){
@@ -212,15 +228,30 @@ public class GoalStateController{
                 }
             }
         });
-        
-        
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
+          
         goalControllerThread.start();
         
+        /*
+        final Devices robotModel = new Devices();
+        robotModel.setServoSorterToCenterPosition();
+        robotModel.setServoArmToUpPosition();
+        final RobotInventory robotInventory = new RobotInventory();
+        robotInventory.addBallToQueue(new TimedBall(System.currentTimeMillis(),BallColor.RED));
+        Thread ballSortingThread = new Thread(new Runnable(){
+            public void run(){
+                SorterStateController sorter = new SorterStateController(robotModel, robotInventory);
+                while(true){
+                    sorter.controlState();
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        
+        ballSortingThread.start();
+        */
     }
 }
