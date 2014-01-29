@@ -1,9 +1,12 @@
 package stateMachine;
 
+import java.util.List;
+
 import org.opencv.core.Mat;
 
 import robotModel.*;
 import camera.ComputerVisionSummary;
+import driving.Driver;
 
 public class ScoreInReactorStateController extends StateMachine {
 
@@ -13,12 +16,13 @@ public class ScoreInReactorStateController extends StateMachine {
     private volatile boolean done;
     private final ComputerVisionSummary reactorSummary;
     private ScoreInReactorStates state = ScoreInReactorStates.NONE;
-    
+    private final Driver driver;
     
     public ScoreInReactorStateController(Devices robotModel, RobotInventory robotInventory){
         this.robotModel = robotModel;
         this.robotInventory = robotInventory;
         this.reactorSummary = new ComputerVisionSummary();
+        driver = new Driver();
         done = false;
     }
     
@@ -64,43 +68,6 @@ public class ScoreInReactorStateController extends StateMachine {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        stop();
-    }
-    
-    private void rotateAndDrive(double angle, double distance){
-        System.out.println("rotateMode");
-        
-        double sinAngle= Math.sin(angle*Math.PI/180.0);
-        int rotationDirection = (angle >= 0) ? 1 : -1;
-        robotModel.setMotors(0.175*rotationDirection,-0.175*rotationDirection);
-        try {
-            Thread.sleep((long) (Math.abs((90-Math.abs(angle))*12)));
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        robotModel.setMotors(0.225,0.225);
-        try {
-            Thread.sleep((long) (Math.abs(distance*sinAngle*150)));
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        robotModel.setMotors(0,0);
-        robotModel.setMotors(-0.175*rotationDirection,0.175*rotationDirection);
-        try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
-    
-    
-    private void align(int centerX){
-    	int rotationDirection = (centerX >= 360) ? 1 : -1;
-        robotModel.setMotors(-0.175*rotationDirection,0.175*rotationDirection);
     }
 
     @Override
@@ -113,32 +80,26 @@ public class ScoreInReactorStateController extends StateMachine {
         int centerX=reactorSummary.getReactorCenterXValue();
         System.out.println("Angle:"+angle);
         System.out.println("Distance:"+distance);
+        
+        if(!robotInventory.hasGreenBalls()){
+            reverse();
+            stop();
+        }
         // center reactor in camera view if too far off
-        if(Math.abs(centerX-360)>30 && distance>6) {
+        else if(Math.abs(centerX-360) > 30 && distance > 6) {
         	centerRobot(centerX);
         }
         
         // drive straight towards the reactor if the angle is small
-        else if(Math.abs(angle)<=11 && distance >= 6 ){
-        	straight();
+        else if(Math.abs(centerX-360) <= 30  && distance >= 6 ){
+        	List<Double> motorSpeeds = driver.driveToBall(distance, 0, centerX-360, 0);
+        	robotModel.setMotors(motorSpeeds.get(0), motorSpeeds.get(1));
         }
         
         else if( distance < 6 && robotInventory.hasGreenBalls()){
-            robotModel.setMotors(0.16,0.16);
-            try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
             deposit();
         }
-        
-        
-        else if(Math.abs(angle)>11){	
-        	System.out.println("rotate and drive");
-            rotateAndDrive(angle,distance);
-        }
+ 
        
     }
 

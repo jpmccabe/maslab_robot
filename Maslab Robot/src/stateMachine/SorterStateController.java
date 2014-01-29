@@ -18,7 +18,7 @@ public class SorterStateController {
         // if there is a ball in the sorter mechanism
         if(robotModel.isBallInSorter()){
         	try {
-				Thread.sleep(400);
+				Thread.sleep(700);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -26,7 +26,7 @@ public class SorterStateController {
             TimedBall ballToSort = robotInventory.ballToBeSorted();
             long timeSincePickup = System.currentTimeMillis() - ballToSort.getPickupTime();
             BallColor colorOfBall = ballToSort.getBallColor();
-            final long expirationTime = 10000;
+            final long expirationTime = 15000;
             System.out.println("ball in sorter");
             
             // if that ball has not expired
