@@ -283,6 +283,10 @@ public class ComputerVisionSummary {
     }
     
     
+    public int getReactorCenterXValue(){
+        return reactorProcessor.getCenterXValue();
+    }
+    
     /**
      * @return distance to right side of reactor, if there is one, in inches.
      */
