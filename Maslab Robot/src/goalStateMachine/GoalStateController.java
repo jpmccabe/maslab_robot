@@ -29,6 +29,8 @@ public class GoalStateController{
         this.robotInventory = new RobotInventory();
         robotInventory.addRedBall();
         robotInventory.addRedBall();
+        robotInventory.addGreenBall();
+        robotInventory.addGreenBall();
         
         summaryOfImage = new ComputerVisionSummary();
          
@@ -78,7 +80,6 @@ public class GoalStateController{
 			e.printStackTrace();
 		}
         robotModel.allMotorsOff();
-        robotModel.setSpiral(true);
         robotModel.setServoArmToUpPosition();
         robotModel.setServoSorterToCenterPosition();
         robotModel.setServoReleaseToScoreLowerPosition();
