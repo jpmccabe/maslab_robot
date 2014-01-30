@@ -238,6 +238,15 @@ public class GoalStateController{
                 depositRedBalls();
             }
         }
+        else if(summaryOfImage.isSiloCollectable() || 
+                (currentStateController.getStateMachineType() == StateMachineType.COLLECT_FROM_ENERGY_SILO &&
+               !currentStateController.isDone())){
+            if(!(currentStateController.getStateMachineType() == StateMachineType.COLLECT_FROM_ENERGY_SILO) && 
+                    !currentStateController.isDone()){
+                System.out.println("collect from silo");
+                collectFromEnergySilo();
+            }
+        }
         // else if a wall is close, and we are not currently avoiding walls, then avoid walls
         else if(summaryOfImage.isObstacle()){
         	if(!(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
