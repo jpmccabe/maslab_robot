@@ -7,12 +7,14 @@ public class RobotInventory {
     
     private int numRedBallsOnBoard;
     private int numGreenBallsOnBoard;
+    private int numUnknownBallsOnBoard;
     private Queue<TimedBall> unsortedBalls = new LinkedList<TimedBall>();
     
     
     public RobotInventory(){
         numRedBallsOnBoard = 0;
         numGreenBallsOnBoard = 0;
+        numUnknownBallsOnBoard = 0;
     }
     
     
@@ -33,6 +35,15 @@ public class RobotInventory {
      */
     synchronized public void addRedBall(){
         numRedBallsOnBoard++;
+    }
+    
+    
+    /**
+     * Adds on ball to the number of unknown color
+     * balls stored on the robot
+     */
+    synchronized public void addUnknownBall(){
+        numUnknownBallsOnBoard++;
     }
     
     /**
@@ -70,15 +81,19 @@ public class RobotInventory {
     
     
     /**
-     * Subtracts the given number of red balls from the
-     * on board red ball count.
-     * @param numberToRemove number of red balls that were
-     * removed from the robot.
+     * Sets the number of red balls on board to zero
      */
-    synchronized public void removeRedBalls(int numberToRemove){
-        numRedBallsOnBoard -= numberToRemove;
+    synchronized public void removeRedBalls(){
+        numRedBallsOnBoard = 0;
     }
     
+    
+    /**
+     * Sets the number of unknown balls on board to zero
+     */
+    synchronized public void removeUnknownBalls(){
+        numUnknownBallsOnBoard = 0;
+    }
     
     /**
      * @return true if the robot has green balls on board, false otherwise.
@@ -97,6 +112,14 @@ public class RobotInventory {
     
     
     /**
+     * @return true if the robot has unknown colored balls on board, false otherwise.
+     */
+    synchronized public boolean hasUnknownBalls(){
+        return numUnknownBallsOnBoard > 0;
+    }
+    
+    
+    /**
      * @return the number of green balls on board.
      */
     synchronized public int getNumGreenBalls(){
@@ -109,6 +132,14 @@ public class RobotInventory {
      */
     synchronized public int getNumRedBalls(){
         return numRedBallsOnBoard;
+    }
+    
+    
+    /**
+     * @return the number of unknown balls on board.
+     */
+    synchronized public int getNumUnknownBallsOnBoard(){
+        return numUnknownBallsOnBoard;
     }
     
 }

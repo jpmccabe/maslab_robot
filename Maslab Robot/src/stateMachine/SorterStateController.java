@@ -17,32 +17,29 @@ public class SorterStateController {
     public void controlState() {
         // if there is a ball in the sorter mechanism
         if(robotModel.isBallInSorter()){
-        	try {
-				Thread.sleep(700);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
             TimedBall ballToSort = robotInventory.ballToBeSorted();
             long timeSincePickup = System.currentTimeMillis() - ballToSort.getPickupTime();
             BallColor colorOfBall = ballToSort.getBallColor();
             final long expirationTime = 15000;
-            System.out.println("ball in sorter");
+            System.out.println("Ball in sorter");
             
-            // if that ball has not expired
-            if(timeSincePickup <= expirationTime || colorOfBall == BallColor.NONE){
-                // if a ball sneaked in then assume it is red 
-                if(colorOfBall == BallColor.NONE || colorOfBall == BallColor.RED){
-                	System.out.println("Sorting red");
-                    sortRed();
-                }
-                else if(colorOfBall == BallColor.GREEN){
-                	System.out.println("Sorting green");
-                	
-                    sortGreen();
-                }
-            } else{
+            // the ball is unknown
+            if(colorOfBall == BallColor.NONE){
+                System.out.println("Sorting unknown");
+                sortUnknown();
+            }
+            // if ball expired then call control state again to get next ball in queue
+            else if(timeSincePickup >= expirationTime){
+                System.out.println("Expired ball");
                 controlState();
+            }
+            else if(colorOfBall == BallColor.RED){
+                System.out.println("Sorting red");
+                sortRed();
+            }
+            else if(colorOfBall == BallColor.GREEN){
+                System.out.println("Sorting green");
+                sortGreen();
             }
         }
     }
@@ -50,6 +47,7 @@ public class SorterStateController {
     
     private void sortRed(){ 
         try {
+            Thread.sleep(700);
             robotModel.setServoSorterToRedPosition();
             Thread.sleep(600);
             robotModel.setServoSorterToCenterPosition();
@@ -64,6 +62,7 @@ public class SorterStateController {
     
     private void sortGreen(){ 
         try {
+            Thread.sleep(700);
             robotModel.setServoSorterToGreenPosition();
             Thread.sleep(600);
             robotModel.setServoSorterToCenterPosition();
@@ -73,6 +72,21 @@ public class SorterStateController {
         }  
         
         robotInventory.addGreenBall();
+    }
+    
+    
+    private void sortUnknown(){
+        try {
+            Thread.sleep(700);
+            robotModel.setServoSorterToRedPosition();
+            Thread.sleep(600);
+            robotModel.setServoSorterToCenterPosition();
+            Thread.sleep(600);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }  
+        
+        robotInventory.addUnknownBall();
     }
 
 }
