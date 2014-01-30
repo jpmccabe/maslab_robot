@@ -315,7 +315,7 @@ public class ComputerVisionSummary {
      * @return the angle to turn to get parallel to the reactor
      */
     public double getReactorAngleToTurn(){
-    	return reactorProcessor.getAngleToTurn();
+    	return reactorProcessor.getAngleToTurnParallelInDegrees();
     }
     
     /**
