@@ -44,9 +44,7 @@ public class CameraProcessor3 extends CameraProcessor{
         double leftDistance = getDistance(5)/0.8;
         double centerDistance = getDistance(285);
         double rightDistance = getDistance(570)/0.8;
-        System.out.println("left:"+ leftDistance);
-        System.out.println("center:"+ centerDistance);
-        System.out.println("Right:"+ rightDistance);
+        
         synchronized(this){
             this.leftDistance = leftDistance;
             this.rightDistance = rightDistance;

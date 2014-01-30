@@ -56,8 +56,9 @@ class CameraProcessor4 extends CameraProcessor{
         Rect boundingRect = new Rect();
         for(int index=0;index<contours.size();index++){
             double area= Imgproc.contourArea(contours.get(index));
-            if (area>maxArea && area>500){
-                boundingRect=Imgproc.boundingRect(contours.get(index));
+            Rect rect=Imgproc.boundingRect(contours.get(index));
+            if (area>maxArea && area>250 && rect.width>50){
+                boundingRect=rect;
                 reactorSpotted = true;
                 maxArea = area;
             }	
@@ -103,12 +104,10 @@ class CameraProcessor4 extends CameraProcessor{
         final double centerAngle = pixelToAngle(boundingRect.x + (boundingRect.width/2));
         leftDistance /= Math.cos(leftAngleRadiansAbs);
         rightDistance /= Math.cos(leftAngleRadiansAbs);
-        System.out.println("Avg Distance:"+ averageDistance);
-        System.out.println("leftDistance:"+leftDistance);
-        System.out.println("RightDistance:"+rightDistance);
-        System.out.println("angle:"+centerAngle);
-
-        final double angleToTurnParallelRadians = Math.asin((Math.min(leftDistance,rightDistance) / 11.5) * Math.sin(leftAngleRadiansAbs+rightAngleRadiansAbs));
+        System.out.println("left distance: " + leftDistance);
+        System.out.println("right distance: " + rightDistance);
+        final double insideOfArcSin = Math.min(1, (Math.min(leftDistance,rightDistance) / 11.5) * Math.sin(leftAngleRadiansAbs+rightAngleRadiansAbs));
+        final double angleToTurnParallelRadians = Math.asin(insideOfArcSin);
         double angleToTurnParallelDegrees = Math.toDegrees(angleToTurnParallelRadians);
         angleToTurnParallelDegrees = leftDistance <= rightDistance ? angleToTurnParallelDegrees : -1*angleToTurnParallelDegrees;
         System.out.println("angle to turn parallel: " + angleToTurnParallelDegrees);

@@ -16,10 +16,10 @@ public class Driver{
 	private final static double STRAIGHT_KI = 0.0;
 	private final static double STRAIGHT_KD = 0.0;
 	
-	private final static double ANGULAR_KP_REACTOR = -0.0015;
+	private final static double ANGULAR_KP_REACTOR = -0.0006;
 	private final static double ANGULAR_KI_REACTOR = 0;
 	private final static double ANGULAR_KD_REACTOR = 0;
-	private final static double STRAIGHT_KP_REACTOR = -0.0035;
+	private final static double STRAIGHT_KP_REACTOR = -0.0025;
 	private final static double STRAIGHT_KI_REACTOR = 0.0;
 	private final static double STRAIGHT_KD_REACTOR = 0.0;
 	

@@ -17,7 +17,7 @@ public class ScoreInReactorStateController extends StateMachine {
     private final ComputerVisionSummary reactorSummary;
     private ScoreInReactorStates state = ScoreInReactorStates.NONE;
     private final Driver driver;
-    private int centerOfScreen = 348;
+    private int centerOfScreen = 320;
     
     public ScoreInReactorStateController(Devices robotModel, RobotInventory robotInventory){
         this.robotModel = robotModel;
@@ -37,10 +37,10 @@ public class ScoreInReactorStateController extends StateMachine {
         System.out.println("CenterX:"+centerX);
         System.out.println("adjust to center");
         int rotationDirection=1;
-        final double minSpeed = 0.17;
+        final double minSpeed = 0.13;
         final double maxSpeed = 0.25;
         if (centerX<centerOfScreen) rotationDirection=-1;
-        double prop = (centerX-centerOfScreen)*0.001;
+        double prop = (centerX-centerOfScreen)*0.0009;
         if(Math.abs(prop) < minSpeed){
             prop = prop >= 0 ? minSpeed : -minSpeed;
         }
@@ -52,18 +52,18 @@ public class ScoreInReactorStateController extends StateMachine {
     }
     
     private void manhattan(double angleToTurnDegrees, double centerDistance){
-        final double turnSpeed = 0.2;
-        final double forwardSpeed = 0.17;
-        final double turnProportionalTimeConstant = 70;
-        final double forwardProportionalTimeConstant = 100;
-        final double ninetyDegreeTurnTime = 0.1;
+        final double turnSpeed = 0.25;
+        final double forwardSpeed = 0.2;
+        final double turnProportionalTimeConstant = 8;
+        final double forwardProportionalTimeConstant = 137;
+        final double ninetyDegreeTurnTime = 800;
         final double driveDistance = Math.cos(Math.toRadians(Math.abs(angleToTurnDegrees))) * centerDistance;
         final int driveDirection = angleToTurnDegrees >= 0 ? 1 : -1; // 1 is right, -1 is left
        
         try {
             // turn
             robotModel.setMotors(driveDirection*turnSpeed, -1*driveDirection*turnSpeed);
-            Thread.sleep((long)(turnProportionalTimeConstant*driveDirection));
+            Thread.sleep((long)(turnProportionalTimeConstant*Math.abs(angleToTurnDegrees)));
             // drive forward
             robotModel.setMotors(forwardSpeed,forwardSpeed);
             Thread.sleep((long)(forwardProportionalTimeConstant*driveDistance));
@@ -81,7 +81,7 @@ public class ScoreInReactorStateController extends StateMachine {
         System.out.println("Go Straight");
         robotModel.setMotors(0.2,0.2);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -120,39 +120,45 @@ public class ScoreInReactorStateController extends StateMachine {
         double angle=reactorSummary.getReactorAngleInDegrees();
         double distance=reactorSummary.getReactorCenterDistance();
         int centerX=reactorSummary.getReactorCenterXValue();
-        System.out.println("Angle:"+angle);
-        System.out.println("Distance:"+distance);
-                
-        if(!reactorSummary.isReactorScoreable()){
-            stop();
-        }
+       // System.out.println("Angle:"+angle);
+        //System.out.println("Distance:"+distance);
+  
+        //if(!reactorSummary.isReactorScoreable()){
+            //stop();
+       // }
+       
         /*
         else if(!robotInventory.hasGreenBalls()){
             reverse();
             stop();
         }
+        */
+        if( distance < 6 && true /*robotInventory.hasGreenBalls()*/ && !(state ==ScoreInReactorStates.INSERT)){
+            state = ScoreInReactorStates.INSERT;
+            robotModel.setMotors(0,0);
+            //straight();
+        }
         // drive towards the reactor if the angle is small using driver
-        else if(Math.abs(angle) <= 20 && distance >= 6){
+        else if(state == ScoreInReactorStates.MANHATTAN  || state == ScoreInReactorStates.DRIVER ){
             List<Double> motorSpeeds = driver.driveToReactor(distance, 6, centerX-centerOfScreen, 0);
             System.out.println("Left: " + motorSpeeds.get(0) + " Right: " + motorSpeeds.get(1));
             robotModel.setMotors(motorSpeeds.get(0), motorSpeeds.get(1));
-            state = ScoreInReactorStates.STRAIGHT;
+            state = ScoreInReactorStates.DRIVER;
         }
-        else if( distance < 6 && robotInventory.hasGreenBalls() && !(state ==ScoreInReactorStates.INSERT)){
-            state = ScoreInReactorStates.INSERT;
-            straight();
-        }
-        */
+        
+ 
         // center reactor in camera view if too far off
-        else if(Math.abs(centerX-centerOfScreen) > 10 && distance > 6 && (state == ScoreInReactorStates.NONE ||
+        else if(Math.abs(centerX-centerOfScreen) > 20 && distance > 6 && (state == ScoreInReactorStates.NONE ||
                 state == ScoreInReactorStates.CENTER)) {
             state = ScoreInReactorStates.CENTER;
             centerRobot(centerX);
         }
         // once centered do manhattan
-        else if(Math.abs(centerX-centerOfScreen) <= 10 && distance > 6 && (state == ScoreInReactorStates.CENTER ||
+        else if(Math.abs(centerX-centerOfScreen) <= 20 && distance > 6 && (state == ScoreInReactorStates.CENTER ||
                 state == ScoreInReactorStates.NONE)){
+        	System.out.println("Manhattan");
             state = ScoreInReactorStates.MANHATTAN;
+            robotModel.setMotors(0,0);
             manhattan(reactorSummary.getReactorAngleToTurn(), distance);
         }        
         
