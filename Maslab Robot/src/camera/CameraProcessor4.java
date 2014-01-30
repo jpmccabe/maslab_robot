@@ -106,7 +106,7 @@ class CameraProcessor4 extends CameraProcessor{
         rightDistance /= Math.cos(leftAngleRadiansAbs);
         //System.out.println("left distance reactor: " + leftDistance);
         //System.out.println("right distance reactor: " + rightDistance);
-        final double insideOfArcSin = Math.min(1, (Math.min(leftDistance,rightDistance) / 11) * Math.sin(Math.max(leftAngleRadiansAbs,rightAngleRadiansAbs)));
+        final double insideOfArcSin = Math.min(1, (Math.min(leftDistance,rightDistance) / 5.75) * Math.sin(Math.max(leftAngleRadiansAbs,rightAngleRadiansAbs)));
         final double angleToTurnParallelRadians = Math.asin(insideOfArcSin);
         double angleToTurnParallelDegrees = Math.toDegrees(angleToTurnParallelRadians);
         angleToTurnParallelDegrees = leftDistance <= rightDistance ? angleToTurnParallelDegrees : -1*angleToTurnParallelDegrees;

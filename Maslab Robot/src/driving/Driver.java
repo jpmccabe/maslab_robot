@@ -9,10 +9,10 @@ public class Driver{
 	private final PID angularPIDReactor;
 	private final PID straightPIDReactor;
 	
-	private final static double ANGULAR_KP = 0.0040;
+	private final static double ANGULAR_KP = 0.0030;
 	private final static double ANGULAR_KI = 0.0;
 	private final static double ANGULAR_KD = -0.0;
-	private final static double STRAIGHT_KP = -0.0080;
+	private final static double STRAIGHT_KP = -0.0060;
 	private final static double STRAIGHT_KI = 0.0;
 	private final static double STRAIGHT_KD = 0.0;
 	
@@ -43,8 +43,8 @@ public class Driver{
 	 */
 	public List<Double> driveToBall(double distance, double distanceTarget, double angle, double angleTarget){
 		
-		final double minStraightSpeed = 0.17;
-		final double maxStraightSpeed = 0.250;
+		final double minStraightSpeed = 0.14;
+		final double maxStraightSpeed = 0.23;
 		
 		final double minAngularSpeed = -0.15;
 		final double maxAngularSpeed = 0.15;

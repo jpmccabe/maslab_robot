@@ -38,7 +38,7 @@ public class ScoreInReactorStateController extends StateMachine {
     private void centerRobot(int centerX){
         System.out.println("CenterX:"+centerX);
         System.out.println("adjust to center");
-        final double minSpeed = 0.13;
+        final double minSpeed = 0.1;
         final double maxSpeed = 0.25;
         double prop = (centerX-centerOfScreen)*0.0009;
         if(Math.abs(prop) < minSpeed){
@@ -52,10 +52,10 @@ public class ScoreInReactorStateController extends StateMachine {
     }
     
     private void manhattan(double angleToTurnDegrees, double centerDistance){
-        final double turnSpeed = 0.2;
+    	final double turnSpeed = 0.2;
         final double forwardSpeed = 0.18;
         final double turnProportionalTimeConstant = 9;
-        final double forwardProportionalTimeConstant = 140;
+        final double forwardProportionalTimeConstant = 120;
         final double ninetyDegreeTurnTime = 800;
         final double driveDistance = Math.cos(Math.toRadians(Math.abs(angleToTurnDegrees))) * centerDistance;
         final int driveDirection = angleToTurnDegrees >= 0 ? 1 : -1; // 1 is right, -1 is left
@@ -95,10 +95,12 @@ public class ScoreInReactorStateController extends StateMachine {
         for(int i = 0; i < numToScoreInTop; i++){
             System.out.println("Depositing ball in top");
             try {
+            	System.out.println("Depositing ball in top, begin try statement");
                 robotModel.setServoReleaseToGreenPosition();
                 Thread.sleep(800);
                 robotModel.setServoReleaseToScoreUpperPosition();
                 Thread.sleep(800);
+                System.out.println("Depositing ball in top, end try statement");
                 robotInventory.removeGreenBalls(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -113,10 +115,12 @@ public class ScoreInReactorStateController extends StateMachine {
         for(int i = 0; i < numToScoreInBottom; i++){
             System.out.println("Depositing in bottom");
             try{
+            	System.out.println("Depositing ball in bottom, begin try statement");
                 robotModel.setServoReleaseToGreenPosition();
                 Thread.sleep(800);
                 robotModel.setServoReleaseToScoreLowerPosition();
                 Thread.sleep(800);
+                System.out.println("Depositing ball in bottom, end try statement");
                 robotInventory.removeGreenBalls(1);
             } catch (InterruptedException e){
                 e.printStackTrace();

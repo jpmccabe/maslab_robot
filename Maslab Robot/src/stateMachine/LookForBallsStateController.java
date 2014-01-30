@@ -21,7 +21,7 @@ public class LookForBallsStateController extends StateMachine {
     
     
     private void forward(){
-        double forwardSpeed = 0.2;
+        double forwardSpeed = 0.17;
         robotModel.setMotors(forwardSpeed, forwardSpeed);
         try {
             Thread.sleep(10);

@@ -19,6 +19,7 @@ public class ComputerVisionSummary {
     private final static double MAX_REACTOR_SCORING_DISTANCE = 70;
     private final static double MAX_INTERFACE_WALL_SCORING_DISTANCE = 60;
     private final static double MAX_SILO_FOLLOW_DISTANCE = 40;
+    private final static double NO_OBSTACLE_DISTANCE = 15;
         
     public ComputerVisionSummary(){
         this.redBallProcessor = new CameraProcessor1();
@@ -177,6 +178,24 @@ public class ComputerVisionSummary {
         }
        
         return direction;
+    }
+    
+    
+    public boolean noObstacle(){
+    	boolean value = (getCenterDistanceToBlueWall() > NO_OBSTACLE_DISTANCE) &&
+    			(getLeftDistanceToBlueWall() > NO_OBSTACLE_DISTANCE) &&
+    			(getRightDistanceToBlueWall() > NO_OBSTACLE_DISTANCE) &&
+                (getReactorCenterDistance() > NO_OBSTACLE_DISTANCE) &&
+                (getReactorRightDistance() > NO_OBSTACLE_DISTANCE) &&
+                (getReactorLeftDistance() > NO_OBSTACLE_DISTANCE) &&
+    			(getInterfaceWallCenterDistance() > NO_OBSTACLE_DISTANCE) &&
+    			(getInterfaceWallRightDistance() > NO_OBSTACLE_DISTANCE) &&
+    			(getInterfaceWallLeftDistance() > NO_OBSTACLE_DISTANCE) &&
+    			(getSiloCenterDistance() > NO_OBSTACLE_DISTANCE) &&
+    	        (getSiloRightDistance() > NO_OBSTACLE_DISTANCE) &&
+    	        (getSiloLeftDistance() > NO_OBSTACLE_DISTANCE);
+      
+    	return value;
     }
     
     

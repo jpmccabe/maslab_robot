@@ -27,10 +27,10 @@ public class GoalStateController{
         this.currentStateController = new StopStateController();
         this.robotModel = new Devices();
         this.robotInventory = new RobotInventory();
-        robotInventory.addRedBall();
-        robotInventory.addRedBall();
-        robotInventory.addGreenBall();
-        robotInventory.addGreenBall();
+        //robotInventory.addRedBall();
+        //robotInventory.addRedBall();
+        //robotInventory.addGreenBall();
+        //robotInventory.addGreenBall();
         
         summaryOfImage = new ComputerVisionSummary();
          
@@ -217,7 +217,7 @@ public class GoalStateController{
     public void controlState(){
         long startTime = System.nanoTime();
         summaryOfImage.updateFullSummary(lastFrame);
-        GUI.updateImagePane(summaryOfImage.getInterfaceWallProcessedImage());
+        GUI.updateImagePane(summaryOfImage.getBlueWallProcessedImage());
         
                      
         // if a reactor is in view and we have green balls, and we are not currently scoring, then score.

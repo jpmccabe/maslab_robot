@@ -54,7 +54,7 @@ public class BallCollectionStateController extends StateMachine {
     
     private void collect(BallColor ballColor){        
     	System.out.println("Collect Ball");
-        final double forwardSpeed = 0.2;
+        final double forwardSpeed = 0.17;
         robotModel.setMotors(forwardSpeed, forwardSpeed);
         robotModel.setRoller(true);
         robotInventory.addBallToQueue(new TimedBall(System.currentTimeMillis(), ballColor));
@@ -88,13 +88,16 @@ public class BallCollectionStateController extends StateMachine {
         spiralThread.start();
         
         try {
-            Thread.sleep(1500);
+            Thread.sleep(600);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        robotModel.setMotors(-forwardSpeed,-forwardSpeed);
+        
+        robotModel.setMotors(0, 0);
+        
+        //robotModel.setMotors(-forwardSpeed,-forwardSpeed);
         try {
-            Thread.sleep(300);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -112,7 +115,7 @@ public class BallCollectionStateController extends StateMachine {
 
     @Override
     public void controlState(Mat image) {
-        final long timeout = 8000;
+        final long timeout = 7000;
         final double collectAngleMax = 90;
         final double collectDistanceMax = 6;
         

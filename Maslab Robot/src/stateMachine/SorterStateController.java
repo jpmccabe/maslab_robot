@@ -20,7 +20,7 @@ public class SorterStateController {
             TimedBall ballToSort = robotInventory.ballToBeSorted();
             long timeSincePickup = System.currentTimeMillis() - ballToSort.getPickupTime();
             BallColor colorOfBall = ballToSort.getBallColor();
-            final long expirationTime = 15000;
+            final long expirationTime = 8000;
             System.out.println("Ball in sorter");
             
             // the ball is unknown

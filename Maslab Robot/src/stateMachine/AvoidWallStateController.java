@@ -20,12 +20,12 @@ public class AvoidWallStateController extends StateMachine {
     }
     
     private void avoidWall(){
-        double turnSpeed = 0.2;
+        double turnSpeed = 0.21;
         turnSpeed = (spinDirection == ObstacleDirection.RIGHT) ? -1*turnSpeed : turnSpeed;
         robotModel.setMotors(turnSpeed, -1*turnSpeed);
         
         try {
-            Thread.sleep(100);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -40,10 +40,14 @@ public class AvoidWallStateController extends StateMachine {
     @Override
     public void controlState(Mat image) {
         obstacleSummary.updateObstacleSummary(image);
-        if(obstacleSummary.getObstacle() != ObstacleDirection.NONE){
+        System.out.println("bw center distance: " + obstacleSummary.getCenterDistanceToBlueWall());
+        System.out.println("open area: " + obstacleSummary.noObstacle());
+        if(!obstacleSummary.noObstacle()){
+        	System.out.println("obstacle");
             avoidWall();
         }
         else{
+        	System.out.println("exit avoid wall");
             stop();
         }
     }
