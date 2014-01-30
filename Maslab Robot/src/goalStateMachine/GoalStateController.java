@@ -4,7 +4,7 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.highgui.VideoCapture;
 
-import BotClient.BotClient;
+//import BotClient.BotClient;
 import stateMachine.*;
 import camera.*;
 import robotModel.*;
@@ -13,7 +13,7 @@ public class GoalStateController{
     
     private final Devices robotModel;
     private final RobotInventory robotInventory;
-    //private final CameraGUI GUI;
+    private final CameraGUI GUI;
     private final ComputerVisionSummary summaryOfImage;
     private StateMachine currentStateController;
     private final VideoCapture camera;
@@ -33,7 +33,7 @@ public class GoalStateController{
         // Setup the camera
         camera = new VideoCapture();
         camera.open(0);
-        //this.GUI = new CameraGUI(640,480);
+        this.GUI = new CameraGUI(640,480);
 
         Thread cameraReadThread = new Thread(new Runnable(){
             public void run(){
@@ -185,10 +185,9 @@ public class GoalStateController{
     public void controlState(){
         long startTime = System.nanoTime();
         summaryOfImage.updateFullSummary(lastFrame);
-        //GUI.updateImagePane(summaryOfImage.getReactorProcessedImage());
+        GUI.updateImagePane(summaryOfImage.getReactorProcessedImage());
         
-        System.out.println("Reactor angle to turn: " + summaryOfImage.getReactorAngleToTurn());
-                
+        /*                
         // if a reactor is in view and we have green balls, and we are not currently scoring, then score.
         if((summaryOfImage.isReactorScoreable() && robotInventory.hasGreenBalls()) || 
                 (currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR && !currentStateController.isDone())){
@@ -220,7 +219,7 @@ public class GoalStateController{
             System.out.println("Looking for balls");
             lookForBalls();
         }
-        
+        */
         long estimatedTime = (System.nanoTime() - startTime);
         //System.out.println(estimatedTime);
     }
@@ -229,11 +228,11 @@ public class GoalStateController{
     
     public static void main(String args[]){  
         
-        BotClient botclient = new BotClient("18.150.7.174:6667","1221",false);
+        /*BotClient botclient = new BotClient("18.150.7.174:6667","1221",false);
         while( !botclient.gameStarted() ) {
         }
         botclient.close();
-        
+        */
         
         final GoalStateController goalController = new GoalStateController();
   
