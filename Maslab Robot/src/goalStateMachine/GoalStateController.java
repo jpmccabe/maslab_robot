@@ -216,7 +216,7 @@ public class GoalStateController{
     public void controlState(){
         long startTime = System.nanoTime();
         summaryOfImage.updateFullSummary(lastFrame);
-        GUI.updateImagePane(summaryOfImage.getSiloProcessedImage());
+        GUI.updateImagePane(summaryOfImage.getInterfaceWallProcessedImage());
         
                      
         // if a reactor is in view and we have green balls, and we are not currently scoring, then score.

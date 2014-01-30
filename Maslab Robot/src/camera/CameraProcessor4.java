@@ -57,7 +57,7 @@ class CameraProcessor4 extends CameraProcessor{
         for(int index=0;index<contours.size();index++){
             double area= Imgproc.contourArea(contours.get(index));
             Rect rect=Imgproc.boundingRect(contours.get(index));
-            if (area>maxArea && area>250 && rect.width>50){
+            if (area>maxArea && area>500 && rect.width>50){
                 boundingRect=rect;
                 reactorSpotted = true;
                 maxArea = area;
@@ -106,7 +106,7 @@ class CameraProcessor4 extends CameraProcessor{
         rightDistance /= Math.cos(leftAngleRadiansAbs);
         //System.out.println("left distance reactor: " + leftDistance);
         //System.out.println("right distance reactor: " + rightDistance);
-        final double insideOfArcSin = Math.min(1, (Math.min(leftDistance,rightDistance) / 11.5) * Math.sin(leftAngleRadiansAbs+rightAngleRadiansAbs));
+        final double insideOfArcSin = Math.min(1, (Math.min(leftDistance,rightDistance) / 11) * Math.sin(Math.max(leftAngleRadiansAbs,rightAngleRadiansAbs)));
         final double angleToTurnParallelRadians = Math.asin(insideOfArcSin);
         double angleToTurnParallelDegrees = Math.toDegrees(angleToTurnParallelRadians);
         angleToTurnParallelDegrees = leftDistance <= rightDistance ? angleToTurnParallelDegrees : -1*angleToTurnParallelDegrees;

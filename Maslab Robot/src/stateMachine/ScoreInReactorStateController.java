@@ -54,8 +54,8 @@ public class ScoreInReactorStateController extends StateMachine {
     private void manhattan(double angleToTurnDegrees, double centerDistance){
         final double turnSpeed = 0.2;
         final double forwardSpeed = 0.18;
-        final double turnProportionalTimeConstant = 8;
-        final double forwardProportionalTimeConstant = 135;
+        final double turnProportionalTimeConstant = 9;
+        final double forwardProportionalTimeConstant = 140;
         final double ninetyDegreeTurnTime = 800;
         final double driveDistance = Math.cos(Math.toRadians(Math.abs(angleToTurnDegrees))) * centerDistance;
         final int driveDirection = angleToTurnDegrees >= 0 ? 1 : -1; // 1 is right, -1 is left

@@ -35,7 +35,7 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
     
     
     private void centerRobot(int centerX){
-        System.out.println("CenterX:"+centerX);
+        System.out.println("CenterX interfaace wall: "+centerX);
         System.out.println("adjust to center");
         final double minSpeed = 0.13;
         final double maxSpeed = 0.25;
@@ -54,8 +54,8 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
     private void manhattan(double angleToTurnDegrees, double centerDistance){
         final double turnSpeed = 0.2;
         final double forwardSpeed = 0.18;
-        final double turnProportionalTimeConstant = 8;
-        final double forwardProportionalTimeConstant = 135;
+        final double turnProportionalTimeConstant = 10;
+        final double forwardProportionalTimeConstant = 120;
         final double ninetyDegreeTurnTime = 800;
         final double driveDistance = Math.cos(Math.toRadians(Math.abs(angleToTurnDegrees))) * centerDistance;
         final int driveDirection = angleToTurnDegrees >= 0 ? 1 : -1; // 1 is right, -1 is left
@@ -82,7 +82,7 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
         System.out.println("Go Straight");
         robotModel.setMotors(0.17,0.17);
         try {
-            Thread.sleep(200);
+            Thread.sleep(800);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -104,8 +104,7 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
                 e.printStackTrace();
             }
         }
-        robotInventory.removeRedBalls();
-        robotInventory.removeUnknownBalls();
+        
         System.out.println("Done depositing balls over wall.");
     }
     
@@ -144,12 +143,12 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
         final int centerXThreshold = 20;
         final double goStraightAngleThreshold = 80;
        
-        interfaceWallSummary.updateReactorSummary(image);
+        interfaceWallSummary.updateInterfaceWallSummary(image);
         
-        double angle = interfaceWallSummary.getReactorAngleInDegrees();
-        double distance = interfaceWallSummary.getReactorCenterDistance();
-        double angleToTurn = interfaceWallSummary.getReactorAngleToTurn();
-        int centerX = interfaceWallSummary.getReactorCenterXValue();
+        double angle = interfaceWallSummary.getInterfaceWallAngleInDegrees();
+        double distance = interfaceWallSummary.getInterfaceWallCenterDistance();
+        double angleToTurn = interfaceWallSummary.getInterfaceWallAngleToTurn();
+        int centerX = interfaceWallSummary.getInterfaceWallCenterXValue();
         long currentRunningTime = System.currentTimeMillis() - startTime; 
 
         // System.out.println("Angle: " + angle);
@@ -161,7 +160,10 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
             stop();
         }
         // exit if we no longer see reactor
-        if(!interfaceWallSummary.isInterfaceWallScoreable()){
+        if(!interfaceWallSummary.isInterfaceWallScoreable() &&
+        		!(state == ScoreOverInterfaceWallStates.DEPOSIT) &&
+        		!(state == ScoreOverInterfaceWallStates.INSERT) &&
+        		!(state == ScoreOverInterfaceWallStates.REVERSE)){
             stop();
         } 
         /*
@@ -183,11 +185,13 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
             deposit();
             reverse();
             turnAwayFromInterfaceWall();
+            robotInventory.removeRedBalls();
+            robotInventory.removeUnknownBalls();
             stop();
         }
         // switch to center from driver if angle to turn becomes too small
         else if(state == ScoreOverInterfaceWallStates.SMALL_ANGLE && 
-                interfaceWallSummary.getReactorAngleToTurn() < goStraightAngleThreshold){
+        		angleToTurn < goStraightAngleThreshold){
             state = ScoreOverInterfaceWallStates.CENTER;
         }
         // switch to driver state after manhattan state
