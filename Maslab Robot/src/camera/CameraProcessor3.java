@@ -41,10 +41,12 @@ public class CameraProcessor3 extends CameraProcessor{
             this.processedImage = processedImage;
         }
         
-        double leftDistance = getDistance(5);
+        double leftDistance = getDistance(5)/0.8;
         double centerDistance = getDistance(285);
-        double rightDistance = getDistance(570);   
-        
+        double rightDistance = getDistance(570)/0.8;
+        System.out.println("left:"+ leftDistance);
+        System.out.println("center:"+ centerDistance);
+        System.out.println("Right:"+ rightDistance);
         synchronized(this){
             this.leftDistance = leftDistance;
             this.rightDistance = rightDistance;
@@ -70,14 +72,20 @@ public class CameraProcessor3 extends CameraProcessor{
                 }
                 if (secondPixel!= 0) break;
             }
-            if(550.0/(firstPixel-secondPixel)<120){
+            if(pixelToDistance(firstPixel-secondPixel)<50){
                 sampleSize+=1;
-                averageDistance+=550.0/(firstPixel-secondPixel);
+                averageDistance+=pixelToDistance(firstPixel-secondPixel);
                 Core.line(processedImage, new Point(x,firstPixel), new Point(x,secondPixel), new Scalar(255,0,0));
             }
         }
         averageDistance = sampleSize > 0 ? averageDistance/sampleSize : 1000;
+        System.out.println(sampleSize);
         return averageDistance;
+    }
+    
+    
+    private double pixelToDistance(int pixel){
+    	return 346.187/Math.pow(pixel,0.878562);
     }
     
     

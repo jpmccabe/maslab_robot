@@ -12,9 +12,9 @@ public class ComputerVisionSummary {
     private final CameraProcessor5 interfaceWallProcessor;
     
     private final static double MAX_BALL_DISTANCE  = 40;
-    private final static double MAX_WALL_DISTANCE_MIDDLE = 6;
-    private final static double MAX_WALL_DISTANCE_LEFT = 7.5;
-    private final static double MAX_WALL_DISTANCE_RIGHT = 7.5;
+    private final static double MAX_WALL_DISTANCE_MIDDLE = 8;
+    private final static double MAX_WALL_DISTANCE_LEFT = 12;
+    private final static double MAX_WALL_DISTANCE_RIGHT = 12;
     private final static double MAX_REACTOR_SCORING_DISTANCE = 50;
     private final static double MAX_INTERFACE_WALL_SCORING_DISTANCE = 60;
         
