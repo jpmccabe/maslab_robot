@@ -14,17 +14,17 @@ public class BallCollectionStateController extends StateMachine {
     private final RobotInventory robotInventory;
     private volatile boolean done;
     private final ComputerVisionSummary ballSummary;
-    
+    private final long startTime;
     
     public BallCollectionStateController(Devices robotModel, RobotInventory robotInventory){
         this.robotModel = robotModel;
         this.robotInventory = robotInventory;
         this.ballSummary = new ComputerVisionSummary();
+        startTime = System.currentTimeMillis();
         done = false;
     }
     
-    
-    
+       
     private void approach(double distance, double angle){
         final Driver driver = new Driver();
         final List<Double> motorSpeeds = driver.driveToBall(distance,0,angle,0);
@@ -32,8 +32,27 @@ public class BallCollectionStateController extends StateMachine {
     }
     
     
+    private void backUpAndTurn(){
+        final double reverseSpeed = -0.2;
+        final double turnSpeed = 0.2;
+        final long turnTime = 400;
+        final long reverseTime = 500;
+        
+        try {
+            robotModel.setMotors(reverseSpeed, reverseSpeed);
+            Thread.sleep(reverseTime);
+            robotModel.setMotors(turnSpeed, -turnSpeed);
+            Thread.sleep(turnTime);
+            robotModel.setMotors(0,0);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     
-    private void collect(BallColor ballColor){
+    
+    
+    private void collect(BallColor ballColor){        
     	System.out.println("Collect Ball");
         final double forwardSpeed = 0.2;
         robotModel.setMotors(forwardSpeed, forwardSpeed);
@@ -64,8 +83,6 @@ public class BallCollectionStateController extends StateMachine {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
-        stop();
     }
     
     
@@ -80,13 +97,20 @@ public class BallCollectionStateController extends StateMachine {
 
     @Override
     public void controlState(Mat image) {
+        final long timeout = 8000;
         final double collectAngleMax = 90;
         final double collectDistanceMax = 6;
         
         ballSummary.updateBallSummary(image);
+        long currentRunningTime = System.currentTimeMillis() - startTime;
+        
+        // if we time out then backup and rotate, then exit state.
+        if(currentRunningTime >= timeout){
+            backUpAndTurn();
+            stop();
+        }
         
         // green balls are given priority over red
-        // TODO more can be added to change this simple strategy
         if(ballSummary.isGreenBall()){
             double greenBallAngle = ballSummary.getAngleToGreenBall();
             double greenBallDistance = ballSummary.getDistanceToGreenBall();
@@ -94,6 +118,7 @@ public class BallCollectionStateController extends StateMachine {
             if(Math.abs(greenBallAngle) <= collectAngleMax && greenBallDistance <= collectDistanceMax){
             	System.out.println("collecting green ball");
                 collect(BallColor.GREEN);
+                stop();
             } else{
                 approach(greenBallDistance, greenBallAngle);
             }
@@ -105,6 +130,7 @@ public class BallCollectionStateController extends StateMachine {
             if(Math.abs(redBallAngle) <= collectAngleMax && redBallDistance <= collectDistanceMax){
             	System.out.println("collecting red ball");
                 collect(BallColor.RED);
+                stop();
             } else{
                 approach(redBallDistance, redBallAngle);
             }
