@@ -142,4 +142,23 @@ public class RobotInventory {
         return numUnknownBallsOnBoard;
     }
     
+    
+    /**
+     * @return true if the green ball storage area on the robot
+     * is full, false otherwise
+     */
+    synchronized public boolean isGreenStorageFull(){
+        final int maxNumGreen = 4;
+        return numGreenBallsOnBoard >= maxNumGreen;
+    }
+    
+    
+    /**
+     * @return true if the red ball storage area on the robot
+     * is full (this includes unknown colored balls), false otherwise
+     */
+    synchronized public boolean isRedStorageFull(){
+        final int maxNumRed = 4;
+        return (numRedBallsOnBoard + numUnknownBallsOnBoard) >= maxNumRed;
+    }
 }
