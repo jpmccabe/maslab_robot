@@ -17,7 +17,7 @@ public class ScoreInReactorStateController extends StateMachine {
     private final ComputerVisionSummary reactorSummary;
     private ScoreInReactorStates state = ScoreInReactorStates.NONE;
     private final Driver driver;
-    private int centerOfScreen = 320;
+    private int centerOfScreen = 348;
     private final long startTime;
     
     public ScoreInReactorStateController(Devices robotModel, RobotInventory robotInventory){
@@ -52,10 +52,10 @@ public class ScoreInReactorStateController extends StateMachine {
     }
     
     private void manhattan(double angleToTurnDegrees, double centerDistance){
-        final double turnSpeed = 0.25;
-        final double forwardSpeed = 0.2;
+        final double turnSpeed = 0.2;
+        final double forwardSpeed = 0.18;
         final double turnProportionalTimeConstant = 8;
-        final double forwardProportionalTimeConstant = 137;
+        final double forwardProportionalTimeConstant = 135;
         final double ninetyDegreeTurnTime = 800;
         final double driveDistance = Math.cos(Math.toRadians(Math.abs(angleToTurnDegrees))) * centerDistance;
         final int driveDirection = angleToTurnDegrees >= 0 ? 1 : -1; // 1 is right, -1 is left
@@ -79,9 +79,9 @@ public class ScoreInReactorStateController extends StateMachine {
     
     private void straight(){
         System.out.println("Go Straight");
-        robotModel.setMotors(0.2,0.2);
+        robotModel.setMotors(0.17,0.17);
         try {
-            Thread.sleep(800);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -125,25 +125,38 @@ public class ScoreInReactorStateController extends StateMachine {
         System.out.println("Done depositing ball in bottom");
     }
     
+    private void turnAwayFromReactor(){
+    	final double turnSpeed = 0.2;
+        final long turnTime = 1300;
+        
+        robotModel.setMotors(turnSpeed, -turnSpeed);
+        try {
+			Thread.sleep(turnTime);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
     private void reverse(){
-        final double reverseSpeed = -0.2;
+        final double reverseSpeed = -0.17;
         robotModel.setMotors(reverseSpeed,reverseSpeed);
         try {
-            Thread.sleep(1500);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
       
     private void reverseToDistance(){
-        final double reverseSpeed = -0.2;
+        final double reverseSpeed = -0.17;
         robotModel.setMotors(reverseSpeed, reverseSpeed);
     }
     
 
     @Override
     public void controlState(Mat image) {
-        final long timeout = 20000;
+        final long timeout = 70000;
         final double depositLowerPortDistance = 12;
         final double misAlignmentDistance = 6;
         final double misAlignmentAngle = 45;
@@ -158,7 +171,8 @@ public class ScoreInReactorStateController extends StateMachine {
         int centerX=reactorSummary.getReactorCenterXValue();
         long runningTime = System.currentTimeMillis() - startTime;
         // System.out.println("Angle:"+angle);
-        //System.out.println("Distance:"+distance);
+        System.out.println("Distance:"+distance);
+        System.out.println("Angle to turn: " + reactorSummary.getReactorAngleToTurn());
         
         // exit if we time out
         if(runningTime >= timeout){
@@ -174,37 +188,40 @@ public class ScoreInReactorStateController extends StateMachine {
             stop();
         }
         // when close to reactor insert the end of the robot into the reactor by driving straight
-        if(distance < insertDistance && robotInventory.hasGreenBalls() && !(state ==ScoreInReactorStates.INSERT)){
+        if(distance <= insertDistance && robotInventory.hasGreenBalls() && state ==ScoreInReactorStates.DRIVER){
             state = ScoreInReactorStates.INSERT;
             robotModel.setMotors(0,0);
             straight();
+            state = ScoreInReactorStates.DEPOSIT_TOP;
         }
         // switch to deposit in top state after insert state, then switch to reverse to distance state
-        else if(state == ScoreInReactorStates.INSERT){
-            state = ScoreInReactorStates.DEPOSIT_TOP;
+        else if(state == ScoreInReactorStates.DEPOSIT_TOP){
             depositTop();
             state = ScoreInReactorStates.REVERSE_TO_DISTANCE;
+        }
+        // switch to lower deposit state after reverse to distance and exit state
+        else if(state == ScoreInReactorStates.REVERSE_TO_DISTANCE && distance >= depositLowerPortDistance){
+            state = ScoreInReactorStates.DEPOSIT_BOTTOM;
+            robotModel.setMotors(0, 0);
+            depositBottom();
+            turnAwayFromReactor();
+            stop();
         }
         // reverse to distance for scoring in lower port
         else if(state == ScoreInReactorStates.REVERSE_TO_DISTANCE){
             reverseToDistance();
         }
-        // switch to lower deposit state after reverse to distance and exit state
-        else if(state == ScoreInReactorStates.REVERSE_TO_DISTANCE && distance >= depositLowerPortDistance ){
-            state = ScoreInReactorStates.DEPOSIT_BOTTOM;
-            depositBottom();
-            stop();
-        }
         // switch to center from driver if angle to turn becomes too small
-        else if(state == ScoreInReactorStates.DRIVER && reactorSummary.getReactorAngleToTurn() < goStraightAngleThreshold){
+        else if(state == ScoreInReactorStates.SMALL_ANGLE && reactorSummary.getReactorAngleToTurn() < goStraightAngleThreshold){
             state = ScoreInReactorStates.CENTER;
         }
         // switch to driver state after manhattan state
-        else if(state == ScoreInReactorStates.MANHATTAN  || state == ScoreInReactorStates.DRIVER ){
+        else if(state == ScoreInReactorStates.MANHATTAN  || state == ScoreInReactorStates.DRIVER || 
+        		state == ScoreInReactorStates.SMALL_ANGLE ){
             List<Double> motorSpeeds = driver.driveToReactor(distance, insertDistance, centerX-centerOfScreen, 0);
             System.out.println("Left: " + motorSpeeds.get(0) + " Right: " + motorSpeeds.get(1));
             robotModel.setMotors(motorSpeeds.get(0), motorSpeeds.get(1));
-            state = ScoreInReactorStates.DRIVER;
+            state = (state == ScoreInReactorStates.MANHATTAN) ? ScoreInReactorStates.DRIVER : state ;
         } 
         // switch to center state if not in a state and we need to center
         else if(Math.abs(centerX-centerOfScreen) > centerXThreshold  && (state == ScoreInReactorStates.NONE ||
@@ -216,7 +233,7 @@ public class ScoreInReactorStateController extends StateMachine {
         else if(Math.abs(centerX-centerOfScreen) <= centerXThreshold && 
                 reactorSummary.getReactorAngleToTurn() >= goStraightAngleThreshold &&
                 (state == ScoreInReactorStates.CENTER || state == ScoreInReactorStates.NONE)){
-            state = ScoreInReactorStates.DRIVER;
+            state = ScoreInReactorStates.SMALL_ANGLE;
         }
         // switch to manhattan state once centered
         else if(Math.abs(centerX-centerOfScreen) <= centerXThreshold && (state == ScoreInReactorStates.CENTER ||

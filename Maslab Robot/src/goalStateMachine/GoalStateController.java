@@ -27,6 +27,9 @@ public class GoalStateController{
         this.currentStateController = new StopStateController();
         this.robotModel = new Devices();
         this.robotInventory = new RobotInventory();
+        robotInventory.addGreenBall();
+        robotInventory.addGreenBall();
+        
         summaryOfImage = new ComputerVisionSummary();
          
         lastFrame = new Mat();
