@@ -73,8 +73,11 @@ class CameraProcessor4 extends CameraProcessor{
         	leftDistance=0;
         	rightDistance=0;
             averageDistance=0;
-            int sampleSize=0;
-            for(double x=boundingRect.x+15;x<boundingRect.x+boundingRect.width-15;x+=(boundingRect.width-30)/60.0){
+            for(double x=boundingRect.x+13;x<boundingRect.x+boundingRect.width-13;x+=(boundingRect.width-26)/50.0){
+            	count+=1;
+            	
+            	if(count>5 && count<23) continue;
+            	if(count>27 && count<=45) continue;
                 int firstPixel=0;
                 int secondPixel=0;
                 for(int y= Math.min(boundingRect.y+boundingRect.height+2,479);y>=Math.max(boundingRect.y-2, 1);y--){
@@ -83,19 +86,23 @@ class CameraProcessor4 extends CameraProcessor{
                         else secondPixel=y;
                     }
                 }
-                averageDistance+=pixelToDistance(firstPixel-secondPixel);
-            
-                if (count<10){leftDistance+=pixelToDistance(firstPixel-secondPixel);}
-                if (count>40){rightDistance+=pixelToDistance(firstPixel-secondPixel);}
-                sampleSize+=1;
-                count+=1;
+                //System.out.println("x:"+x+" pixels:"+(firstPixel-secondPixel));
+                if (count>=23 && count<=27) averageDistance+=pixelToDistance(firstPixel-secondPixel);
+                if (count<=5){leftDistance+=pixelToDistance(firstPixel-secondPixel);}
+                if (count>45){rightDistance+=pixelToDistance(firstPixel-secondPixel);}
                 Core.line(processedImage, new Point((int)x,firstPixel), new Point((int)x,secondPixel), new Scalar(255,0,0));
             }
-            averageDistance/=sampleSize;
-            leftDistance/=10;
-            rightDistance/=(count-40);
+            averageDistance/=5;
+            leftDistance/=5;
+            rightDistance/=(count-45);
             
+            leftDistance/=Math.cos(pixelToAngle(boundingRect.x)*Math.PI/180.0);
+            rightDistance/=Math.cos(pixelToAngle(boundingRect.x+boundingRect.width)*Math.PI/180.0);
             System.out.println("Avg Distance:"+ averageDistance);
+            System.out.println("leftDistance:"+leftDistance);
+            System.out.println("RightDistance:"+rightDistance);
+            System.out.println("angle:"+pixelToAngle(boundingRect.x));
+
         }
 
 
@@ -116,27 +123,26 @@ class CameraProcessor4 extends CameraProcessor{
             this.processedImage = processedImage;
             this.angleToTurn = angleToTurn;
         }
-
+        
   
     }
     
+    
+    private double pixelToDistance(int pixel){
+    	return 346.187/Math.pow(pixel,0.878562);
+    }
     /**
      * 
      * @param pixel the pixel to be converted to angle
      * @return angle in degrees from front of robot
      */
-    private double pixelToDistance(int pixel){
-    	return 2.10884+430.873/pixel;
-    }
-    
     private double pixelToAngle(int pixel){
-    	final int centerPixel = 348;
     	int direction=1;
     	if (pixel<348){
     		pixel=348+(348-pixel);
     		direction=-1;
     	}
-    	double absoluteAngleInDegrees =  (348 + (2.53333*pixel) + (0.08*Math.pow(pixel, 2)));
+    	double absoluteAngleInDegrees =  (-100.845+0.355258*pixel-0.000186951*Math.pow(pixel, 2));
     	return absoluteAngleInDegrees*direction;
     }
     
