@@ -151,7 +151,21 @@ public class GoalStateController{
     
     
     private void collectFromEnergySilo(){
+        currentStateController.stop();
+        final CollectFromSiloStateController collectFromSiloController =
+                new CollectFromSiloStateController(robotModel, robotInventory);
         
+        currentStateController = collectFromSiloController;
+        
+        Thread collectFromSiloThread = new Thread(new Runnable(){
+            public void run(){
+                while(!collectFromSiloController.isDone()){
+                    collectFromSiloController.controlState(lastFrame);
+                }
+            }
+        });
+        
+        collectFromSiloThread.start();
     }
     
     
@@ -177,7 +191,21 @@ public class GoalStateController{
     
     
     private void depositRedBalls(){
+        currentStateController.stop();
+        final ScoreOverInterfaceWallStateController interfaceWallController = 
+                new ScoreOverInterfaceWallStateController(robotModel, robotInventory);
         
+        currentStateController = interfaceWallController;
+        
+        Thread interfaceWallThread = new Thread(new Runnable(){
+            public void run(){
+                while(!interfaceWallController.isDone()){
+                    interfaceWallController.controlState(lastFrame);
+                }
+            }
+        });
+        
+        interfaceWallThread.start();
     }
     
     
@@ -189,7 +217,7 @@ public class GoalStateController{
         
                      
         // if a reactor is in view and we have green balls, and we are not currently scoring, then score.
-        /*if((summaryOfImage.isReactorScoreable() && robotInventory.hasGreenBalls()) || 
+        if((summaryOfImage.isReactorScoreable() && robotInventory.hasGreenBalls()) || 
                 (currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR && !currentStateController.isDone())){
             if(!(currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR &&
                     !currentStateController.isDone())){
@@ -205,8 +233,9 @@ public class GoalStateController{
         		avoidWalls();
         	}
         }      
-            // else if see ball, and not currently collecting one, then collect ball
-        else if(summaryOfImage.isGreenBall() || summaryOfImage.isRedBall()){
+        // else if see ball, no storage is full, and not currently collecting one, then collect ball
+        else if(!robotInventory.isGreenStorageFull() && !robotInventory.isRedStorageFull() &&
+                (summaryOfImage.isGreenBall() || summaryOfImage.isRedBall())){
             if(!(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
                     && !currentStateController.isDone())){
                 System.out.println("Collecting balls");
@@ -219,7 +248,7 @@ public class GoalStateController{
             System.out.println("Looking for balls");
             lookForBalls();
         }
-        */
+        
         long estimatedTime = (System.nanoTime() - startTime);
         //System.out.println(estimatedTime);
     }
