@@ -16,7 +16,7 @@ import org.opencv.imgproc.Imgproc;
 /**
  * Processor for reactors
  */
-class CameraProcessor5 extends CameraProcessor{
+class CameraProcessor6 extends CameraProcessor{
 
 	private Mat processedImage;
 	private double leftDistance;
@@ -31,7 +31,7 @@ class CameraProcessor5 extends CameraProcessor{
 	}
 
 
-	public CameraProcessor5(){
+	public CameraProcessor6(){
 		leftDistance = Double.MAX_VALUE;
 		rightDistance = Double.MAX_VALUE;
 		centerDistance = Double.MIN_VALUE;
@@ -44,9 +44,9 @@ class CameraProcessor5 extends CameraProcessor{
 		boolean reactorSpotted=false;		
 		final Mat processedImage = imageToProcess.clone();
 
-		Core.inRange(processedImage, new Scalar(25, 55,150), new Scalar(40, 255, 255), processedImage);
-        Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),0);
-        Imgproc.erode(processedImage, processedImage,  new Mat(), new Point (-1, -1), 1);
+		Core.inRange(processedImage, new Scalar(123, 25,10), new Scalar(160, 255, 255), processedImage);
+		Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),1);
+		Imgproc.erode(processedImage, processedImage,  new Mat(), new Point (-1, -1), 2);
 
 
 		final Mat clone = processedImage.clone();

@@ -185,11 +185,11 @@ public class GoalStateController{
     public void controlState(){
         long startTime = System.nanoTime();
         summaryOfImage.updateFullSummary(lastFrame);
-        GUI.updateImagePane(summaryOfImage.getBlueWallProcessedImage());
+        GUI.updateImagePane(summaryOfImage.getSiloProcessedImage());
         
                      
         // if a reactor is in view and we have green balls, and we are not currently scoring, then score.
-        if((summaryOfImage.isReactorScoreable() && robotInventory.hasGreenBalls()) || 
+        /*if((summaryOfImage.isReactorScoreable() && robotInventory.hasGreenBalls()) || 
                 (currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR && !currentStateController.isDone())){
             if(!(currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR &&
                     !currentStateController.isDone())){
@@ -219,7 +219,7 @@ public class GoalStateController{
             System.out.println("Looking for balls");
             lookForBalls();
         }
-        
+        */
         long estimatedTime = (System.nanoTime() - startTime);
         //System.out.println(estimatedTime);
     }

@@ -10,6 +10,7 @@ public class ComputerVisionSummary {
     private final CameraProcessor3 blueWallProcessor;
     private final CameraProcessor4 reactorProcessor;
     private final CameraProcessor5 interfaceWallProcessor;
+    private final CameraProcessor6 siloProcessor;
     
     private final static double MAX_BALL_DISTANCE  = 40;
     private final static double MAX_WALL_DISTANCE_MIDDLE = 9;
@@ -17,6 +18,7 @@ public class ComputerVisionSummary {
     private final static double MAX_WALL_DISTANCE_RIGHT = 12;
     private final static double MAX_REACTOR_SCORING_DISTANCE = 70;
     private final static double MAX_INTERFACE_WALL_SCORING_DISTANCE = 60;
+    private final static double MAX_SILO_FOLLOW_DISTANCE = 40;
         
     public ComputerVisionSummary(){
         this.redBallProcessor = new CameraProcessor1();
@@ -24,6 +26,7 @@ public class ComputerVisionSummary {
         this.blueWallProcessor = new CameraProcessor3();
         this.reactorProcessor = new CameraProcessor4();
         this.interfaceWallProcessor = new CameraProcessor5();
+        this.siloProcessor = new CameraProcessor6();
     }
     
     
@@ -36,12 +39,14 @@ public class ComputerVisionSummary {
         Thread blueWallProcessorThread = new Thread(new ProcessorRunner(blueWallProcessor, HSVImage));
         Thread reactorProcessorThread = new Thread(new ProcessorRunner(reactorProcessor, HSVImage));
         Thread interfaceWallProcessorThread = new Thread(new ProcessorRunner(interfaceWallProcessor, HSVImage));
+        Thread siloProcessorThread = new Thread(new ProcessorRunner(siloProcessor, HSVImage));
         
         redBallProcessorThread.start();
         greenBallProcessorThread.start();
         blueWallProcessorThread.start();
         reactorProcessorThread.start();
         interfaceWallProcessorThread.start();
+        siloProcessorThread.start();
         
         try {
             redBallProcessorThread.join();
@@ -49,6 +54,7 @@ public class ComputerVisionSummary {
             blueWallProcessorThread.join();
             reactorProcessorThread.join();
             interfaceWallProcessorThread.join();
+            siloProcessorThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -100,6 +106,11 @@ public class ComputerVisionSummary {
         reactorProcessor.processImage(HSVImage);
     }
     
+    public void updateSiloSummary(Mat image){
+        final Mat HSVImage = new Mat();
+        Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        siloProcessor.processImage(HSVImage);
+    }
     
     /**
      * @return true if a red ball is in the image and is close, false otherwise.
@@ -152,6 +163,9 @@ public class ComputerVisionSummary {
         else if(isInterfaceWallObstacle()){
             direction = getInterfaceWallAngleInDegrees() <= 0 ? ObstacleDirection.RIGHT: ObstacleDirection.LEFT;
         }
+        else if(isSiloObstacle()){
+        	direction = getSiloAngleInDegrees() <= 0 ? ObstacleDirection.RIGHT: ObstacleDirection.LEFT;
+        }
        
         return direction;
     }
@@ -177,6 +191,12 @@ public class ComputerVisionSummary {
         return  (getReactorCenterDistance() <= MAX_REACTOR_SCORING_DISTANCE);
     }
     
+    
+    public boolean isSiloObstacle(){
+        return (getSiloCenterDistance() <= MAX_WALL_DISTANCE_MIDDLE ||
+                getSiloLeftDistance() <= MAX_WALL_DISTANCE_LEFT ||
+                getSiloRightDistance() <= MAX_WALL_DISTANCE_RIGHT);
+    }
     
     /**
      * @return true if the interface wall is in the image and is close enough to be
@@ -216,6 +236,9 @@ public class ComputerVisionSummary {
     
     public Mat getInterfaceWallProcessedImage(){
         return interfaceWallProcessor.getProcessedImage();
+    }
+    public Mat getSiloProcessedImage(){
+        return siloProcessor.getProcessedImage();
     }
     
     
@@ -282,7 +305,9 @@ public class ComputerVisionSummary {
         return reactorProcessor.getLeftDistance();
     }
     
-    
+    /**
+     * @return pixel number of the center of the reactor.
+     */
     public int getReactorCenterXValue(){
         return reactorProcessor.getCenterXValue();
     }
@@ -340,13 +365,71 @@ public class ComputerVisionSummary {
     public double getInterfaceWallCenterDistance(){
         return interfaceWallProcessor.getCenterDistance();
     }
-    
+    /**
+     * @return pixel number of the center of the interface wall.
+     */
+    public int getInterfaceWallCenterXValue(){
+        return interfaceWallProcessor.getCenterXValue();
+    }
     
     /**
      * @return angle to interface, if there is one, in degrees.
      */
     public double getInterfaceWallAngleInDegrees(){
         return interfaceWallProcessor.getAngleInDegrees();
+    }
+    
+    /**
+     * 
+     * @return Manhattan angle to interface wall.
+     */
+    public double getInterfaceWallAngleToTurn(){
+    	return interfaceWallProcessor.getAngleToTurnParallelInDegrees();
+    }
+    
+    
+    /**
+     * @return distance to left side of silo, if there is one, in inches.
+     */
+    public double getSiloLeftDistance(){
+        return interfaceWallProcessor.getLeftDistance();
+    }
+    
+    
+    /**
+     * @return distance to right side of silo, if there is one, in inches.
+     */
+    public double getSiloRightDistance(){
+        return interfaceWallProcessor.getRightDistance();
+    }
+    
+    
+    /**
+     * @return distance to center of silo, if there is one, in inches.
+     */
+    public double getSiloCenterDistance(){
+        return interfaceWallProcessor.getCenterDistance();
+    }
+    /**
+     * @return pixel number of the center of the silo.
+     */
+    public int getSiloCenterXValue(){
+        return siloProcessor.getCenterXValue();
+    }
+    
+    /**
+     * @return angle to silo, if there is one, in degrees.
+     */
+    public double getSiloAngleInDegrees(){
+        return siloProcessor.getAngleInDegrees();
+    }
+    
+    /**
+     * 
+     * @return Manhattan angle to silo
+     */
+    public double getSiloAngleToTurn(){
+    	return siloProcessor.getAngleToTurnParallelInDegrees();
     }
     
     
