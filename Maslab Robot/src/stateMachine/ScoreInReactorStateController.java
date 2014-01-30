@@ -149,6 +149,7 @@ public class ScoreInReactorStateController extends StateMachine {
         final double misAlignmentAngle = 45;
         final double insertDistance = 6;
         final int centerXThreshold = 20;
+        final double goStraightAngleThreshold = 80;
 
         reactorSummary.updateReactorSummary(image);
         
@@ -173,7 +174,7 @@ public class ScoreInReactorStateController extends StateMachine {
             stop();
         }
         // when close to reactor insert the end of the robot into the reactor by driving straight
-        if( distance < insertDistance && robotInventory.hasGreenBalls() && !(state ==ScoreInReactorStates.INSERT)){
+        if(distance < insertDistance && robotInventory.hasGreenBalls() && !(state ==ScoreInReactorStates.INSERT)){
             state = ScoreInReactorStates.INSERT;
             robotModel.setMotors(0,0);
             straight();
@@ -194,6 +195,10 @@ public class ScoreInReactorStateController extends StateMachine {
             depositBottom();
             stop();
         }
+        // switch to center from driver if angle to turn becomes too small
+        else if(state == ScoreInReactorStates.DRIVER && reactorSummary.getReactorAngleToTurn() < goStraightAngleThreshold){
+            state = ScoreInReactorStates.CENTER;
+        }
         // switch to driver state after manhattan state
         else if(state == ScoreInReactorStates.MANHATTAN  || state == ScoreInReactorStates.DRIVER ){
             List<Double> motorSpeeds = driver.driveToReactor(distance, insertDistance, centerX-centerOfScreen, 0);
@@ -206,6 +211,12 @@ public class ScoreInReactorStateController extends StateMachine {
                 state == ScoreInReactorStates.CENTER)) {
             state = ScoreInReactorStates.CENTER;
             centerRobot(centerX);
+        }
+        // switch into driver and skip manhattan if almost lined up with reactor
+        else if(Math.abs(centerX-centerOfScreen) <= centerXThreshold && 
+                reactorSummary.getReactorAngleToTurn() >= goStraightAngleThreshold &&
+                (state == ScoreInReactorStates.CENTER || state == ScoreInReactorStates.NONE)){
+            state = ScoreInReactorStates.DRIVER;
         }
         // switch to manhattan state once centered
         else if(Math.abs(centerX-centerOfScreen) <= centerXThreshold && (state == ScoreInReactorStates.CENTER ||
