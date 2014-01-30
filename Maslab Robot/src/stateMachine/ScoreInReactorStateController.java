@@ -122,6 +122,7 @@ public class ScoreInReactorStateController extends StateMachine {
                 e.printStackTrace();
             }
         }
+        robotModel.setServoReleaseToScoreLowerPosition();
         System.out.println("Done depositing ball in bottom");
     }
     
@@ -142,7 +143,7 @@ public class ScoreInReactorStateController extends StateMachine {
         final double reverseSpeed = -0.17;
         robotModel.setMotors(reverseSpeed,reverseSpeed);
         try {
-            Thread.sleep(500);
+            Thread.sleep(600);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -157,7 +158,7 @@ public class ScoreInReactorStateController extends StateMachine {
     @Override
     public void controlState(Mat image) {
         final long timeout = 70000;
-        final double depositLowerPortDistance = 12;
+        final double depositLowerPortDistance = 10;
         final double misAlignmentDistance = 6;
         final double misAlignmentAngle = 45;
         final double insertDistance = 6;
@@ -199,11 +200,12 @@ public class ScoreInReactorStateController extends StateMachine {
             depositTop();
             state = ScoreInReactorStates.REVERSE_TO_DISTANCE;
         }
-        // switch to lower deposit state after reverse to distance and exit state
+        // switch to lower deposit state after reverse to distance and then exit state
         else if(state == ScoreInReactorStates.REVERSE_TO_DISTANCE && distance >= depositLowerPortDistance){
             state = ScoreInReactorStates.DEPOSIT_BOTTOM;
             robotModel.setMotors(0, 0);
             depositBottom();
+            reverse();
             turnAwayFromReactor();
             stop();
         }

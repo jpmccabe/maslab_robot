@@ -27,8 +27,8 @@ public class GoalStateController{
         this.currentStateController = new StopStateController();
         this.robotModel = new Devices();
         this.robotInventory = new RobotInventory();
-        robotInventory.addGreenBall();
-        robotInventory.addGreenBall();
+        robotInventory.addRedBall();
+        robotInventory.addRedBall();
         
         summaryOfImage = new ComputerVisionSummary();
          
@@ -226,6 +226,15 @@ public class GoalStateController{
                     !currentStateController.isDone())){
                 System.out.println("Score in reactor");
                 scoreInReactor();
+            }
+        }
+        else if((summaryOfImage.isInterfaceWallScoreable() && 
+                (robotInventory.hasRedBalls() || robotInventory.isRedStorageFull())) ||  
+                (currentStateController.getStateMachineType() == StateMachineType.DEPOSIT_RED_BALLS && !currentStateController.isDone())){
+            if(!(currentStateController.getStateMachineType() == StateMachineType.DEPOSIT_RED_BALLS &&
+                    !currentStateController.isDone())){
+                System.out.println("Score over interface wall");
+                depositRedBalls();
             }
         }
         // else if a wall is close, and we are not currently avoiding walls, then avoid walls
