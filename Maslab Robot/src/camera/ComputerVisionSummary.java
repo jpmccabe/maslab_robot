@@ -434,7 +434,7 @@ public class ComputerVisionSummary {
      * @return distance to left side of silo, if there is one, in inches.
      */
     public double getSiloLeftDistance(){
-        return interfaceWallProcessor.getLeftDistance();
+        return siloProcessor.getLeftDistance();
     }
     
     
@@ -442,7 +442,7 @@ public class ComputerVisionSummary {
      * @return distance to right side of silo, if there is one, in inches.
      */
     public double getSiloRightDistance(){
-        return interfaceWallProcessor.getRightDistance();
+        return siloProcessor.getRightDistance();
     }
     
     
@@ -450,7 +450,7 @@ public class ComputerVisionSummary {
      * @return distance to center of silo, if there is one, in inches.
      */
     public double getSiloCenterDistance(){
-        return interfaceWallProcessor.getCenterDistance();
+        return siloProcessor.getCenterDistance();
     }
     /**
      * @return pixel number of the center of the silo.
