@@ -8,21 +8,30 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
     
     private final Devices robotModel;
     private final RobotInventory robotInventory;
+    private final long startTime;
+    private boolean done = false;
     
     public ScoreOverInterfaceWallStateController(Devices robotModel, RobotInventory robotInventory){
         this.robotModel = robotModel;
         this.robotInventory = robotInventory;
+        startTime = System.currentTimeMillis();
     }
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        
+        robotModel.setMotors(0,0);
+        done = true;
     }
 
     @Override
     public void controlState(Mat image) {
-        // TODO Auto-generated method stub
+        final long timeout = 20000;
         
+        long currentRunningTime = System.currentTimeMillis() - startTime;
+        
+        // timeout
+        if(currentRunningTime >= timeout){
+            stop();
+        }
     }
 
     @Override
@@ -33,8 +42,7 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
 
     @Override
     public boolean isDone() {
-        // TODO Auto-generated method stub
-        return false;
+        return done;
     }
 
 }
