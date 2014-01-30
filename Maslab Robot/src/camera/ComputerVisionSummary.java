@@ -85,15 +85,18 @@ public class ComputerVisionSummary {
         Thread blueWallProcessorThread = new Thread(new ProcessorRunner(blueWallProcessor, HSVImage));
         Thread reactorProcessorThread = new Thread(new ProcessorRunner(reactorProcessor, HSVImage));
         Thread interfaceWallProcessorThread = new Thread(new ProcessorRunner(interfaceWallProcessor, HSVImage));
+        Thread siloProcessorThread = new Thread(new ProcessorRunner(siloProcessor, HSVImage));
         
         blueWallProcessorThread.start();
         reactorProcessorThread.start();
         interfaceWallProcessorThread.start();
+        siloProcessorThread.start();
         
         try{
            blueWallProcessorThread.join();
            reactorProcessorThread.join();
            interfaceWallProcessorThread.join();
+           siloProcessorThread.join();
         } catch (InterruptedException e){
             e.printStackTrace();
         }
@@ -110,6 +113,12 @@ public class ComputerVisionSummary {
         final Mat HSVImage = new Mat();
         Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
         siloProcessor.processImage(HSVImage);
+    }
+    
+    public void updateInterfaceWallSummary(Mat image){
+        final Mat HSVImage = new Mat();
+        Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
+        interfaceWallProcessor.processImage(HSVImage);
     }
     
     /**
@@ -192,11 +201,25 @@ public class ComputerVisionSummary {
     }
     
     
+    /**
+     * @return true if the silo is in the image and is close enough to be considered
+     * and obstacle.
+     */
     public boolean isSiloObstacle(){
         return (getSiloCenterDistance() <= MAX_WALL_DISTANCE_MIDDLE ||
                 getSiloLeftDistance() <= MAX_WALL_DISTANCE_LEFT ||
                 getSiloRightDistance() <= MAX_WALL_DISTANCE_RIGHT);
     }
+    
+    
+    /**
+     * @return true if the silo is in the image and is close enough to be considered
+     * for collecting balls
+     */
+    public boolean isSiloCollectable(){
+        return (getSiloCenterDistance() <= MAX_SILO_FOLLOW_DISTANCE);
+    }
+    
     
     /**
      * @return true if the interface wall is in the image and is close enough to be
