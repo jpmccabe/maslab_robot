@@ -23,7 +23,7 @@ class CameraProcessor4 extends CameraProcessor{
     private double centerDistance;
     private double angleInDegrees;
     private int centerXValue;
-    private double angleToTurn;
+    private double angleToTurnParallelDegrees;
 
     static {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -95,33 +95,36 @@ class CameraProcessor4 extends CameraProcessor{
             averageDistance/=5;
             leftDistance/=5;
             rightDistance/=(count-45);
-            
-            leftDistance/=Math.cos(pixelToAngle(boundingRect.x)*Math.PI/180.0);
-            rightDistance/=Math.cos(pixelToAngle(boundingRect.x+boundingRect.width)*Math.PI/180.0);
-            System.out.println("Avg Distance:"+ averageDistance);
-            System.out.println("leftDistance:"+leftDistance);
-            System.out.println("RightDistance:"+rightDistance);
-            System.out.println("angle:"+pixelToAngle(boundingRect.x));
 
         }
+        
+        final double leftAngleRadiansAbs = Math.abs(Math.toRadians(pixelToAngle(boundingRect.x)));
+        final double rightAngleRadiansAbs = Math.abs(Math.toRadians(pixelToAngle(boundingRect.x+boundingRect.width)));
+        final double centerAngle = pixelToAngle(boundingRect.x + (boundingRect.width/2));
+        leftDistance /= Math.cos(leftAngleRadiansAbs);
+        rightDistance /= Math.cos(leftAngleRadiansAbs);
+        System.out.println("Avg Distance:"+ averageDistance);
+        System.out.println("leftDistance:"+leftDistance);
+        System.out.println("RightDistance:"+rightDistance);
+        System.out.println("angle:"+centerAngle);
 
+        final double angleToTurnParallelRadians = Math.asin((Math.min(leftDistance,rightDistance) / 11.5) * Math.sin(leftAngleRadiansAbs+rightAngleRadiansAbs));
+        double angleToTurnParallelDegrees = Math.toDegrees(angleToTurnParallelRadians);
+        angleToTurnParallelDegrees = leftDistance <= rightDistance ? angleToTurnParallelDegrees : -1*angleToTurnParallelDegrees;
+        System.out.println("angle to turn parallel: " + angleToTurnParallelDegrees);
 
         Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
         
-       
-       
-        final double angleInRadians = (rightDistance-leftDistance)/averageDistance*2.25;
-        final double angleInDegrees = angleInRadians * (180/Math.PI);
         final int centerXValue = (int) ((boundingRect.x) + (boundingRect.width/2.0));
         
         synchronized(this){
             this.leftDistance = leftDistance;
             this.rightDistance = rightDistance;
             this.centerDistance = averageDistance;
-            this.angleInDegrees = angleInDegrees;
+            this.angleInDegrees = centerAngle;
             this.centerXValue = centerXValue;
             this.processedImage = processedImage;
-            this.angleToTurn = angleToTurn;
+            this.angleToTurnParallelDegrees = angleToTurnParallelDegrees;
         }
         
   
@@ -170,8 +173,8 @@ class CameraProcessor4 extends CameraProcessor{
         return processedImage;
     }
     
-    synchronized public double getAngleToTurn(){
-    	return angleToTurn;
+    synchronized public double getAngleToTurnParallelInDegrees(){
+    	return angleToTurnParallelDegrees;
     }
 }
 
