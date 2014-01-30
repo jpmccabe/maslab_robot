@@ -104,13 +104,13 @@ class CameraProcessor4 extends CameraProcessor{
         final double centerAngle = pixelToAngle(boundingRect.x + (boundingRect.width/2));
         leftDistance /= Math.cos(leftAngleRadiansAbs);
         rightDistance /= Math.cos(leftAngleRadiansAbs);
-        System.out.println("left distance: " + leftDistance);
-        System.out.println("right distance: " + rightDistance);
+        //System.out.println("left distance: " + leftDistance);
+        //System.out.println("right distance: " + rightDistance);
         final double insideOfArcSin = Math.min(1, (Math.min(leftDistance,rightDistance) / 11.5) * Math.sin(leftAngleRadiansAbs+rightAngleRadiansAbs));
         final double angleToTurnParallelRadians = Math.asin(insideOfArcSin);
         double angleToTurnParallelDegrees = Math.toDegrees(angleToTurnParallelRadians);
         angleToTurnParallelDegrees = leftDistance <= rightDistance ? angleToTurnParallelDegrees : -1*angleToTurnParallelDegrees;
-        System.out.println("angle to turn parallel: " + angleToTurnParallelDegrees);
+        //System.out.println("angle to turn parallel: " + angleToTurnParallelDegrees);
 
         Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
         
