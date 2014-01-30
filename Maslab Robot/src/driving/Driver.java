@@ -51,18 +51,18 @@ public class Driver{
 		
 		final double angularSpeed = clampSpeed(angularPID.valuePID(angle,angleTarget),minAngularSpeed,maxAngularSpeed);
 		final double straightSpeed =clampSpeed(straightPID.valuePID(distance,distanceTarget),minStraightSpeed,maxStraightSpeed);
-		System.out.println("distance: " + distance);
-		System.out.println("angle: " + angle);
-		System.out.println("angular: " + angularSpeed);
-		System.out.println("speed: " + straightSpeed);
+		//System.out.println("distance: " + distance);
+		//System.out.println("angle: " + angle);
+		//System.out.println("angular: " + angularSpeed);
+		//System.out.println("speed: " + straightSpeed);
 		
 		final List<Double> motorSpeeds  = new ArrayList<Double>();
 		final double leftMotorSpeed = straightSpeed+angularSpeed;
 		final double rightMotorSpeed = straightSpeed-angularSpeed;
 		
-		System.out.println("left: " + leftMotorSpeed);
-		System.out.println("right: " + rightMotorSpeed);
-		System.out.println("---------------------");
+		//System.out.println("left: " + leftMotorSpeed);
+		//System.out.println("right: " + rightMotorSpeed);
+		//System.out.println("---------------------");
 		
 	    motorSpeeds.add(leftMotorSpeed);
 	    motorSpeeds.add(rightMotorSpeed);
@@ -96,18 +96,18 @@ public class Driver{
 		
 		final double angularSpeed = clampSpeed(angularPIDReactor.valuePID(angle,angleTarget),minAngularSpeed,maxAngularSpeed);
 		final double straightSpeed =clampSpeed(straightPIDReactor.valuePID(distance,distanceTarget),minStraightSpeed,maxStraightSpeed);
-		System.out.println("distance: " + distance);
-		System.out.println("angle: " + angle);
-		System.out.println("angular: " + angularSpeed);
-		System.out.println("speed: " + straightSpeed);
+		//System.out.println("distance: " + distance);
+		//System.out.println("angle: " + angle);
+		//System.out.println("angular: " + angularSpeed);
+		//System.out.println("speed: " + straightSpeed);
 		
 		final List<Double> motorSpeeds  = new ArrayList<Double>();
 		final double leftMotorSpeed = straightSpeed+angularSpeed;
 		final double rightMotorSpeed = straightSpeed-angularSpeed;
 		
-		System.out.println("left: " + leftMotorSpeed);
-		System.out.println("right: " + rightMotorSpeed);
-		System.out.println("---------------------");
+		//System.out.println("left: " + leftMotorSpeed);
+		//System.out.println("right: " + rightMotorSpeed);
+		//System.out.println("---------------------");
 		
 	    motorSpeeds.add(leftMotorSpeed);
 	    motorSpeeds.add(rightMotorSpeed);
@@ -115,20 +115,5 @@ public class Driver{
 		return motorSpeeds;
 	}
 	
-	/*
-	public void driveByWall(double angle,double angleTarget){
-		double angularSpeed= angularPID.valuePID(angle,angleTarget);
-		Main.devices.setMotors(0.9+angularSpeed,0.9-angularSpeed);
-		
-	}
-	
-	
-	public void rotateInPlace(double velocity, int direction){
-		StopWatch.resetTime();
-		while(StopWatch.getTime()<1){
-			Main.devices.setMotors(velocity*direction,-velocity*direction);
-		}
-		Main.devices.setMotors(0,0);
-	}
-	*/
+
 }

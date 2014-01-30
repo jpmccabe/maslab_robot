@@ -4,18 +4,19 @@ import org.opencv.core.Mat;
 
 import robotModel.*;
 
-public class ScoreOverInterfaceWallStateController extends StateMachine {
+public class CollectFromSiloStateController extends StateMachine {
     
     private final Devices robotModel;
     private final RobotInventory robotInventory;
     private final long startTime;
     private boolean done = false;
     
-    public ScoreOverInterfaceWallStateController(Devices robotModel, RobotInventory robotInventory){
+    public CollectFromSiloStateController(Devices robotModel, RobotInventory robotInventory){
         this.robotModel = robotModel;
         this.robotInventory = robotInventory;
         startTime = System.currentTimeMillis();
     }
+    
     @Override
     public void stop() {
         robotModel.setMotors(0,0);
@@ -36,7 +37,7 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
 
     @Override
     public StateMachineType getStateMachineType() {
-        return StateMachineType.DEPOSIT_RED_BALLS;
+        return StateMachineType.COLLECT_FROM_ENERGY_SILO;
     }
 
     @Override
