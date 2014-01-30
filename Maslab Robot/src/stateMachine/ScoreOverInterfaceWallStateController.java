@@ -104,7 +104,8 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
                 e.printStackTrace();
             }
         }
-        
+        robotInventory.removeRedBalls();
+        robotInventory.removeUnknownBalls();
         System.out.println("Done depositing balls over wall.");
     }
     
@@ -127,7 +128,7 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
         final double reverseSpeed = -0.17;
         robotModel.setMotors(reverseSpeed,reverseSpeed);
         try {
-            Thread.sleep(500);
+            Thread.sleep(800);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -185,8 +186,6 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
             deposit();
             reverse();
             turnAwayFromInterfaceWall();
-            robotInventory.removeRedBalls();
-            robotInventory.removeUnknownBalls();
             stop();
         }
         // switch to center from driver if angle to turn becomes too small

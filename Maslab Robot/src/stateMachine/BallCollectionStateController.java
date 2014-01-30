@@ -70,7 +70,22 @@ public class BallCollectionStateController extends StateMachine {
                 }
             }
         });
+        
+        Thread spiralThread = new Thread(new Runnable(){
+            public void run(){
+                try {
+                    robotModel.setSpiral(true);
+                    Thread.sleep(15000);
+                    robotModel.setRoller(false);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        
         rollerThread.start();
+        spiralThread.start();
         
         try {
             Thread.sleep(1500);
