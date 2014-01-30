@@ -39,17 +39,7 @@ public class BallCollectionStateController extends StateMachine {
         robotModel.setMotors(forwardSpeed, forwardSpeed);
         robotModel.setRoller(true);
         robotInventory.addBallToQueue(new TimedBall(System.currentTimeMillis(), ballColor));
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        robotModel.setMotors(-forwardSpeed,-forwardSpeed);
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        
         Thread rollerThread = new Thread(new Runnable(){
             public void run(){
                 try {
@@ -62,6 +52,19 @@ public class BallCollectionStateController extends StateMachine {
             }
         });
         rollerThread.start();
+        
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        robotModel.setMotors(-forwardSpeed,-forwardSpeed);
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
         stop();
     }
     
