@@ -214,7 +214,7 @@ public class Devices {
      * Sets the release servo to red ball channel position
      */
     synchronized public void setServoReleaseToRedPosition(){
-        servoReleaser.setAngle(180);
+        servoReleaser.setAngle(188);
         maple.transmit();
     }
     

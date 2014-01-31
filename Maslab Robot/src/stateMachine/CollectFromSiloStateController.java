@@ -38,7 +38,7 @@ public class CollectFromSiloStateController extends StateMachine {
     private void centerRobot(int centerX){
         System.out.println("CenterX:"+centerX);
         System.out.println("adjust to center");
-        final double minSpeed = 0.14;
+        final double minSpeed = 0.13;
         //final double maxSpeed = 0.2;
         double prop = (centerX-centerOfScreen)*0.0008;
         //System.out.println("prop: " + prop);
@@ -56,9 +56,9 @@ public class CollectFromSiloStateController extends StateMachine {
     private void manhattan(double angleToTurnDegrees, double centerDistance){
     	final double turnSpeed = 0.2;
         final double forwardSpeed = 0.18;
-        final double turnProportionalTimeConstant = 9;
-        final double forwardProportionalTimeConstant = 125;
-        final double ninetyDegreeTurnTime = 900;
+        final double turnProportionalTimeConstant = 10;
+        final double forwardProportionalTimeConstant = 220;
+        final double ninetyDegreeTurnTime = 800;
         final double driveDistance = Math.cos(Math.toRadians(Math.abs(angleToTurnDegrees))) * centerDistance;
         final int driveDirection = angleToTurnDegrees >= 0 ? 1 : -1; // 1 is right, -1 is left
        
@@ -82,9 +82,16 @@ public class CollectFromSiloStateController extends StateMachine {
     
     private void straight(){
         System.out.println("Go Straight");
-        robotModel.setMotors(0.14,0.14);
         try {
+            robotModel.setMotors(0.14,0.14);
             Thread.sleep(1200);
+            /*
+            robotModel.setMotors(0.20,-.12);
+            Thread.sleep(700);
+            robotModel.setMotors(-.12,0.20);
+            Thread.sleep(700);
+            */
+            robotModel.setMotors(0, 0);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -93,9 +100,9 @@ public class CollectFromSiloStateController extends StateMachine {
     
     
     private void remove(){
-        final double reverseSpeed = -0.2;
-        final double forwardSpeed = 0.2;
-        final long reverseTime = 800;
+        final double reverseSpeed = -0.19;
+        final double forwardSpeed = 0.19;
+        final long reverseTime = 850;
         robotModel.setMotors(0,0);
         System.out.println("Removing ball from silo");
         
@@ -118,11 +125,12 @@ public class CollectFromSiloStateController extends StateMachine {
             robotModel.setMotors(0,0);
             System.out.println("raising arm");
             robotModel.setServoArmToUpPosition();
-            Thread.sleep(300);
+            Thread.sleep(150);
             System.out.println("driving forward");
             robotModel.setMotors(forwardSpeed, forwardSpeed);
             Thread.sleep(reverseTime);
             robotModel.setMotors(0,0);
+            System.out.println("adding ball to queue");
             TimedBall collectedBall = new TimedBall(System.currentTimeMillis(), ballColor);
             robotInventory.addBallToQueue(collectedBall);
             Thread.sleep(2000);
@@ -162,11 +170,11 @@ public class CollectFromSiloStateController extends StateMachine {
 
     @Override
     public void controlState(Mat image) {
-        final long timeout = 15000;
+        final long timeout = 12000;
         final double misAlignmentDistance = 6;
         final double misAlignmentAngle = 45;
         final double insertDistance = 9;
-        final int centerXThreshold = 15;
+        final int centerXThreshold = 30;
         final double goStraightAngleThreshold = 85;
        
         siloSummary.updateSiloSummary(image);
@@ -180,7 +188,7 @@ public class CollectFromSiloStateController extends StateMachine {
         // System.out.println("Angle: " + angle);
         System.out.println("Distance silo: " + distance);
         System.out.println("Angle to turn silo: " + angleToTurn);
-        System.out.println("running time: " + currentRunningTime);
+        System.out.println("running time silo: " + currentRunningTime);
         
         // exit if we time out
         if(currentRunningTime >= timeout){
@@ -232,13 +240,13 @@ public class CollectFromSiloStateController extends StateMachine {
         // switch to center from driver if angle to turn becomes too small
         else if(state == CollectFromSiloStates.SMALL_ANGLE && 
                 Math.abs(angleToTurn) < goStraightAngleThreshold){
-        	System.out.println("switching to center from small angle");
+        	System.out.println("switching to center from small angle silo");
             state = CollectFromSiloStates.CENTER;
         }
         // switch to driver state after manhattan state
         else if(state == CollectFromSiloStates.MANHATTAN  || state == CollectFromSiloStates.DRIVER || 
                 state == CollectFromSiloStates.SMALL_ANGLE ){
-        	System.out.println("using driver");
+        	System.out.println("using driver silo");
             List<Double> motorSpeeds = driver.driveToReactor(distance, insertDistance, centerX-centerOfScreen, 0);
             System.out.println("Left: " + motorSpeeds.get(0) + " Right: " + motorSpeeds.get(1));
             robotModel.setMotors(motorSpeeds.get(0), motorSpeeds.get(1));
@@ -247,7 +255,7 @@ public class CollectFromSiloStateController extends StateMachine {
         // switch to center state if not in a state and we need to center
         else if(Math.abs(centerX-centerOfScreen) > centerXThreshold  && (state == CollectFromSiloStates.NONE ||
                 state == CollectFromSiloStates.CENTER)) {
-        	System.out.println("centering");
+        	System.out.println("centering silo");
             state = CollectFromSiloStates.CENTER;
             centerRobot(centerX);
         }
@@ -255,13 +263,13 @@ public class CollectFromSiloStateController extends StateMachine {
         else if(Math.abs(centerX-centerOfScreen) <= centerXThreshold && 
                 Math.abs(angleToTurn) >= goStraightAngleThreshold &&
                 (state == CollectFromSiloStates.CENTER || state == CollectFromSiloStates.NONE)){
-        	System.out.println("entering small angle");
+        	System.out.println("entering small angle silo");
             state = CollectFromSiloStates.SMALL_ANGLE;
         }
         // switch to manhattan state once centered
         else if(Math.abs(centerX-centerOfScreen) <= centerXThreshold && (state == CollectFromSiloStates.CENTER ||
                 state == CollectFromSiloStates.NONE)){
-            System.out.println("Manhattan");
+            System.out.println("Manhattan silo");
             state = CollectFromSiloStates.MANHATTAN;
             robotModel.setMotors(0,0);
             manhattan(angleToTurn, distance);

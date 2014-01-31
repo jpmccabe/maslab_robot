@@ -62,7 +62,7 @@ public class BallCollectionStateController extends StateMachine {
         Thread rollerThread = new Thread(new Runnable(){
             public void run(){
                 try {
-                    Thread.sleep(7000);
+                    Thread.sleep(3000);
                     robotModel.setRoller(false);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
@@ -75,7 +75,7 @@ public class BallCollectionStateController extends StateMachine {
             public void run(){
                 try {
                     robotModel.setSpiral(true);
-                    Thread.sleep(15000);
+                    Thread.sleep(10000);
                     robotModel.setRoller(false);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
@@ -97,7 +97,7 @@ public class BallCollectionStateController extends StateMachine {
         
         //robotModel.setMotors(-forwardSpeed,-forwardSpeed);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

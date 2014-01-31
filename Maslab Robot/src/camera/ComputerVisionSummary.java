@@ -16,9 +16,9 @@ public class ComputerVisionSummary {
     private final static double MAX_WALL_DISTANCE_MIDDLE = 11;
     private final static double MAX_WALL_DISTANCE_LEFT = 12;
     private final static double MAX_WALL_DISTANCE_RIGHT = 12;
-    private final static double MAX_REACTOR_SCORING_DISTANCE = 50;
-    private final static double MAX_INTERFACE_WALL_SCORING_DISTANCE = 50;
-    private final static double MAX_SILO_FOLLOW_DISTANCE = 40;
+    private final static double MAX_REACTOR_SCORING_DISTANCE = 40;
+    private final static double MAX_INTERFACE_WALL_SCORING_DISTANCE = 40;
+    private final static double MAX_SILO_FOLLOW_DISTANCE = 10;
     private final static double NO_OBSTACLE_DISTANCE = 15;
         
     public ComputerVisionSummary(){

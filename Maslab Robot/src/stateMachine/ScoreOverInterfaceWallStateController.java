@@ -99,9 +99,9 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
         for(int i = 0; i < numToScore; i++){
             try{
                 robotModel.setServoReleaseToRedPosition();
-                Thread.sleep(800);
+                Thread.sleep(1000);
                 robotModel.setServoReleaseToScoreLowerPosition();
-                Thread.sleep(800);
+                Thread.sleep(1000);
             } catch (InterruptedException e){
                 e.printStackTrace();
             }
@@ -143,7 +143,7 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
         final double misAlignmentDistance = 6;
         final double misAlignmentAngle = 45;
         final double insertDistance = 6;
-        final int centerXThreshold = 20;
+        final int centerXThreshold = 30;
         final double goStraightAngleThreshold = 85;
        
         interfaceWallSummary.updateInterfaceWallSummary(image);
@@ -153,11 +153,12 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
         double angleToTurn = interfaceWallSummary.getInterfaceWallAngleToTurn();
         int centerX = interfaceWallSummary.getInterfaceWallCenterXValue();
         long currentRunningTime = System.currentTimeMillis() - startTime; 
-
-        // System.out.println("Angle: " + angle);
-        System.out.println("Distance: " + distance);
-        System.out.println("Angle to turn: " + angleToTurn);
         
+        // System.out.println("Angle: " + angle);
+        System.out.println("Distance interface wall: " + distance);
+        System.out.println("Angle to turn interface wall: " + angleToTurn);
+        System.out.println("running time interface wall: " + currentRunningTime);
+
         // exit if we time out
         if(currentRunningTime >= timeout){
         	System.out.println("timed out");

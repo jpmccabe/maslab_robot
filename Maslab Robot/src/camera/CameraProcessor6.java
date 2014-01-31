@@ -101,14 +101,14 @@ class CameraProcessor6 extends CameraProcessor{
 
 		}
 
-		final double leftAngleRadiansAbs = Math.abs(Math.toRadians(pixelToAngle(boundingRect.x)));
-		final double rightAngleRadiansAbs = Math.abs(Math.toRadians(pixelToAngle(boundingRect.x+boundingRect.width)));
+		final double leftAngleRadiansAbs = Math.abs(Math.toRadians(pixelToAngle(boundingRect.x-0.5*boundingRect.width)));
+		final double rightAngleRadiansAbs = Math.abs(Math.toRadians(pixelToAngle(boundingRect.x+1.5*boundingRect.width)));
 		final double centerAngle = pixelToAngle(boundingRect.x + (boundingRect.width/2));
 		leftDistance /= Math.cos(leftAngleRadiansAbs);
 		rightDistance /= Math.cos(leftAngleRadiansAbs);
 		//System.out.println("left distance silo: " + leftDistance);
 		//System.out.println("right distance silo: " + rightDistance);
-		final double insideOfArcSin = Math.min(1, (Math.min(leftDistance,rightDistance) / 3.0) * Math.sin(Math.max(leftAngleRadiansAbs,rightAngleRadiansAbs)));
+		final double insideOfArcSin = Math.min(1, (Math.min(leftDistance,rightDistance) / 6) * Math.sin(Math.max(leftAngleRadiansAbs,rightAngleRadiansAbs)));
 		final double angleToTurnParallelRadians = Math.asin(insideOfArcSin);
 		double angleToTurnParallelDegrees = Math.toDegrees(angleToTurnParallelRadians);
 		angleToTurnParallelDegrees = leftDistance <= rightDistance ? angleToTurnParallelDegrees : -1*angleToTurnParallelDegrees;
@@ -140,7 +140,7 @@ class CameraProcessor6 extends CameraProcessor{
 	 * @param pixel the pixel to be converted to angle
 	 * @return angle in degrees from front of robot
 	 */
-	private double pixelToAngle(int pixel){
+	private double pixelToAngle(double pixel){
 		int direction=1;
 		if (pixel<348){
 			pixel=348+(348-pixel);

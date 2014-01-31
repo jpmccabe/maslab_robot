@@ -9,14 +9,14 @@ public class Driver{
 	private final PID angularPIDReactor;
 	private final PID straightPIDReactor;
 	
-	private final static double ANGULAR_KP = 0.0030;
+	private final static double ANGULAR_KP = 0.004;
 	private final static double ANGULAR_KI = 0.0;
-	private final static double ANGULAR_KD = -0.0;
-	private final static double STRAIGHT_KP = -0.0080;
+	private final static double ANGULAR_KD = 0.0;
+	private final static double STRAIGHT_KP = -0.0065;
 	private final static double STRAIGHT_KI = 0.0;
 	private final static double STRAIGHT_KD = 0.0;
 	
-	private final static double ANGULAR_KP_REACTOR = -0.00045;
+	private final static double ANGULAR_KP_REACTOR = -0.0005;
 	private final static double ANGULAR_KI_REACTOR = 0;
 	private final static double ANGULAR_KD_REACTOR = 0;
 	private final static double STRAIGHT_KP_REACTOR = -0.0020;

@@ -56,7 +56,7 @@ public class ScoreInReactorStateController extends StateMachine {
     	final double turnSpeed = 0.2;
         final double forwardSpeed = 0.18;
         final double turnProportionalTimeConstant = 9;
-        final double forwardProportionalTimeConstant = 125;
+        final double forwardProportionalTimeConstant = 190;
         final double ninetyDegreeTurnTime = 900;
         final double driveDistance = Math.cos(Math.toRadians(Math.abs(angleToTurnDegrees))) * centerDistance;
         final int driveDirection = angleToTurnDegrees >= 0 ? 1 : -1; // 1 is right, -1 is left
@@ -154,7 +154,7 @@ public class ScoreInReactorStateController extends StateMachine {
         final double reverseSpeed = -1*0.21;
         robotModel.setMotors(reverseSpeed,reverseSpeed);
         try {
-            Thread.sleep(1700);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -169,9 +169,9 @@ public class ScoreInReactorStateController extends StateMachine {
 
     @Override
     public void controlState(Mat image) {
-        final long timeout = 30000;
+        final long timeout = 10000;
         final double depositLowerPortDistance = 10;
-        final double misAlignmentDistance = 6;
+        final double misAlignmentDistance = 6.5;
         final double misAlignmentAngle = 40;
         final double insertDistance = 6;
         final int centerXThreshold = 35;

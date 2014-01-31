@@ -47,11 +47,11 @@ public class SorterStateController {
     
     private void sortRed(){ 
         try {
-            Thread.sleep(700);
+            Thread.sleep(900);
             robotModel.setServoSorterToRedPosition();
-            Thread.sleep(600);
+            Thread.sleep(900);
             robotModel.setServoSorterToCenterPosition();
-            Thread.sleep(600);
+            Thread.sleep(900);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }  
@@ -62,11 +62,11 @@ public class SorterStateController {
     
     private void sortGreen(){ 
         try {
-            Thread.sleep(700);
+            Thread.sleep(900);
             robotModel.setServoSorterToGreenPosition();
-            Thread.sleep(600);
+            Thread.sleep(900);
             robotModel.setServoSorterToCenterPosition();
-            Thread.sleep(600);
+            Thread.sleep(900);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }  
