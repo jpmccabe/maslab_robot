@@ -57,7 +57,7 @@ public class CameraProcessor2 extends CameraProcessor{
    	    double maxArea = 0.0;
    	    for(int index=0;index<contours.size();index++){
    	        double area = Imgproc.contourArea(contours.get(index));
-   	        if (area>maxArea && area>20 && Imgproc.boundingRect(contours.get(index)).y>100){
+   	        if (area>maxArea && area>25 && Imgproc.boundingRect(contours.get(index)).y>40){
    	            maxArea = area;
    	            contour.add(0,contours.get(index));
    	        }	
