@@ -55,7 +55,21 @@ public class GoalStateController{
             }
         });
         
+        cameraReadThread.start();  
         
+    }
+    
+    
+    
+    
+    public void waitForBotClient(){
+    	
+    	BotClient botclient = new BotClient("18.150.7.174:6667","1221",false);
+        while( !botclient.gameStarted() ) {
+        }
+        botclient.close();
+        
+        startTime = System.currentTimeMillis();
         Thread ballSortingThread = new Thread(new Runnable(){
             public void run(){
                 SorterStateController sorter = new SorterStateController(robotModel, robotInventory);
@@ -70,36 +84,12 @@ public class GoalStateController{
             }
         });
         
-        cameraReadThread.start();
-        try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        robotModel.allMotorsOff();
+        robotModel.allMotorsOff(); 
         robotModel.setServoArmToUpPosition();
         robotModel.setServoSorterToCenterPosition();
         robotModel.setServoReleaseToScoreLowerPosition();
         ballSortingThread.start();
-        
-        
-        waitForBotClient();
-       
         robotModel.setSpiral(true);
-    }
-    
-    
-    
-    
-    private void waitForBotClient(){
-    	/*
-    	BotClient botclient = new BotClient("18.150.7.174:6667","1221",false);
-        while( !botclient.gameStarted() ) {
-        }
-        botclient.close();
-        */
-        startTime = System.currentTimeMillis();
     }
     
     
@@ -227,10 +217,11 @@ public class GoalStateController{
     
     public void controlState(){
         summaryOfImage.updateFullSummary(lastFrame);
-        GUI.updateImagePane(summaryOfImage.getSiloProcessedImage());
+        GUI.updateImagePane(summaryOfImage.getReactorProcessedImage());
         long currentTime = System.currentTimeMillis() - startTime;
         final long timeWeCanScoreOneGreen = 60000;
-        final long endTime = 60000;
+        final long timeWeCanGoToSilo = 90000;
+        final long endTime = 180000;
         System.out.println("Running time of program: " + currentTime);
         if(currentTime < endTime){
         	// if a reactor is in view and we have green balls, and we are not currently scoring, then score.
@@ -254,7 +245,7 @@ public class GoalStateController{
         		}
         	}
 
-        	else if((summaryOfImage.isSiloCollectable() && 
+        	else if((summaryOfImage.isSiloCollectable() && currentTime >= timeWeCanGoToSilo &&
         			!robotInventory.isGreenStorageFull() && !robotInventory.isRedStorageFull()) || 
         			(currentStateController.getStateMachineType() == StateMachineType.COLLECT_FROM_ENERGY_SILO &&
         			!currentStateController.isDone())){
@@ -310,9 +301,15 @@ public class GoalStateController{
     	 */
 
     	final GoalStateController goalController = new GoalStateController();
-
+        try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	Thread goalControllerThread  = new Thread(new Runnable(){
     		public void run(){
+    			goalController.waitForBotClient();
     			while(true){
     				goalController.controlState();
     			}

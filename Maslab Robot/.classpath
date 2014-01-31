@@ -5,7 +5,12 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/MaslabComm"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-2.4.8"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-248"/>
-	<classpathentry kind="lib" path="C:/Users/John/Documents/GitHub/maslab-2014/kitbot-demo/lib/jSSC-2.6.0-Release/jssc.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MaslabBotClient"/>
+	<classpathentry kind="lib" path="C:/Users/Admin/Downloads/java-opencv-test/java-opencv-test/jssc.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/opencv tABLET">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/Admin/Downloads/opencv/build/java/x64"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

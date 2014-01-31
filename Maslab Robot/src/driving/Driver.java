@@ -12,7 +12,7 @@ public class Driver{
 	private final static double ANGULAR_KP = 0.004;
 	private final static double ANGULAR_KI = 0.0;
 	private final static double ANGULAR_KD = 0.0;
-	private final static double STRAIGHT_KP = -0.0065;
+	private final static double STRAIGHT_KP = -0.007;
 	private final static double STRAIGHT_KI = 0.0;
 	private final static double STRAIGHT_KD = 0.0;
 	

@@ -43,7 +43,7 @@ class CameraProcessor4 extends CameraProcessor{
         boolean reactorSpotted=false;		
         final Mat processedImage = imageToProcess.clone();
 
-        Core.inRange(processedImage, new Scalar(82, 50,10), new Scalar(98, 255, 255), processedImage);
+        Core.inRange(processedImage, new Scalar(90, 70,10), new Scalar(98, 255, 255), processedImage);
         Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),1);
         Imgproc.erode(processedImage, processedImage,  new Mat(), new Point (-1, -1), 2);
 
