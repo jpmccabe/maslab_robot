@@ -250,7 +250,7 @@ public class Devices {
      * Sets the arm servo to upper position
      */
     synchronized public void setServoArmToUpPosition(){
-        servoArm.setAngle(85);
+        servoArm.setAngle(125);
         maple.transmit();
     }
     
@@ -259,7 +259,7 @@ public class Devices {
      * Sets the arm servo to down position
      */
     synchronized public void setServoArmToDownPosition(){
-        servoArm.setAngle(30);
+        servoArm.setAngle(55);
         maple.transmit();
     }
     
@@ -267,7 +267,7 @@ public class Devices {
      * Sets the arm servo to mid position
      */
     synchronized public void setServoArmToMidPosition(){
-        servoArm.setAngle(50);
+        servoArm.setAngle(85);
         maple.transmit();
     }
     

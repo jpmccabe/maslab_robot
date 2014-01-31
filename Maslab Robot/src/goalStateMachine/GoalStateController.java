@@ -218,20 +218,14 @@ public class GoalStateController{
     public void controlState(){
         long startTime = System.nanoTime();
         summaryOfImage.updateFullSummary(lastFrame);
-        GUI.updateImagePane(summaryOfImage.getReactorProcessedImage());
+        GUI.updateImagePane(summaryOfImage.getSiloProcessedImage());
+        System.out.println("silo dist: " + summaryOfImage.getSiloCenterDistance());
+        System.out.println("silo turn angle: " + summaryOfImage.getSiloAngleToTurn());
+        System.out.println("silo left distance: " + summaryOfImage.getSiloLeftDistance());
+        System.out.println("silo right distance: " + summaryOfImage.getSiloRightDistance());
         
-        // else if see ball, no storage is full, and not currently collecting one, then collect ball
-        if(!robotInventory.isGreenStorageFull() && !robotInventory.isRedStorageFull() && 
-        		!summaryOfImage.isObstacle() &&
-                (summaryOfImage.isGreenBall() || summaryOfImage.isRedBall())){
-            if(!(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
-                    && !currentStateController.isDone())){
-                System.out.println("Collecting balls");
-                collectGroundBalls();
-            }
-        }
         // if a reactor is in view and we have green balls, and we are not currently scoring, then score.
-        else if((summaryOfImage.isReactorScoreable() && summaryOfImage.getReactorAngleToTurn() != 90 && robotInventory.hasGreenBalls()) || 
+        if((summaryOfImage.isReactorScoreable() && Math.abs(summaryOfImage.getReactorAngleToTurn()) != 90 && robotInventory.hasGreenBalls()) || 
                 (currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR && !currentStateController.isDone())){
             if(!(currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR &&
                     !currentStateController.isDone())){
@@ -240,7 +234,7 @@ public class GoalStateController{
             }
         }
         
-        else if((summaryOfImage.isInterfaceWallScoreable() && summaryOfImage.getInterfaceWallAngleToTurn() != 90 &&
+        else if((summaryOfImage.isInterfaceWallScoreable() && Math.abs(summaryOfImage.getInterfaceWallAngleToTurn()) != 90 &&
                 (robotInventory.hasRedBalls() || robotInventory.isRedStorageFull())) ||  
                 (currentStateController.getStateMachineType() == StateMachineType.DEPOSIT_RED_BALLS && !currentStateController.isDone())){
             if(!(currentStateController.getStateMachineType() == StateMachineType.DEPOSIT_RED_BALLS &&
@@ -250,7 +244,7 @@ public class GoalStateController{
             }
         }
         
-        else if((summaryOfImage.isSiloCollectable() && summaryOfImage.getSiloAngleToTurn() != 90 && 
+        else if((summaryOfImage.isSiloCollectable() /*&& Math.abs(summaryOfImage.getSiloAngleToTurn()) != 90*/ && 
         		!robotInventory.isGreenStorageFull() && !robotInventory.isRedStorageFull()) || 
                 (currentStateController.getStateMachineType() == StateMachineType.COLLECT_FROM_ENERGY_SILO &&
                !currentStateController.isDone())){
@@ -269,6 +263,15 @@ public class GoalStateController{
         		avoidWalls();
         	}
         }      
+       // else if see ball, no storage is full, and not currently collecting one, then collect ball
+        else if(!robotInventory.isGreenStorageFull() && !robotInventory.isRedStorageFull() && 
+                (summaryOfImage.isGreenBall() || summaryOfImage.isRedBall())){
+            if(!(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
+                    && !currentStateController.isDone())){
+                System.out.println("Collecting balls");
+                collectGroundBalls();
+            }
+        }
         
         // else look for balls
         else if(currentStateController.getStateMachineType() != StateMachineType.LOOK_FOR_BALLS &&

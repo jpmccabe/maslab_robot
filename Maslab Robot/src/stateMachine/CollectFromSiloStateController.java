@@ -93,8 +93,8 @@ public class CollectFromSiloStateController extends StateMachine {
     
     
     private void remove(){
-        final double reverseSpeed = -0.17;
-        final double forwardSpeed = 0.17;
+        final double reverseSpeed = -0.2;
+        final double forwardSpeed = 0.2;
         final long reverseTime = 800;
         robotModel.setMotors(0,0);
         System.out.println("Removing ball from silo");
@@ -118,10 +118,11 @@ public class CollectFromSiloStateController extends StateMachine {
             robotModel.setMotors(0,0);
             System.out.println("raising arm");
             robotModel.setServoArmToUpPosition();
-            Thread.sleep(800);
+            Thread.sleep(300);
+            System.out.println("driving forward");
             robotModel.setMotors(forwardSpeed, forwardSpeed);
             Thread.sleep(reverseTime);
-            
+            robotModel.setMotors(0,0);
             TimedBall collectedBall = new TimedBall(System.currentTimeMillis(), ballColor);
             robotInventory.addBallToQueue(collectedBall);
             Thread.sleep(2000);
@@ -219,16 +220,15 @@ public class CollectFromSiloStateController extends StateMachine {
             System.out.println("Done delaying setting arm to mid position");
             straight();
             state = CollectFromSiloStates.REMOVE;
-        }
-        // switch to deposit in top state after insert state, then switch to reverse to distance state
-        else if(state == CollectFromSiloStates.REMOVE){
-        	System.out.println("entering remove state");
+            System.out.println("entering remove state");
             remove();
+            System.out.println("reverse");
             reverse();
             System.out.println("entering turning away from silo");
             turnAwayFromSilo();
             stop();
         }
+
         // switch to center from driver if angle to turn becomes too small
         else if(state == CollectFromSiloStates.SMALL_ANGLE && 
                 Math.abs(angleToTurn) < goStraightAngleThreshold){
