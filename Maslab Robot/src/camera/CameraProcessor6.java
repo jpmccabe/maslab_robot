@@ -44,7 +44,7 @@ class CameraProcessor6 extends CameraProcessor{
 		boolean reactorSpotted=false;		
 		final Mat processedImage = imageToProcess.clone();
 
-		Core.inRange(processedImage, new Scalar(123, 25,10), new Scalar(160, 255, 255), processedImage);
+		Core.inRange(processedImage, new Scalar(123, 5,10), new Scalar(160, 255, 255), processedImage);
 		Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),1);
 		Imgproc.erode(processedImage, processedImage,  new Mat(), new Point (-1, -1), 2);
 
@@ -65,7 +65,7 @@ class CameraProcessor6 extends CameraProcessor{
 				maxArea = area;
 			}	
 		}
-
+		//Core.rectangle(processedImage, new Point(boundingRect.x,boundingRect.y), new Point(boundingRect.x+boundingRect.width,boundingRect.y+boundingRect.height), new Scalar(255,0,0));
 		Imgproc.Canny(processedImage, processedImage, 15, 200);		
 
 		double averageDistance = 1000.0;

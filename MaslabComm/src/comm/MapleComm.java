@@ -33,7 +33,7 @@ public class MapleComm {
 	/*
 	 * Send the list of devices and corresponding pins to the Maple.
 	 */
-	public void initialize() {
+	public synchronized void initialize() {
 		
 		if (!verify()) {
 			System.err.println("MapleComm initialization failed");
@@ -59,7 +59,7 @@ public class MapleComm {
 	/*
 	 * Send commands (e.g. motor velocity) to the Maple
 	 */
-	public void transmit() {
+	public synchronized void transmit() {
 
 		// Combine commands for all actuators that we want to actuate
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
@@ -82,7 +82,7 @@ public class MapleComm {
 	/*
 	 * Wait for, and process, up-to-date sensor data from the Maple
 	 */
-	public void updateSensorData() {
+	public synchronized void updateSensorData() {
 		mapleIO.sendSensorDataRequest();
 		try {
 			Thread.sleep(1);

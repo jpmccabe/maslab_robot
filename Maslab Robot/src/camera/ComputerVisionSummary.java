@@ -13,11 +13,11 @@ public class ComputerVisionSummary {
     private final CameraProcessor6 siloProcessor;
     
     private final static double MAX_BALL_DISTANCE  = 40;
-    private final static double MAX_WALL_DISTANCE_MIDDLE = 9;
+    private final static double MAX_WALL_DISTANCE_MIDDLE = 11;
     private final static double MAX_WALL_DISTANCE_LEFT = 12;
     private final static double MAX_WALL_DISTANCE_RIGHT = 12;
-    private final static double MAX_REACTOR_SCORING_DISTANCE = 70;
-    private final static double MAX_INTERFACE_WALL_SCORING_DISTANCE = 60;
+    private final static double MAX_REACTOR_SCORING_DISTANCE = 50;
+    private final static double MAX_INTERFACE_WALL_SCORING_DISTANCE = 50;
     private final static double MAX_SILO_FOLLOW_DISTANCE = 40;
     private final static double NO_OBSTACLE_DISTANCE = 15;
         
@@ -110,10 +110,25 @@ public class ComputerVisionSummary {
         reactorProcessor.processImage(HSVImage);
     }
     
+    
     public void updateSiloSummary(Mat image){
         final Mat HSVImage = new Mat();
         Imgproc.cvtColor(image,HSVImage,Imgproc.COLOR_BGR2HSV); //convert BGR to HSV
-        siloProcessor.processImage(HSVImage);
+    	Thread redBallProcessorThread = new Thread(new ProcessorRunner(redBallProcessor,HSVImage));
+        Thread greenBallProcessorThread = new Thread(new ProcessorRunner(greenBallProcessor, HSVImage));
+        Thread siloProcessorThread = new Thread(new ProcessorRunner(siloProcessor, HSVImage));
+        
+        redBallProcessorThread.start();
+        greenBallProcessorThread.start();
+        siloProcessorThread.start();
+        
+        try {
+            redBallProcessorThread.join();
+            greenBallProcessorThread.join();
+            siloProcessorThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
     
     public void updateInterfaceWallSummary(Mat image){

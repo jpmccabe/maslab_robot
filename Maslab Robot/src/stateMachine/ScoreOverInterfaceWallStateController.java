@@ -29,34 +29,36 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
     
     @Override
     public void stop() {
+    	System.out.println("exiting from score over interface wall");
         robotModel.setMotors(0,0);
         done = true;
     }
     
     
     private void centerRobot(int centerX){
-        System.out.println("CenterX interfaace wall: "+centerX);
+        System.out.println("CenterX:"+centerX);
         System.out.println("adjust to center");
-        final double minSpeed = 0.13;
-        final double maxSpeed = 0.25;
-        double prop = (centerX-centerOfScreen)*0.0009;
-        if(Math.abs(prop) < minSpeed){
+        final double minSpeed = 0.14;
+        //final double maxSpeed = 0.2;
+        double prop = (centerX-centerOfScreen)*0.0008;
+        //System.out.println("prop: " + prop);
+        //if(Math.abs(prop) < minSpeed){
             prop = prop >= 0 ? minSpeed : -minSpeed;
-        }
-        if(Math.abs(prop) > maxSpeed){
-            prop = prop >= 0 ? maxSpeed: -maxSpeed;
-        }
+        //}
+       // if(Math.abs(prop) > maxSpeed){
+       //     prop = prop >= 0 ? maxSpeed: -maxSpeed;
+       // }
         System.out.println("Center Speed L: " + prop + " R: " +(-prop));
         robotModel.setMotors(prop,-prop);
     }
     
     
     private void manhattan(double angleToTurnDegrees, double centerDistance){
-        final double turnSpeed = 0.2;
+    	final double turnSpeed = 0.2;
         final double forwardSpeed = 0.18;
-        final double turnProportionalTimeConstant = 10;
-        final double forwardProportionalTimeConstant = 120;
-        final double ninetyDegreeTurnTime = 800;
+        final double turnProportionalTimeConstant = 9;
+        final double forwardProportionalTimeConstant = 125;
+        final double ninetyDegreeTurnTime = 900;
         final double driveDistance = Math.cos(Math.toRadians(Math.abs(angleToTurnDegrees))) * centerDistance;
         final int driveDirection = angleToTurnDegrees >= 0 ? 1 : -1; // 1 is right, -1 is left
        
@@ -137,12 +139,12 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
     
     @Override
     public void controlState(Mat image) {
-        final long timeout = 20000;
+        final long timeout = 30000;
         final double misAlignmentDistance = 6;
         final double misAlignmentAngle = 45;
         final double insertDistance = 6;
         final int centerXThreshold = 20;
-        final double goStraightAngleThreshold = 80;
+        final double goStraightAngleThreshold = 85;
        
         interfaceWallSummary.updateInterfaceWallSummary(image);
         
@@ -158,13 +160,15 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
         
         // exit if we time out
         if(currentRunningTime >= timeout){
+        	System.out.println("timed out");
             stop();
         }
-        // exit if we no longer see reactor
+        // exit if we no longer see interface wall
         if(!interfaceWallSummary.isInterfaceWallScoreable() &&
         		!(state == ScoreOverInterfaceWallStates.DEPOSIT) &&
         		!(state == ScoreOverInterfaceWallStates.INSERT) &&
         		!(state == ScoreOverInterfaceWallStates.REVERSE)){
+        	System.out.println("interface wall not scoreable, exiting");
             stop();
         } 
         /*
@@ -174,28 +178,31 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
             stop();
         }
         */
-        // when close to reactor insert the end of the robot into the reactor by driving straight
-        if(distance <= insertDistance && state == ScoreOverInterfaceWallStates.DRIVER){
+        // when close to interface wall insert the end of the robot over the wall by driving straight
+        // and deposit the balls over the wall then reverse, turn , and stop
+        if(distance <= insertDistance && (state == ScoreOverInterfaceWallStates.DRIVER ||
+        		state == ScoreOverInterfaceWallStates.SMALL_ANGLE)){
+        	System.out.println("Begin scoring sequence");
             state = ScoreOverInterfaceWallStates.INSERT;
             robotModel.setMotors(0,0);
             straight();
             state = ScoreOverInterfaceWallStates.DEPOSIT;
-        }
-        // switch to deposit in top state after insert state, then switch to reverse to distance state
-        else if(state == ScoreOverInterfaceWallStates.DEPOSIT){
             deposit();
             reverse();
             turnAwayFromInterfaceWall();
             stop();
         }
-        // switch to center from driver if angle to turn becomes too small
+
+        // switch to center from small angle if angle to turn becomes too small
         else if(state == ScoreOverInterfaceWallStates.SMALL_ANGLE && 
-        		angleToTurn < goStraightAngleThreshold){
+        		Math.abs(angleToTurn) < goStraightAngleThreshold){
+        	System.out.println("Switching from small angle to center");
             state = ScoreOverInterfaceWallStates.CENTER;
         }
         // switch to driver state after manhattan state
         else if(state == ScoreOverInterfaceWallStates.MANHATTAN  || state == ScoreOverInterfaceWallStates.DRIVER || 
                 state == ScoreOverInterfaceWallStates.SMALL_ANGLE ){
+        	System.out.println("Using driver");
             List<Double> motorSpeeds = driver.driveToReactor(distance, insertDistance, centerX-centerOfScreen, 0);
             System.out.println("Left: " + motorSpeeds.get(0) + " Right: " + motorSpeeds.get(1));
             robotModel.setMotors(motorSpeeds.get(0), motorSpeeds.get(1));
@@ -204,13 +211,15 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
         // switch to center state if not in a state and we need to center
         else if(Math.abs(centerX-centerOfScreen) > centerXThreshold  && (state == ScoreOverInterfaceWallStates.NONE ||
                 state == ScoreOverInterfaceWallStates.CENTER)) {
+        	System.out.println("Start center state");
             state = ScoreOverInterfaceWallStates.CENTER;
             centerRobot(centerX);
         }
         // switch into driver and skip manhattan if almost lined up with interface wall
         else if(Math.abs(centerX-centerOfScreen) <= centerXThreshold && 
-                angleToTurn >= goStraightAngleThreshold &&
+                Math.abs(angleToTurn) >= goStraightAngleThreshold &&
                 (state == ScoreOverInterfaceWallStates.CENTER || state == ScoreOverInterfaceWallStates.NONE)){
+        	System.out.println("Entered small angle state");
             state = ScoreOverInterfaceWallStates.SMALL_ANGLE;
         }
         // switch to manhattan state once centered

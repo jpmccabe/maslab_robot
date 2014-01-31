@@ -33,10 +33,10 @@ public class BallCollectionStateController extends StateMachine {
     
     
     private void backUpAndTurn(){
-        final double reverseSpeed = -0.2;
-        final double turnSpeed = 0.2;
-        final long turnTime = 400;
-        final long reverseTime = 500;
+        final double reverseSpeed = -0.18;
+        final double turnSpeed = 0.18;
+        final long turnTime = 1000;
+        final long reverseTime = 800;
         
         try {
             robotModel.setMotors(reverseSpeed, reverseSpeed);
@@ -115,7 +115,7 @@ public class BallCollectionStateController extends StateMachine {
 
     @Override
     public void controlState(Mat image) {
-        final long timeout = 7000;
+        final long timeout = 8000;
         final double collectAngleMax = 90;
         final double collectDistanceMax = 6;
         

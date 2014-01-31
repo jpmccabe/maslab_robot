@@ -29,8 +29,9 @@ public class GoalStateController{
         this.robotInventory = new RobotInventory();
         //robotInventory.addRedBall();
         //robotInventory.addRedBall();
-        //robotInventory.addGreenBall();
-        //robotInventory.addGreenBall();
+        robotInventory.addGreenBall();
+        robotInventory.addGreenBall();
+        robotInventory.addGreenBall();
         
         summaryOfImage = new ComputerVisionSummary();
          
@@ -217,11 +218,20 @@ public class GoalStateController{
     public void controlState(){
         long startTime = System.nanoTime();
         summaryOfImage.updateFullSummary(lastFrame);
-        GUI.updateImagePane(summaryOfImage.getBlueWallProcessedImage());
+        GUI.updateImagePane(summaryOfImage.getReactorProcessedImage());
         
-                     
+        // else if see ball, no storage is full, and not currently collecting one, then collect ball
+        if(!robotInventory.isGreenStorageFull() && !robotInventory.isRedStorageFull() && 
+        		!summaryOfImage.isObstacle() &&
+                (summaryOfImage.isGreenBall() || summaryOfImage.isRedBall())){
+            if(!(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
+                    && !currentStateController.isDone())){
+                System.out.println("Collecting balls");
+                collectGroundBalls();
+            }
+        }
         // if a reactor is in view and we have green balls, and we are not currently scoring, then score.
-        if((summaryOfImage.isReactorScoreable() && robotInventory.hasGreenBalls()) || 
+        else if((summaryOfImage.isReactorScoreable() && summaryOfImage.getReactorAngleToTurn() != 90 && robotInventory.hasGreenBalls()) || 
                 (currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR && !currentStateController.isDone())){
             if(!(currentStateController.getStateMachineType() == StateMachineType.SCORE_IN_REACTOR &&
                     !currentStateController.isDone())){
@@ -229,7 +239,8 @@ public class GoalStateController{
                 scoreInReactor();
             }
         }
-        else if((summaryOfImage.isInterfaceWallScoreable() && 
+        
+        else if((summaryOfImage.isInterfaceWallScoreable() && summaryOfImage.getInterfaceWallAngleToTurn() != 90 &&
                 (robotInventory.hasRedBalls() || robotInventory.isRedStorageFull())) ||  
                 (currentStateController.getStateMachineType() == StateMachineType.DEPOSIT_RED_BALLS && !currentStateController.isDone())){
             if(!(currentStateController.getStateMachineType() == StateMachineType.DEPOSIT_RED_BALLS &&
@@ -238,15 +249,18 @@ public class GoalStateController{
                 depositRedBalls();
             }
         }
-        else if(summaryOfImage.isSiloCollectable() || 
+        
+        else if((summaryOfImage.isSiloCollectable() && summaryOfImage.getSiloAngleToTurn() != 90 && 
+        		!robotInventory.isGreenStorageFull() && !robotInventory.isRedStorageFull()) || 
                 (currentStateController.getStateMachineType() == StateMachineType.COLLECT_FROM_ENERGY_SILO &&
                !currentStateController.isDone())){
-            if(!(currentStateController.getStateMachineType() == StateMachineType.COLLECT_FROM_ENERGY_SILO) && 
-                    !currentStateController.isDone()){
+            if(!(currentStateController.getStateMachineType() == StateMachineType.COLLECT_FROM_ENERGY_SILO && 
+                    !currentStateController.isDone())){
                 System.out.println("collect from silo");
                 collectFromEnergySilo();
             }
         }
+        
         // else if a wall is close, and we are not currently avoiding walls, then avoid walls
         else if(summaryOfImage.isObstacle()){
         	if(!(currentStateController.getStateMachineType() == StateMachineType.AVOID_WALLS && 
@@ -255,15 +269,7 @@ public class GoalStateController{
         		avoidWalls();
         	}
         }      
-        // else if see ball, no storage is full, and not currently collecting one, then collect ball
-        else if(!robotInventory.isGreenStorageFull() && !robotInventory.isRedStorageFull() &&
-                (summaryOfImage.isGreenBall() || summaryOfImage.isRedBall())){
-            if(!(currentStateController.getStateMachineType() == StateMachineType.COLLECT_GROUND_BALLS
-                    && !currentStateController.isDone())){
-                System.out.println("Collecting balls");
-                collectGroundBalls();
-            }
-        }
+        
         // else look for balls
         else if(currentStateController.getStateMachineType() != StateMachineType.LOOK_FOR_BALLS &&
                 currentStateController.isDone()){
