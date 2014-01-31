@@ -122,7 +122,8 @@ public class CollectFromSiloStateController extends StateMachine {
             Thread rollerThread = new Thread(new Runnable(){
                 public void run(){
                     try {
-                        Thread.sleep(4000);
+                    	robotModel.setRoller(true);
+                        Thread.sleep(5000);
                         robotModel.setRoller(false);
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
@@ -130,22 +131,10 @@ public class CollectFromSiloStateController extends StateMachine {
                     }
                 }
             });
-            
-            Thread spiralThread = new Thread(new Runnable(){
-                public void run(){
-                    try {
-                        robotModel.setSpiral(true);
-                        Thread.sleep(9000);
-                        robotModel.setSpiral(false);
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            });
+           
             
             rollerThread.start();
-            spiralThread.start();
+            robotModel.setSpiral(true);
             
             robotModel.setMotors(reverseSpeed,reverseSpeed);
             Thread.sleep(reverseTime);

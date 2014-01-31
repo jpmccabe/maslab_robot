@@ -84,7 +84,7 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
         System.out.println("Go Straight");
         robotModel.setMotors(0.17,0.17);
         try {
-            Thread.sleep(800);
+            Thread.sleep(1400);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -142,7 +142,7 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
         final long timeout = 15000;
         final double misAlignmentDistance = 6;
         final double misAlignmentAngle = 45;
-        final double insertDistance = 6;
+        final double insertDistance = 10;
         final int centerXThreshold = 35;
         final double goStraightAngleThreshold = 85;
        

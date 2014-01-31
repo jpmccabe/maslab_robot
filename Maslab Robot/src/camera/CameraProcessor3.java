@@ -28,28 +28,33 @@ public class CameraProcessor3 extends CameraProcessor{
 
 
     public void processImage(Mat imageToProcess) {
-        final Mat processedImage = imageToProcess.clone();
-        
-        //Blue Walls
-        Core.inRange(processedImage, new Scalar(100, 75,10), new Scalar(125, 255, 255), processedImage);    
-        Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),1);
-        Imgproc.erode(processedImage, processedImage,  new Mat(), new Point (-1, -1), 2); 
-        Imgproc.Canny(processedImage, processedImage, 15, 200);     
-        Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
-        
-        synchronized(this){
-            this.processedImage = processedImage;
-        }
-        
-        double leftDistance = getDistance(5)/0.8;
-        double centerDistance = getDistance(285);
-        double rightDistance = getDistance(570)/0.8;
-        
-        synchronized(this){
-            this.leftDistance = leftDistance;
-            this.rightDistance = rightDistance;
-            this.centerDistance = centerDistance;
-        }
+    	try{
+    		final Mat processedImage = imageToProcess.clone();
+
+    		//Blue Walls
+    		Core.inRange(processedImage, new Scalar(100, 75,10), new Scalar(125, 255, 255), processedImage);    
+    		Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),1);
+    		Imgproc.erode(processedImage, processedImage,  new Mat(), new Point (-1, -1), 2); 
+    		Imgproc.Canny(processedImage, processedImage, 15, 200);     
+    		Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
+
+    		synchronized(this){
+    			this.processedImage = processedImage;
+    		}
+
+    		double leftDistance = getDistance(5)/0.8;
+    		double centerDistance = getDistance(285);
+    		double rightDistance = getDistance(570)/0.8;
+
+    		synchronized(this){
+    			this.leftDistance = leftDistance;
+    			this.rightDistance = rightDistance;
+    			this.centerDistance = centerDistance;
+    		}
+    	}
+    	catch(Exception e){
+
+    	}
     }
     
     

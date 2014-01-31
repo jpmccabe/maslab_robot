@@ -40,87 +40,92 @@ class CameraProcessor4 extends CameraProcessor{
     }
 
     public void processImage(Mat imageToProcess) {
-        boolean reactorSpotted=false;		
-        final Mat processedImage = imageToProcess.clone();
+    	try{
+    		boolean reactorSpotted=false;		
+    		final Mat processedImage = imageToProcess.clone();
 
-        Core.inRange(processedImage, new Scalar(90, 70,10), new Scalar(98, 255, 255), processedImage);
-        Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),1);
-        Imgproc.erode(processedImage, processedImage,  new Mat(), new Point (-1, -1), 2);
+    		Core.inRange(processedImage, new Scalar(90, 70,10), new Scalar(98, 255, 255), processedImage);
+    		Imgproc.dilate(processedImage, processedImage, new Mat(), new Point(-1,-1),1);
+    		Imgproc.erode(processedImage, processedImage,  new Mat(), new Point (-1, -1), 2);
 
-        final Mat clone = processedImage.clone();
+    		final Mat clone = processedImage.clone();
 
-        final List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-        Imgproc.findContours(clone, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
 
-        double maxArea = 0.0;
-        Rect boundingRect = new Rect();
-        for(int index=0;index<contours.size();index++){
-            double area= Imgproc.contourArea(contours.get(index));
-            Rect rect=Imgproc.boundingRect(contours.get(index));
-            if (area>maxArea && area>500 && rect.width>50){
-                boundingRect=rect;
-                reactorSpotted = true;
-                maxArea = area;
-            }	
-        }
+    		final List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+    		Imgproc.findContours(clone, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
 
-        Imgproc.Canny(processedImage, processedImage, 15, 200);		
-        
-        double averageDistance = 1000.0;
-        double leftDistance = 1000.0;
-        double rightDistance = 1000.0;
-        int count=0;
-        if (reactorSpotted==true){
-        	leftDistance=0;
-        	rightDistance=0;
-            averageDistance=0;
-            for(double x=boundingRect.x+13;x<boundingRect.x+boundingRect.width-13;x+=(boundingRect.width-26)/50.0){
-            	count+=1;
-            	
-            	if(count>5 && count<23) continue;
-            	if(count>27 && count<=45) continue;
-                int firstPixel=0;
-                int secondPixel=0;
-                for(int y= Math.min(boundingRect.y+boundingRect.height+2,479);y>=Math.max(boundingRect.y-2, 1);y--){
-                    if( processedImage.get(y,(int)x)[0]==255){
-                        if (firstPixel==0) firstPixel=y;
-                        else secondPixel=y;
-                    }
-                }
-                if (count>=23 && count<=27) averageDistance+=pixelToDistance(firstPixel-secondPixel);
-                if (count<=5){leftDistance+=pixelToDistance(firstPixel-secondPixel);}
-                if (count>45){rightDistance+=pixelToDistance(firstPixel-secondPixel);}
-                Core.line(processedImage, new Point((int)x,firstPixel), new Point((int)x,secondPixel), new Scalar(255,0,0));
-            }
-            averageDistance/=5;
-            leftDistance/=5;
-            rightDistance/=(count-45);
+    		double maxArea = 0.0;
+    		Rect boundingRect = new Rect();
+    		for(int index=0;index<contours.size();index++){
+    			double area= Imgproc.contourArea(contours.get(index));
+    			Rect rect=Imgproc.boundingRect(contours.get(index));
+    			if (area>maxArea && area>500 && rect.width>50){
+    				boundingRect=rect;
+    				reactorSpotted = true;
+    				maxArea = area;
+    			}	
+    		}
 
-        }
-        
-        final double leftAngleRadiansAbs = Math.abs(Math.toRadians(pixelToAngle(boundingRect.x)));
-        final double rightAngleRadiansAbs = Math.abs(Math.toRadians(pixelToAngle(boundingRect.x+boundingRect.width)));
-        final double centerAngle = pixelToAngle(boundingRect.x + (boundingRect.width/2));
-        leftDistance /= Math.cos(leftAngleRadiansAbs);
-        rightDistance /= Math.cos(leftAngleRadiansAbs);
-        final double insideOfArcSin = Math.min(1, (Math.min(leftDistance,rightDistance) / 5.75) * Math.sin(Math.max(leftAngleRadiansAbs,rightAngleRadiansAbs)));
-        final double angleToTurnParallelRadians = Math.asin(insideOfArcSin);
-        double angleToTurnParallelDegrees = Math.toDegrees(angleToTurnParallelRadians);
-        angleToTurnParallelDegrees = leftDistance <= rightDistance ? angleToTurnParallelDegrees : -1*angleToTurnParallelDegrees;
-        Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
-        
-        final int centerXValue = (int) ((boundingRect.x) + (boundingRect.width/2.0));
-        
-        synchronized(this){
-            this.leftDistance = leftDistance;
-            this.rightDistance = rightDistance;
-            this.centerDistance = averageDistance;
-            this.angleInDegrees = centerAngle;
-            this.centerXValue = centerXValue;
-            this.processedImage = processedImage;
-            this.angleToTurnParallelDegrees = angleToTurnParallelDegrees;
-        }
-        
+    		Imgproc.Canny(processedImage, processedImage, 15, 200);		
+
+    		double averageDistance = 1000.0;
+    		double leftDistance = 1000.0;
+    		double rightDistance = 1000.0;
+    		int count=0;
+    		if (reactorSpotted==true){
+    			leftDistance=0;
+    			rightDistance=0;
+    			averageDistance=0;
+    			for(double x=boundingRect.x+13;x<boundingRect.x+boundingRect.width-13;x+=(boundingRect.width-26)/50.0){
+    				count+=1;
+
+    				if(count>5 && count<23) continue;
+    				if(count>27 && count<=45) continue;
+    				int firstPixel=0;
+    				int secondPixel=0;
+    				for(int y= Math.min(boundingRect.y+boundingRect.height+2,479);y>=Math.max(boundingRect.y-2, 1);y--){
+    					if( processedImage.get(y,(int)x)[0]==255){
+    						if (firstPixel==0) firstPixel=y;
+    						else secondPixel=y;
+    					}
+    				}
+    				if (count>=23 && count<=27) averageDistance+=pixelToDistance(firstPixel-secondPixel);
+    				if (count<=5){leftDistance+=pixelToDistance(firstPixel-secondPixel);}
+    				if (count>45){rightDistance+=pixelToDistance(firstPixel-secondPixel);}
+    				Core.line(processedImage, new Point((int)x,firstPixel), new Point((int)x,secondPixel), new Scalar(255,0,0));
+    			}
+    			averageDistance/=5;
+    			leftDistance/=5;
+    			rightDistance/=(count-45);
+
+    		}
+
+    		final double leftAngleRadiansAbs = Math.abs(Math.toRadians(pixelToAngle(boundingRect.x)));
+    		final double rightAngleRadiansAbs = Math.abs(Math.toRadians(pixelToAngle(boundingRect.x+boundingRect.width)));
+    		final double centerAngle = pixelToAngle(boundingRect.x + (boundingRect.width/2));
+    		leftDistance /= Math.cos(leftAngleRadiansAbs);
+    		rightDistance /= Math.cos(leftAngleRadiansAbs);
+    		final double insideOfArcSin = Math.min(1, (Math.min(leftDistance,rightDistance) / 5.75) * Math.sin(Math.max(leftAngleRadiansAbs,rightAngleRadiansAbs)));
+    		final double angleToTurnParallelRadians = Math.asin(insideOfArcSin);
+    		double angleToTurnParallelDegrees = Math.toDegrees(angleToTurnParallelRadians);
+    		angleToTurnParallelDegrees = leftDistance <= rightDistance ? angleToTurnParallelDegrees : -1*angleToTurnParallelDegrees;
+    		Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
+
+    		final int centerXValue = (int) ((boundingRect.x) + (boundingRect.width/2.0));
+
+    		synchronized(this){
+    			this.leftDistance = leftDistance;
+    			this.rightDistance = rightDistance;
+    			this.centerDistance = averageDistance;
+    			this.angleInDegrees = centerAngle;
+    			this.centerXValue = centerXValue;
+    			this.processedImage = processedImage;
+    			this.angleToTurnParallelDegrees = angleToTurnParallelDegrees;
+    		}
+    	}
+    	catch(Exception e){
+
+    	} 
   
     }
     
