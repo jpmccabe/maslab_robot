@@ -38,7 +38,7 @@ public class CollectFromSiloStateController extends StateMachine {
     private void centerRobot(int centerX){
         System.out.println("CenterX:"+centerX);
         System.out.println("adjust to center");
-        final double minSpeed = 0.13;
+        final double minSpeed = 0.14;
         //final double maxSpeed = 0.2;
         double prop = (centerX-centerOfScreen)*0.0008;
         //System.out.println("prop: " + prop);
@@ -58,7 +58,7 @@ public class CollectFromSiloStateController extends StateMachine {
         final double forwardSpeed = 0.18;
         final double turnProportionalTimeConstant = 10;
         final double forwardProportionalTimeConstant = 220;
-        final double ninetyDegreeTurnTime = 800;
+        final double ninetyDegreeTurnTime = 1100;
         final double driveDistance = Math.cos(Math.toRadians(Math.abs(angleToTurnDegrees))) * centerDistance;
         final int driveDirection = angleToTurnDegrees >= 0 ? 1 : -1; // 1 is right, -1 is left
        
@@ -118,8 +118,35 @@ public class CollectFromSiloStateController extends StateMachine {
             robotModel.setServoArmToDownPosition();
             Thread.sleep(800);
             System.out.println("driving in reverse");
-            robotModel.setRoller(true);
-            robotModel.setSpiral(true);
+            
+            Thread rollerThread = new Thread(new Runnable(){
+                public void run(){
+                    try {
+                        Thread.sleep(4000);
+                        robotModel.setRoller(false);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            });
+            
+            Thread spiralThread = new Thread(new Runnable(){
+                public void run(){
+                    try {
+                        robotModel.setSpiral(true);
+                        Thread.sleep(9000);
+                        robotModel.setSpiral(false);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            });
+            
+            rollerThread.start();
+            spiralThread.start();
+            
             robotModel.setMotors(reverseSpeed,reverseSpeed);
             Thread.sleep(reverseTime);
             robotModel.setMotors(0,0);
@@ -174,7 +201,7 @@ public class CollectFromSiloStateController extends StateMachine {
         final double misAlignmentDistance = 6;
         final double misAlignmentAngle = 45;
         final double insertDistance = 9;
-        final int centerXThreshold = 30;
+        final int centerXThreshold = 35;
         final double goStraightAngleThreshold = 85;
        
         siloSummary.updateSiloSummary(image);
@@ -197,14 +224,9 @@ public class CollectFromSiloStateController extends StateMachine {
             stop();
         }
         // exit if we no longer see silo
-        /*
-        if(!siloSummary.isSiloCollectable() &&
-                !(state == CollectFromSiloStates.REMOVE) &&
-                !(state == CollectFromSiloStates.REVERSE) &&
-                !(state == CollectFromSiloStates.INSERT)){
+        if(!siloSummary.isSiloCollectable()){
             stop();
         } 
-        */
         /*
         // exit if we are about to deposit but mis-aligned
         if(distance <= misAlignmentDistance && angle >= misAlignmentAngle){
@@ -273,6 +295,7 @@ public class CollectFromSiloStateController extends StateMachine {
             state = CollectFromSiloStates.MANHATTAN;
             robotModel.setMotors(0,0);
             manhattan(angleToTurn, distance);
+            
         }    
     }
 

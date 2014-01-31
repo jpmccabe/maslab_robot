@@ -169,7 +169,7 @@ public class ScoreInReactorStateController extends StateMachine {
 
     @Override
     public void controlState(Mat image) {
-        final long timeout = 10000;
+        final long timeout = 20000;
         final double depositLowerPortDistance = 10;
         final double misAlignmentDistance = 6.5;
         final double misAlignmentAngle = 40;
@@ -187,7 +187,7 @@ public class ScoreInReactorStateController extends StateMachine {
          System.out.println("Angle: "+angle);
         System.out.println("Distance: "+distance);
         System.out.println("Angle to turn: " + reactorSummary.getReactorAngleToTurn());
-        
+        System.out.println("Running time reactor: " + runningTime);
         // exit if we time out
         if(runningTime >= timeout){
         	System.out.println("timout, exiting");
@@ -208,14 +208,9 @@ public class ScoreInReactorStateController extends StateMachine {
         if(distance <= insertDistance && robotInventory.hasGreenBalls() && (state ==ScoreInReactorStates.DRIVER ||
         		state == ScoreInReactorStates.SMALL_ANGLE)){
         	System.out.println("inserting");
-            state = ScoreInReactorStates.INSERT;
             robotModel.setMotors(0,0);
             straight();
-            state = ScoreInReactorStates.DEPOSIT_TOP;
-        }
-        // switch to deposit in top state after insert state, then switch to reverse to distance state
-        else if(state == ScoreInReactorStates.DEPOSIT_TOP){
-        	System.out.println("entering deposit top");
+            System.out.println("entering deposit top");
             depositTop();
             state = ScoreInReactorStates.REVERSE_TO_DISTANCE;
         }

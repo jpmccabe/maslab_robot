@@ -13,12 +13,13 @@ public class ComputerVisionSummary {
     private final CameraProcessor6 siloProcessor;
     
     private final static double MAX_BALL_DISTANCE  = 40;
-    private final static double MAX_WALL_DISTANCE_MIDDLE = 11;
-    private final static double MAX_WALL_DISTANCE_LEFT = 12;
-    private final static double MAX_WALL_DISTANCE_RIGHT = 12;
+    private final static double MAX_WALL_DISTANCE_MIDDLE = 8;
+    private final static double MAX_WALL_DISTANCE_LEFT = 10;
+    private final static double MAX_WALL_DISTANCE_RIGHT = 10;
+    private final static double MAX_REACTOR_OBSTACLE_DISTANCE = 13;
     private final static double MAX_REACTOR_SCORING_DISTANCE = 40;
     private final static double MAX_INTERFACE_WALL_SCORING_DISTANCE = 40;
-    private final static double MAX_SILO_FOLLOW_DISTANCE = 10;
+    private final static double MAX_SILO_FOLLOW_DISTANCE = 35;
     private final static double NO_OBSTACLE_DISTANCE = 15;
         
     public ComputerVisionSummary(){
@@ -220,9 +221,9 @@ public class ComputerVisionSummary {
      * an obstacle, false otherwise.
      */
     public boolean isReactorObstacle(){
-        return (getReactorCenterDistance() <= MAX_WALL_DISTANCE_MIDDLE ||
-                getReactorLeftDistance() <= MAX_WALL_DISTANCE_LEFT ||
-                getReactorRightDistance() <= MAX_WALL_DISTANCE_RIGHT);
+        return (getReactorCenterDistance() <= MAX_REACTOR_OBSTACLE_DISTANCE ||
+                getReactorLeftDistance() <= MAX_REACTOR_OBSTACLE_DISTANCE ||
+                getReactorRightDistance() <= MAX_REACTOR_OBSTACLE_DISTANCE);
     }
     
     

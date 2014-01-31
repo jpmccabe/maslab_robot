@@ -87,7 +87,6 @@ class CameraProcessor4 extends CameraProcessor{
                         else secondPixel=y;
                     }
                 }
-                //System.out.println("x:"+x+" pixels:"+(firstPixel-secondPixel));
                 if (count>=23 && count<=27) averageDistance+=pixelToDistance(firstPixel-secondPixel);
                 if (count<=5){leftDistance+=pixelToDistance(firstPixel-secondPixel);}
                 if (count>45){rightDistance+=pixelToDistance(firstPixel-secondPixel);}
@@ -104,14 +103,10 @@ class CameraProcessor4 extends CameraProcessor{
         final double centerAngle = pixelToAngle(boundingRect.x + (boundingRect.width/2));
         leftDistance /= Math.cos(leftAngleRadiansAbs);
         rightDistance /= Math.cos(leftAngleRadiansAbs);
-        //System.out.println("left distance reactor: " + leftDistance);
-        //System.out.println("right distance reactor: " + rightDistance);
         final double insideOfArcSin = Math.min(1, (Math.min(leftDistance,rightDistance) / 5.75) * Math.sin(Math.max(leftAngleRadiansAbs,rightAngleRadiansAbs)));
         final double angleToTurnParallelRadians = Math.asin(insideOfArcSin);
         double angleToTurnParallelDegrees = Math.toDegrees(angleToTurnParallelRadians);
         angleToTurnParallelDegrees = leftDistance <= rightDistance ? angleToTurnParallelDegrees : -1*angleToTurnParallelDegrees;
-        //System.out.println("angle to turn parallel reactor: " + angleToTurnParallelDegrees);
-
         Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
         
         final int centerXValue = (int) ((boundingRect.x) + (boundingRect.width/2.0));

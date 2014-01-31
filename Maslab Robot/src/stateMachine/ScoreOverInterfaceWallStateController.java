@@ -56,7 +56,7 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
     private void manhattan(double angleToTurnDegrees, double centerDistance){
     	final double turnSpeed = 0.2;
         final double forwardSpeed = 0.18;
-        final double turnProportionalTimeConstant = 9;
+        final double turnProportionalTimeConstant = 7;
         final double forwardProportionalTimeConstant = 125;
         final double ninetyDegreeTurnTime = 900;
         final double driveDistance = Math.cos(Math.toRadians(Math.abs(angleToTurnDegrees))) * centerDistance;
@@ -139,11 +139,11 @@ public class ScoreOverInterfaceWallStateController extends StateMachine {
     
     @Override
     public void controlState(Mat image) {
-        final long timeout = 30000;
+        final long timeout = 15000;
         final double misAlignmentDistance = 6;
         final double misAlignmentAngle = 45;
         final double insertDistance = 6;
-        final int centerXThreshold = 30;
+        final int centerXThreshold = 35;
         final double goStraightAngleThreshold = 85;
        
         interfaceWallSummary.updateInterfaceWallSummary(image);

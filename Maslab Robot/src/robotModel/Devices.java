@@ -259,7 +259,7 @@ public class Devices {
      * Sets the arm servo to down position
      */
     synchronized public void setServoArmToDownPosition(){
-        servoArm.setAngle(55);
+        servoArm.setAngle(45);
         maple.transmit();
     }
     

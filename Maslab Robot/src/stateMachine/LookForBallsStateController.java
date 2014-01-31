@@ -8,9 +8,11 @@ public class LookForBallsStateController extends StateMachine {
 
     private final Devices robotModel;
     private volatile boolean isDone;
+    private long startTime;
     
     public LookForBallsStateController(Devices robotModel){
         this.robotModel = robotModel;
+        this.startTime = System.currentTimeMillis();
     }
     
     @Override
@@ -30,9 +32,36 @@ public class LookForBallsStateController extends StateMachine {
         }
     }
     
+    
+    private void reverseAndSpin(){
+    	double reverseSpeed = -0.18;
+        double turnSpeed = 0.17;
+        long reverseTime = 900;
+        long turnTime = 1000;
+        
+        try {
+            robotModel.setMotors(reverseSpeed, reverseSpeed);
+			Thread.sleep(reverseTime);
+			robotModel.setMotors(turnSpeed, -1*turnSpeed);
+	        Thread.sleep(turnTime);
+	        robotModel.setMotors(0,0);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+    }
+    
 
     @Override
     public void controlState(Mat image) {
+    	long timeout = 10000;
+    	long currentRunTime = System.currentTimeMillis() - startTime;
+    	
+    	if(currentRunTime >= timeout){
+    		reverseAndSpin();
+    		stop();
+    	}
         forward();
     }
 

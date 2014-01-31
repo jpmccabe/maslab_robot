@@ -77,7 +77,6 @@ public class CameraProcessor3 extends CameraProcessor{
             }
         }
         averageDistance = sampleSize > 0 ? averageDistance/sampleSize : 1000;
-        System.out.println(sampleSize);
         return averageDistance;
     }
     

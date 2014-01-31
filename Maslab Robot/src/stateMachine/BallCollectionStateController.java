@@ -57,25 +57,13 @@ public class BallCollectionStateController extends StateMachine {
         final double forwardSpeed = 0.17;
         robotModel.setMotors(forwardSpeed, forwardSpeed);
         robotModel.setRoller(true);
+        robotModel.setSpiral(true);
         robotInventory.addBallToQueue(new TimedBall(System.currentTimeMillis(), ballColor));
         
         Thread rollerThread = new Thread(new Runnable(){
             public void run(){
                 try {
-                    Thread.sleep(3000);
-                    robotModel.setRoller(false);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        });
-        
-        Thread spiralThread = new Thread(new Runnable(){
-            public void run(){
-                try {
-                    robotModel.setSpiral(true);
-                    Thread.sleep(10000);
+                    Thread.sleep(4000);
                     robotModel.setRoller(false);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
@@ -85,10 +73,9 @@ public class BallCollectionStateController extends StateMachine {
         });
         
         rollerThread.start();
-        spiralThread.start();
         
         try {
-            Thread.sleep(600);
+            Thread.sleep(1200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -97,7 +84,7 @@ public class BallCollectionStateController extends StateMachine {
         
         //robotModel.setMotors(-forwardSpeed,-forwardSpeed);
         try {
-            Thread.sleep(1500);
+            Thread.sleep(1200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -117,7 +104,7 @@ public class BallCollectionStateController extends StateMachine {
     public void controlState(Mat image) {
         final long timeout = 8000;
         final double collectAngleMax = 90;
-        final double collectDistanceMax = 6;
+        final double collectDistanceMax = 8;
         
         ballSummary.updateBallSummary(image);
         long currentRunningTime = System.currentTimeMillis() - startTime;

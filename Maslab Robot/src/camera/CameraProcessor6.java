@@ -59,7 +59,7 @@ class CameraProcessor6 extends CameraProcessor{
 		for(int index=0;index<contours.size();index++){
 			double area= Imgproc.contourArea(contours.get(index));
 			Rect rect=Imgproc.boundingRect(contours.get(index));
-			if (area>maxArea && area>250 && rect.width>50){
+			if (area>maxArea && area>150 && rect.width>25){
 				boundingRect=rect;
 				reactorSpotted = true;
 				maxArea = area;
@@ -113,7 +113,7 @@ class CameraProcessor6 extends CameraProcessor{
 		double angleToTurnParallelDegrees = Math.toDegrees(angleToTurnParallelRadians);
 		angleToTurnParallelDegrees = leftDistance <= rightDistance ? angleToTurnParallelDegrees : -1*angleToTurnParallelDegrees;
 		//System.out.println("angle to turn parallel silo: " + angleToTurnParallelDegrees);
-
+		//System.out.println("CenterX:"+ centerXValue);
 		Imgproc.cvtColor(processedImage,processedImage,Imgproc.COLOR_GRAY2RGB);
 
 		final int centerXValue = (int) ((boundingRect.x) + (boundingRect.width/2.0));
